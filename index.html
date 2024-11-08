@@ -305,12 +305,14 @@
         }
 
         .chart-container {
-            margin-top: 30px;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+    width: 100%;
+    margin: 30px 0;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: height 0.3s ease;
+}
     </style>
 </head>
 <body>
@@ -612,11 +614,21 @@ function createComparisonChart() {
 
     Object.entries(categories).forEach(([categoryKey, category]) => {
         Object.entries(category.questions).forEach(([questionKey, questionText]) => {
-            labels.push(questionText);
+            // Truncate long labels for better mobile display
+            const truncatedText = window.innerWidth < 768 ? 
+                questionText.substring(0, 20) + (questionText.length > 20 ? '...' : '') : 
+                questionText;
+            labels.push(truncatedText);
             employeeData.push(employeeResponses[categoryKey]?.[questionKey] || 0);
             managerData.push(managerResponses[categoryKey]?.[questionKey] || 0);
         });
     });
+
+    // Destroy existing chart if it exists
+    const existingChart = Chart.getChart(ctx);
+    if (existingChart) {
+        existingChart.destroy();
+    }
 
     new Chart(ctx, {
         type: 'radar',
@@ -629,6 +641,8 @@ function createComparisonChart() {
                     backgroundColor: 'rgba(37, 99, 235, 0.2)',
                     borderColor: 'rgba(37, 99, 235, 1)',
                     pointBackgroundColor: 'rgba(37, 99, 235, 1)',
+                    borderWidth: window.innerWidth < 768 ? 1 : 2,
+                    pointRadius: window.innerWidth < 768 ? 2 : 3,
                 },
                 {
                     label: 'הערכת מנהל',
@@ -636,29 +650,68 @@ function createComparisonChart() {
                     backgroundColor: 'rgba(100, 116, 139, 0.2)',
                     borderColor: 'rgba(100, 116, 139, 1)',
                     pointBackgroundColor: 'rgba(100, 116, 139, 1)',
+                    borderWidth: window.innerWidth < 768 ? 1 : 2,
+                    pointRadius: window.innerWidth < 768 ? 2 : 3,
                 }
             ]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 r: {
                     beginAtZero: true,
                     max: 5,
                     min: 0,
                     ticks: {
-                        stepSize: 1
+                        stepSize: 1,
+                        font: {
+                            size: window.innerWidth < 768 ? 10 : 12
+                        }
+                    },
+                    pointLabels: {
+                        font: {
+                            size: window.innerWidth < 768 ? 8 : 12,
+                            weight: 'bold'
+                        },
+                        padding: window.innerWidth < 768 ? 4 : 8
                     }
                 }
             },
             plugins: {
                 legend: {
-                    position: 'top',
+                    position: window.innerWidth < 768 ? 'bottom' : 'top',
+                    labels: {
+                        font: {
+                            size: window.innerWidth < 768 ? 12 : 14
+                        },
+                        padding: window.innerWidth < 768 ? 10 : 15
+                    }
                 }
             }
         }
     });
 }
 
+// Add resize handler to update chart on window resize
+window.addEventListener('resize', debounce(createComparisonChart, 250));
+
+// Debounce function to prevent too many resize events
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+const chartContainer = document.querySelector('.chart-container');
+if (chartContainer) {
+    chartContainer.style.height = window.innerWidth < 768 ? '300px' : '400px';
+}
 // Initialize the form when the page loads
 document.addEventListener('DOMContentLoaded', initializeForm);
 </script>
