@@ -313,6 +313,29 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: height 0.3s ease;
 }
+.question-group {
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .question-group.unanswered {
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fee2e2;
+        }
+
+        .validation-message {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .validation-message.visible {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -476,11 +499,21 @@ function createFormContent(type) {
 
 // Add event listeners
 function addEventListeners() {
-    // Rating buttons
+    // Previous event listeners remain the same
+
+    // Add validation feedback removal on rating selection
     document.querySelectorAll('.rating-btn').forEach(button => {
         button.addEventListener('click', (e) => {
-            const group = e.target.closest('.rating-group');
-            group.querySelectorAll('.rating-btn').forEach(btn => {
+            const group = e.target.closest('.question-group');
+            group.classList.remove('unanswered');
+            const validationMsg = group.querySelector('.validation-message');
+            if (validationMsg) {
+                validationMsg.remove();
+            }
+            
+            // Previous rating button functionality remains
+            const ratingGroup = e.target.closest('.rating-group');
+            ratingGroup.querySelectorAll('.rating-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
             e.target.classList.add('selected');
@@ -496,12 +529,58 @@ function addEventListeners() {
         });
     });
 }
+function validateStep(step) {
+    const questionGroups = step.querySelectorAll('.question-group');
+    let isValid = true;
+    let firstUnanswered = null;
 
+    // Reset previous validation state
+    questionGroups.forEach(group => {
+        group.classList.remove('unanswered');
+        const validationMsg = group.querySelector('.validation-message');
+        if (validationMsg) {
+            validationMsg.remove();
+        }
+    });
+
+    // Check each question group
+    questionGroups.forEach(group => {
+        const selectedRating = group.querySelector('.rating-btn.selected');
+        if (!selectedRating) {
+            isValid = false;
+            group.classList.add('unanswered');
+            
+            // Add validation message
+            const validationMsg = document.createElement('div');
+            validationMsg.className = 'validation-message visible';
+            validationMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> נא לבחור דירוג';
+            group.appendChild(validationMsg);
+
+            // Store first unanswered question for focus
+            if (!firstUnanswered) {
+                firstUnanswered = group;
+            }
+        }
+    });
+
+    // Scroll to first unanswered question if validation failed
+    if (firstUnanswered) {
+        firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    return isValid;
+}
 // Submit step
 function submitStep(type) {
+    const step = document.getElementById(`${type}Step`);
+    
+    // Validate before proceeding
+    if (!validateStep(step)) {
+        return;
+    }
+
     const responses = {};
     const notes = {};
-    const step = document.getElementById(`${type}Step`);
 
     // Collect responses and notes
     step.querySelectorAll('.question-group').forEach(group => {
@@ -528,7 +607,6 @@ function submitStep(type) {
     if (type === 'employee') {
         employeeResponses = responses;
         employeeNotes = notes;
-        // Show manager step
         document.getElementById('employeeStep').classList.remove('active');
         document.getElementById('managerStep').classList.add('active');
     } else {
