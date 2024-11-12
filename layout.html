@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שאלון סוף שנה - ABRA</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+        }
+
+        .headerstyle {
+            background-color: #0e1749;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.visible {
+            display: flex;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s ease-in-out infinite;
+            -webkit-animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        .progress-bar {
+            transition: width 0.3s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+    <header class="headerstyle text-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-4 md:mb-0">
+                <img src="https://www.abra-it.com/wp-content/uploads/2022/01/Abra-logo-FullColor-white-1.svg"
+                    alt="ABRA לוגו" class="h-6 md:h-6" style="height: 1.5rem;">
+                <h1 class="text-2xl font-bold mr-4">שאלון סוף שנה 2024</h1>
+            </div>
+            <div class="flex items-center">
+                <button id="logout-button"
+                    class="bg-white text-blue-600 px-3 py-2 rounded-md hover:bg-blue-100 transition duration-300 hidden text-sm md:text-base flex items-center">
+                    <i class="fas fa-sign-out-alt ml-2"></i>
+                    <span>התנתק</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <main class="container mx-auto px-4 my-8 flex-grow">
+        <!-- Login Form -->
+        <div id="login-form-container" class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6 mb-6">
+            <!-- Progress Steps -->
+            <div class="mb-6">
+                <div class="flex justify-between mb-2">
+                    <div class="step-indicator flex-1 text-center">
+                        <div
+                            class="w-8 h-8 bg-blue-600 text-white rounded-full mx-auto flex items-center justify-center step-active">
+                            1</div>
+                        <span class="text-sm mt-1">אימייל עובד</span>
+                    </div>
+                    <div class="step-indicator flex-1 text-center">
+                        <div
+                            class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full mx-auto flex items-center justify-center">
+                            2</div>
+                        <span class="text-sm mt-1">פרטי מנהל</span>
+                    </div>
+                    <div class="step-indicator flex-1 text-center">
+                        <div
+                            class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full mx-auto flex items-center justify-center">
+                            3</div>
+                        <span class="text-sm mt-1">תפקיד</span>
+                    </div>
+                </div>
+                <div class="relative h-2 bg-gray-200 rounded-full">
+                    <div id="progress-bar" class="absolute h-2 bg-blue-600 rounded-full transition-all duration-300"
+                        style="width: 33%"></div>
+                </div>
+            </div>
+
+            <!-- Step 1: Employee Email -->
+            <div id="step-1" class="step-content">
+                <h2 class="text-xl font-semibold mb-4">
+                    <i class="fas fa-user ml-2"></i>אימייל עובד
+                </h2>
+                <form id="employee-email-form">
+                    <div class="mb-4">
+                        <label for="employee-email" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-envelope ml-1"></i> כתובת אימייל ארגונית:
+                        </label>
+                        <input type="email" id="employee-email" name="employee-email" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="name@abra-it.com">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300 flex items-center justify-center">
+                        <span>המשך</span>
+                        <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Step 2: Manager Details -->
+            <div id="step-2" class="step-content hidden">
+                <h2 class="text-xl font-semibold mb-4">
+                    <i class="fas fa-user-tie ml-2"></i>פרטי מנהל
+                </h2>
+                <form id="manager-details-form">
+                    <div class="mb-4">
+                        <label for="manager-name" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-user ml-1"></i> שם המנהל:
+                        </label>
+                        <input type="text" id="manager-name" name="manager-name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            disabled>
+                    </div>
+                    <div class="mb-4">
+                        <label for="manager-email" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-envelope ml-1"></i> אימייל המנהל:
+                        </label>
+                        <input type="email" id="manager-email" name="manager-email" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" onclick="prevStep()"
+                            class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300">
+                            <i class="fas fa-arrow-right ml-2"></i>חזור
+                        </button>
+                        <button type="submit"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">
+                            המשך<i class="fas fa-arrow-left mr-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 3: Position Selection -->
+            <div id="step-3" class="step-content hidden">
+                <h2 class="text-xl font-semibold mb-4">
+                    <i class="fas fa-briefcase ml-2"></i>בחירת תפקיד
+                </h2>
+                <form id="position-form">
+                    <div class="mb-4">
+                        <label for="position" class="block text-sm font-medium text-gray-700 mb-1">
+                            <i class="fas fa-briefcase ml-1"></i> תפקיד:
+                        </label>
+                        <select id="position" name="position" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">בחר תפקיד</option>
+                            <option value="developer">מפתח/ת</option>
+                            <option value="qa">QA</option>
+                            <option value="team_leader">ראש צוות</option>
+                            <option value="project_manager">מנהל/ת פרויקט</option>
+                            <option value="product_manager">מנהל/ת מוצר</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between">
+                        <button type="button" onclick="prevStep()"
+                            class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300">
+                            <i class="fas fa-arrow-right ml-2"></i>חזור
+                        </button>
+                        <button type="submit"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">
+                            סיום<i class="fas fa-check mr-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            // Constants and Configuration
+            const API_ENDPOINT = 'https://prod-21.westeurope.logic.azure.com:443/workflows/d26e2247617c4275869b19725db4e15a/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=VOKIdhCJr-KZ3BYFPT0cwSUHL5Iqe2eR1gTX2dt0HIQ';
+            const CURRENT_YEAR = new Date().getFullYear();
+
+            // Utility Functions
+            const utils = {
+                isValidEmail(email) {
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+                },
+
+                showLoading() {
+                    document.getElementById('loading-overlay').classList.add('visible');
+                },
+
+                hideLoading() {
+                    document.getElementById('loading-overlay').classList.remove('visible');
+                },
+
+                async apiCall(action, data) {
+                    try {
+                        const response = await fetch(API_ENDPOINT, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ action, data })
+                        });
+                        return await response.json();
+                    } catch (error) {
+                        console.error(`API Error (${action}):`, error);
+                        throw new Error('Failed to communicate with server');
+                    }
+                },
+
+                updateProgress(currentStep, totalSteps) {
+                    const progress = (currentStep / totalSteps) * 100;
+                    document.getElementById('progress-bar').style.width = `${progress}%`;
+
+                    document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                        const circle = indicator.querySelector('div');
+                        const classList = circle.classList;
+
+                        if (index + 1 === currentStep) {
+                            classList.replace('bg-gray-200', 'bg-blue-600');
+                            classList.replace('text-gray-600', 'text-white');
+                        } else if (index + 1 < currentStep) {
+                            classList.replace('bg-gray-200', 'bg-green-500');
+                            classList.replace('text-gray-600', 'text-white');
+                        } else {
+                            classList.replace('bg-blue-600', 'bg-gray-200');
+                            classList.replace('bg-green-500', 'bg-gray-200');
+                            classList.replace('text-white', 'text-gray-600');
+                        }
+                    });
+                }
+            };
+
+            // Survey Form Controller
+            class SurveyFormController {
+                constructor() {
+                    this.currentStep = 1;
+                    this.totalSteps = 3;
+                    this.originalManagerEmail = '';
+                    this.initializeEventListeners();
+                }
+
+                showStep(step) {
+                    document.querySelectorAll('.step-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(`step-${step}`).classList.remove('hidden');
+                    this.currentStep = step;
+                    utils.updateProgress(step, this.totalSteps);
+                }
+
+                async handleEmployeeSubmit(event) {
+                    event.preventDefault();
+                    utils.showLoading();
+
+                    try {
+                        const email = document.getElementById('employee-email').value.trim();
+                        if (!utils.isValidEmail(email)) {
+                            throw new Error('נא להזין כתובת אימייל תקינה');
+                        }
+
+                        const result = await utils.apiCall('verifyEmployee', { email });
+
+                        if (result.success) {
+                            const { managerName, managerEmail } = result.data;
+
+                            // Check if manager email is same as employee
+                            if (managerEmail.toLowerCase() === email.toLowerCase()) {
+                                throw new Error('כתובת האימייל של המנהל זהה לכתובת האימייל שלך');
+                            }
+
+                            document.getElementById('manager-name').value = managerName;
+                            document.getElementById('manager-email').value = managerEmail;
+                            this.originalManagerEmail = managerEmail;
+                            this.showStep(2);
+                        } else {
+                            throw new Error(result.error.message || 'Failed to verify employee');
+                        }
+                    } catch (error) {
+                        alert(error.message);
+                    } finally {
+                        utils.hideLoading();
+                    }
+                }
+
+                async handleManagerEmailChange(event) {
+                    const managerEmail = event.target.value.trim();
+                    const employeeEmail = document.getElementById('employee-email').value.trim();
+                    const managerNameInput = document.getElementById('manager-name');
+
+                    if (!utils.isValidEmail(managerEmail)) {
+                        alert('נא להזין כתובת אימייל תקינה');
+                        event.target.value = '';
+                        managerNameInput.value = '';
+                        return;
+                    }
+
+                    // Check if manager email is same as employee
+                    if (managerEmail.toLowerCase() === employeeEmail.toLowerCase()) {
+                        alert('לא ניתן להזין את אותה כתובת אימייל עבור העובד והמנהל');
+                        event.target.value = '';
+                        managerNameInput.value = '';
+                        return;
+                    }
+
+                    utils.showLoading();
+                    try {
+                        const result = await utils.apiCall('verifyManager', { managerEmail });
+
+                        if (result.success) {
+                            managerNameInput.value = result.data.employeeDetails.name;
+                            this.originalManagerEmail = managerEmail;
+                            alert('פרטי המנהל עודכנו בהצלחה');
+                        } else {
+                            throw new Error(result.error.message || 'כתובת האימייל של המנהל לא נמצאה במערכת');
+                        }
+                    } catch (error) {
+                        alert(error.message);
+                        event.target.value = '';
+                        managerNameInput.value = '';
+                    } finally {
+                        utils.hideLoading();
+                    }
+                }
+
+                async handleManagerSubmit(event) {
+                    event.preventDefault();
+                    const currentManagerEmail = document.getElementById('manager-email').value.trim();
+
+                    if (!currentManagerEmail || !utils.isValidEmail(currentManagerEmail)) {
+                        alert('נא להזין כתובת אימייל תקינה של המנהל');
+                        return;
+                    }
+
+                    if (currentManagerEmail === this.originalManagerEmail) {
+                        this.showStep(3);
+                        return;
+                    }
+
+                    utils.showLoading();
+                    try {
+                        const result = await utils.apiCall('verifyManager', { managerEmail: currentManagerEmail });
+                        if (result.success) {
+                            this.showStep(3);
+                        } else {
+                            throw new Error(result.error.message || 'Failed to verify manager');
+                        }
+                    } catch (error) {
+                        alert(error.message);
+                    } finally {
+                        utils.hideLoading();
+                    }
+                }
+
+                async handlePositionSubmit(event) {
+                    event.preventDefault();
+                    utils.showLoading();
+
+                    try {
+                        const employeeEmail = document.getElementById('employee-email').value.trim();
+                        const managerEmail = document.getElementById('manager-email').value.trim();
+                        const position = document.getElementById('position').value;
+                        const currentYear = new Date().getFullYear().toString();
+
+                        // Validate employee and manager emails are different
+                        if (employeeEmail.toLowerCase() === managerEmail.toLowerCase()) {
+                            throw new Error('לא ניתן להגיש שאלון כאשר העובד והמנהל הם אותו אדם');
+                        }
+
+                        // First check for existing submission
+                        const checkResult = await utils.apiCall('checkYearlySubmission', {
+                            employeeEmail: employeeEmail,
+                            year: currentYear
+                        });
+
+       // Check exists value as string
+       if (checkResult.exists === "true") {
+            alert('כבר מילאת את השאלון לשנה זו');
+            return;
+        }
+
+                        // If doesn't exist, create new submission
+                        const submissionData = {
+                            employeeEmail: employeeEmail,
+                            managerEmail: managerEmail,
+                            position: position,
+                            year: currentYear,
+                            createdAt: new Date().toISOString()
+                        };
+
+                        const submissionResult = await utils.apiCall('createSubmission', submissionData);
+
+                        if (!submissionResult.success) {
+                            throw new Error(submissionResult.error?.message || 'שגיאה ביצירת השאלון');
+                        }
+
+                        // Redirect to survey with the returned GUID
+                        const surveyGuid = submissionResult.data.guid;
+                        window.location.href = `/layout.html?id=${surveyGuid}`;
+
+                    } catch (error) {
+                        alert(error.message);
+                    } finally {
+                        utils.hideLoading();
+                    }
+                }
+
+                initializeEventListeners() {
+                    // Employee email form
+                    document.getElementById('employee-email-form').addEventListener('submit',
+                        this.handleEmployeeSubmit.bind(this));
+
+                    // Manager email changes
+                    document.getElementById('manager-email').addEventListener('change',
+                        this.handleManagerEmailChange.bind(this));
+
+                    // Manager form submission
+                    document.getElementById('manager-details-form').addEventListener('submit',
+                        this.handleManagerSubmit.bind(this));
+
+                    // Position form submission
+                    document.getElementById('position-form').addEventListener('submit',
+                        this.handlePositionSubmit.bind(this));
+
+                    // Previous step buttons
+                    document.querySelectorAll('[onclick="prevStep()"]').forEach(button => {
+                        button.onclick = () => this.currentStep > 1 && this.showStep(this.currentStep - 1);
+                    });
+                }
+            }
+
+            // Initialize the form controller when DOM is loaded
+            document.addEventListener('DOMContentLoaded', () => {
+                new SurveyFormController();
+            });
+        </script>
+
+</html>
