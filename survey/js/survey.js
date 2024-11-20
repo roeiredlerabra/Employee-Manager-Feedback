@@ -1,26 +1,15 @@
-// Core utilities and configurations
-const getConfig = () => {
-    if (!window.API_CONFIG || !window.SURVEY_CONFIG) {
-        console.error('Required configurations not found. Make sure config.js is loaded first.');
-        return false;
-    }
-    return true;
-};
-
-const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-// Utility functions
+// Updated utils object with fixed apiCall
 const utils = {
     isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     },
 
     showLoading() {
-        document.getElementById('loading-overlay')?.classList.add('visible');
+        document.getElementById('loading-overlay').classList.add('visible');
     },
 
     hideLoading() {
-        document.getElementById('loading-overlay')?.classList.remove('visible');
+        document.getElementById('loading-overlay').classList.remove('visible');
     },
 
     async apiCall(action, data) {
@@ -33,7 +22,8 @@ const utils = {
             
             const result = await response.json();
             
-            if (DEBUG_MODE) {
+            // Optional: Log API calls in development
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
                 console.log(`API ${action} Response:`, result);
             }
             
@@ -44,51 +34,59 @@ const utils = {
         }
     },
 
-    getDomElement(id) {
-        const element = document.getElementById(id);
-        if (!element && DEBUG_MODE) {
-            console.warn(`Element with id '${id}' not found`);
-        }
-        return element;
-    },
-
-    showError(message) {
-        alert(message); // Can be replaced with a custom error UI component
-    },
-
-    updateElementClasses(element, { add = [], remove = [], replace = {} }) {
-        if (add.length) element.classList.add(...add);
-        if (remove.length) element.classList.remove(...remove);
-        Object.entries(replace).forEach(([oldClass, newClass]) => {
-            element.classList.replace(oldClass, newClass);
+    updateProgress(currentStep, totalSteps) {
+        const progress = (currentStep / totalSteps) * 100;
+        document.getElementById('progress-bar').style.width = `${progress}%`;
+        
+        document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+            const circle = indicator.querySelector('div');
+            const classList = circle.classList;
+            
+            if (index + 1 === currentStep) {
+                classList.replace('bg-gray-200', 'bg-blue-600');
+                classList.replace('text-gray-600', 'text-white');
+            } else if (index + 1 < currentStep) {
+                classList.replace('bg-gray-200', 'bg-green-500');
+                classList.replace('text-gray-600', 'text-white');
+            } else {
+                classList.replace('bg-blue-600', 'bg-gray-200');
+                classList.replace('bg-green-500', 'bg-gray-200');
+                classList.replace('text-white', 'text-gray-600');
+            }
         });
     },
 
-    async safeApiCall(action, data, errorMessage = 'Operation failed') {
-        try {
-            utils.showLoading();
-            const result = await utils.apiCall(action, data);
-            
-            if (!result.success) {
-                throw new Error(result.error?.message || errorMessage);
-            }
-            
-            return result;
-        } catch (error) {
-            utils.showError(error.message);
-            throw error;
-        } finally {
-            utils.hideLoading();
-        }
+    showError(message) {
+        alert(message); // You can replace this with a custom error UI component
     }
 };
 
-// Message handler for success and error messages
+// Optional: Add debug mode toggle
+const DEBUG_MODE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// Example usage in API calls
+async function makeApiCall(action, data) {
+    try {
+        utils.showLoading();
+        const result = await utils.apiCall(action, data);
+        
+        if (DEBUG_MODE) {
+            console.log(`${action} result:`, result);
+        }
+        
+        return result;
+    } catch (error) {
+        utils.showError(error.message);
+        throw error;
+    } finally {
+        utils.hideLoading();
+    }
+};
+
+// Message Handler
 const messageHandler = {
     showSuccessMessage(step) {
         const content = SURVEY_CONFIG.messages.success[step];
-        if (!content) return;
-
         const messageHtml = `
             <div id="success-message" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
                 <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 transform transition-all animate-fade-in">
@@ -108,15 +106,17 @@ const messageHandler = {
     },
 
     closeMessage() {
-        const messageElement = utils.getDomElement('success-message');
+        const messageElement = document.getElementById('success-message');
         if (messageElement) {
-            utils.updateElementClasses(messageElement, { add: ['opacity-0'] });
-            setTimeout(() => messageElement.remove(), 300);
+            messageElement.classList.add('opacity-0');
+            setTimeout(() => {
+                messageElement.remove();
+            }, 300);
         }
     }
 };
 
-// Form validation handler
+// Form Validation Handler
 const validationHandler = {
     validateEmail(email) {
         if (!email || !utils.isValidEmail(email)) {
@@ -143,6 +143,7 @@ const validationHandler = {
         }
     }
 };
+
 // Survey State Management
 class SurveyState {
     constructor() {
@@ -152,88 +153,105 @@ class SurveyState {
         this.employeeEmail = '';
         this.managerEmail = '';
         this.position = '';
-        this.currentStep = 1;
-        this.totalSteps = 3;
     }
 
     updateState(updates) {
         Object.assign(this, updates);
-        this.notifyStateChange();
     }
 
-    notifyStateChange() {
-        const event = new CustomEvent('surveyStateChanged', { detail: this });
-        window.dispatchEvent(event);
+    getAnsweredCount() {
+        return Object.keys(this.answers).length;
+    }
+
+    isComplete() {
+        return this.getAnsweredCount() === this.getTotalQuestions();
+    }
+
+    getTotalQuestions() {
+        return this.getQuestionsForRole(this.position).length;
+    }
+
+    getQuestionsForRole(role) {
+        const questions = [];
+        Object.values(SURVEY_CONFIG.categories).forEach(category => {
+            Object.entries(category.questions).forEach(([id, question]) => {
+                if (question.roles.includes(role)) {
+                    questions.push({ id, ...question });
+                }
+            });
+        });
+        return questions;
     }
 }
-
 // Survey Form Controller
 class SurveyFormController {
     constructor() {
-        this.state = new SurveyState();
+        this.currentStep = 1;
+        this.totalSteps = 3;
         this.originalManagerEmail = '';
+        this.state = new SurveyState();
         this.initializeEventListeners();
-        this.boundHandlers = {
-            handleEmployeeSubmit: this.handleEmployeeSubmit.bind(this),
-            handleManagerEmailChange: this.handleManagerEmailChange.bind(this),
-            handleManagerSubmit: this.handleManagerSubmit.bind(this),
-            handlePositionSubmit: this.handlePositionSubmit.bind(this)
-        };
     }
 
     showStep(step) {
-        const stepContents = document.querySelectorAll('.step-content');
-        stepContents.forEach(content => content.classList.add('hidden'));
-        
-        const currentStep = utils.getDomElement(`step-${step}`);
-        if (currentStep) {
-            currentStep.classList.remove('hidden');
-            this.state.currentStep = step;
-            utils.updateProgress(step, this.state.totalSteps);
-        }
+        document.querySelectorAll('.step-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        document.getElementById(`step-${step}`).classList.remove('hidden');
+        this.currentStep = step;
+        utils.updateProgress(step, this.totalSteps);
     }
 
     async handleEmployeeSubmit(event) {
         event.preventDefault();
-        
+        utils.showLoading();
+
         try {
-            const email = utils.getDomElement('employee-email')?.value.trim();
+            const email = document.getElementById('employee-email').value.trim();
             validationHandler.validateEmail(email);
 
-            const result = await utils.safeApiCall('verifyEmployee', { email });
-            
+            const result = await utils.apiCall('verifyEmployee', { email });
+
             if (result.success) {
                 const { managerName, managerEmail } = result.data;
+                
+                // Validate manager email is different from employee
                 validationHandler.validateManagerEmail(email, managerEmail);
 
-                // Update UI
-                utils.getDomElement('manager-name').value = managerName;
-                utils.getDomElement('manager-email').value = managerEmail;
+                // Update form and state
+                document.getElementById('manager-name').value = managerName;
+                document.getElementById('manager-email').value = managerEmail;
+                this.originalManagerEmail = managerEmail;
                 
                 // Update state
-                this.originalManagerEmail = managerEmail;
                 this.state.updateState({
                     employeeEmail: email,
                     managerEmail: managerEmail
                 });
 
                 this.showStep(2);
+            } else {
+                throw new Error(result.error.message || 'Failed to verify employee');
             }
         } catch (error) {
             utils.showError(error.message);
+        } finally {
+            utils.hideLoading();
         }
     }
 
     async handleManagerEmailChange(event) {
         const managerEmail = event.target.value.trim();
-        const managerNameInput = utils.getDomElement('manager-name');
-        
+        const managerNameInput = document.getElementById('manager-name');
+        const employeeEmail = this.state.employeeEmail;
+
         try {
             validationHandler.validateEmail(managerEmail);
-            validationHandler.validateManagerEmail(this.state.employeeEmail, managerEmail);
+            validationHandler.validateManagerEmail(employeeEmail, managerEmail);
 
-            const result = await utils.safeApiCall('verifyManager', { managerEmail });
-            
+            utils.showLoading();
+            const result = await utils.apiCall('verifyManager', { managerEmail });
+
             if (result.success) {
                 managerNameInput.value = result.data.employeeDetails.name;
                 this.originalManagerEmail = managerEmail;
@@ -242,24 +260,23 @@ class SurveyFormController {
                     title: 'עדכון פרטי מנהל',
                     message: 'פרטי המנהל עודכנו בהצלחה'
                 });
+            } else {
+                throw new Error(result.error.message || 'כתובת האימייל של המנהל לא נמצאה במערכת');
             }
         } catch (error) {
             utils.showError(error.message);
             event.target.value = this.originalManagerEmail;
             managerNameInput.value = '';
+        } finally {
+            utils.hideLoading();
         }
     }
 
     async handleManagerSubmit(event) {
         event.preventDefault();
-        
-        try {
-            const currentManagerEmail = utils.getDomElement('manager-email')?.value.trim();
-            
-            if (!currentManagerEmail) {
-                throw new Error('נא להזין כתובת אימייל של המנהל');
-            }
+        const currentManagerEmail = document.getElementById('manager-email').value.trim();
 
+        try {
             validationHandler.validateEmail(currentManagerEmail);
             validationHandler.validateManagerEmail(this.state.employeeEmail, currentManagerEmail);
 
@@ -268,34 +285,41 @@ class SurveyFormController {
                 return;
             }
 
-            const result = await utils.safeApiCall('verifyManager', { 
+            utils.showLoading();
+            const result = await utils.apiCall('verifyManager', { 
                 managerEmail: currentManagerEmail 
             });
 
             if (result.success) {
                 this.state.updateState({ managerEmail: currentManagerEmail });
                 this.showStep(3);
+            } else {
+                throw new Error(result.error.message || 'Failed to verify manager');
             }
         } catch (error) {
             utils.showError(error.message);
+        } finally {
+            utils.hideLoading();
         }
     }
 
     async handlePositionSubmit(event) {
         event.preventDefault();
-        
+        utils.showLoading();
+
         try {
             const formData = {
                 employeeEmail: this.state.employeeEmail,
                 managerEmail: this.state.managerEmail,
-                position: utils.getDomElement('position')?.value,
+                position: document.getElementById('position').value,
                 year: API_CONFIG.CURRENT_YEAR
             };
 
+            // Validate position
             validationHandler.validatePosition(formData.position);
 
             // Check for existing submission
-            const checkResult = await utils.safeApiCall('checkYearlySubmission', {
+            const checkResult = await utils.apiCall('checkYearlySubmission', {
                 employeeEmail: formData.employeeEmail,
                 year: formData.year
             });
@@ -304,62 +328,73 @@ class SurveyFormController {
                 throw new Error(SURVEY_CONFIG.messages.errors.existingSubmission);
             }
 
-            const submissionResult = await utils.safeApiCall('createSubmission', formData);
+            // Create new submission
+            const submissionResult = await utils.apiCall('createSubmission', formData);
 
-            if (submissionResult.success) {
-                const surveyGuid = submissionResult.data.guid;
-                this.state.updateState({ 
-                    guid: surveyGuid,
-                    position: formData.position 
-                });
-
-                messageHandler.showSuccessMessage(1);
-                setTimeout(() => {
-                    window.location.href = `/survey/index.html?id=${surveyGuid}`;
-                }, 2000);
+            if (!submissionResult.success) {
+                throw new Error(submissionResult.error?.message || 'שגיאה ביצירת השאלון');
             }
+
+            // Update state with submission guid
+            const surveyGuid = submissionResult.data.guid;
+            this.state.updateState({ 
+                guid: surveyGuid,
+                position: formData.position 
+            });
+
+            // Show success message and redirect
+            messageHandler.showSuccessMessage(1);
+            setTimeout(() => {
+                window.location.href = `/survey/index.html?id=${surveyGuid}`;
+            }, 2000);
+
         } catch (error) {
             utils.showError(error.message);
+        } finally {
+            utils.hideLoading();
         }
     }
 
     initializeEventListeners() {
-        // Form submissions
-        const forms = {
-            'employee-email-form': this.boundHandlers.handleEmployeeSubmit,
-            'manager-details-form': this.boundHandlers.handleManagerSubmit,
-            'position-form': this.boundHandlers.handlePositionSubmit
-        };
+        // Employee email form
+        document.getElementById('employee-email-form')?.addEventListener('submit',
+            this.handleEmployeeSubmit.bind(this));
 
-        Object.entries(forms).forEach(([id, handler]) => {
-            utils.getDomElement(id)?.addEventListener('submit', handler);
-        });
+        // Manager email changes
+        document.getElementById('manager-email')?.addEventListener('change',
+            this.handleManagerEmailChange.bind(this));
 
-        // Manager email change
-        utils.getDomElement('manager-email')?.addEventListener('change',
-            this.boundHandlers.handleManagerEmailChange);
+        // Manager form submission
+        document.getElementById('manager-details-form')?.addEventListener('submit',
+            this.handleManagerSubmit.bind(this));
+
+        // Position form submission
+        document.getElementById('position-form')?.addEventListener('submit',
+            this.handlePositionSubmit.bind(this));
 
         // Previous step buttons
         document.querySelectorAll('[onclick="prevStep()"]').forEach(button => {
-            button.onclick = () => this.state.currentStep > 1 && 
-                this.showStep(this.state.currentStep - 1);
+            button.onclick = () => this.currentStep > 1 && this.showStep(this.currentStep - 1);
         });
 
-        // Back button handling
-        window.addEventListener('popstate', () => {
-            if (this.state.currentStep > 1) {
-                this.showStep(this.state.currentStep - 1);
-            }
-        });
-
-        // Initialize position select if function exists
+        // Initialize position select
         if (typeof populatePositionSelect === 'function') {
             populatePositionSelect();
         }
     }
+
+    // Handle back button
+    handleBackButton() {
+        window.addEventListener('popstate', (event) => {
+            if (this.currentStep > 1) {
+                event.preventDefault();
+                this.showStep(this.currentStep - 1);
+            }
+        });
+    }
 }
 
-// Make controller available globally
+// Export for global access
 window.SurveyFormController = SurveyFormController;
 // Survey Renderer Class
 class SurveyRenderer {
@@ -371,7 +406,6 @@ class SurveyRenderer {
         this.isManager = this.currentStep === 2;
         this.isReadOnly = this.currentStep === 3;
         this.employeeName = surveyData.employeeName;
-        this.autoSaveTimeout = null;
     }
 
     async initialize() {
@@ -385,12 +419,12 @@ class SurveyRenderer {
     }
 
     async renderSurvey() {
-        const container = utils.getDomElement('survey-container');
+        const container = document.getElementById('survey-container');
         if (!container) return;
 
         container.innerHTML = this.generateSurveyHTML();
         container.classList.remove('hidden');
-        utils.getDomElement('login-form-container')?.classList.add('hidden');
+        document.getElementById('login-form-container')?.classList.add('hidden');
     }
 
     generateSurveyHTML() {
@@ -408,7 +442,8 @@ class SurveyRenderer {
 
     generateHeader() {
         const headerText = this.isManager ? 
-            `הערכת עובד - ${this.employeeName}` : 'הערכה עצמית';
+            `הערכת עובד - ${this.employeeName}` :
+            'הערכה עצמית';
 
         return `
             <div class="bg-white p-6 rounded-lg shadow-md mb-6">
@@ -421,10 +456,9 @@ class SurveyRenderer {
     }
 
     generateProgressBar() {
-        const questions = this.getQuestionsForRole(this.role);
-        const totalQuestions = questions.length;
+        const totalQuestions = this.getQuestionsForRole(this.role).length;
         const answered = Object.keys(this.answers).length;
-        const progress = totalQuestions > 0 ? (answered / totalQuestions) * 100 : 0;
+        const progress = (answered / totalQuestions) * 100;
 
         return `
             <div class="mb-6 bg-white p-4 rounded-lg shadow-md">
@@ -444,26 +478,20 @@ class SurveyRenderer {
         return Object.entries(SURVEY_CONFIG.categories)
             .map(([categoryId, category]) => {
                 const questions = this.getQuestionsForCategory(categoryId);
-                if (!questions.length) return '';
+                if (questions.length === 0) return '';
 
-                return this.generateCategoryHTML(category, questions);
-            })
-            .filter(Boolean)
-            .join('');
-    }
-
-    generateCategoryHTML(category, questions) {
-        return `
-            <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h2 class="text-xl font-bold mb-6 flex items-center text-gray-800">
-                    <i class="${category.icon} ml-2"></i>
-                    ${category.title}
-                </h2>
-                <div class="space-y-8">
-                    ${questions.map(q => this.generateQuestionHTML(q)).join('')}
-                </div>
-            </div>
-        `;
+                return `
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                        <h2 class="text-xl font-bold mb-6 flex items-center text-gray-800">
+                            <i class="${category.icon} ml-2"></i>
+                            ${category.title}
+                        </h2>
+                        <div class="space-y-8">
+                            ${questions.map(q => this.generateQuestionHTML(q)).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
     }
 
     generateQuestionHTML(question) {
@@ -480,41 +508,28 @@ class SurveyRenderer {
             <div class="question-container mb-6" data-question-id="${question.id}">
                 <label class="block text-gray-700 font-medium mb-3">${question.text}</label>
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-                    ${this.generateRatingOptions(question.id, currentValue, isDisabled)}
+                    ${Object.entries(SURVEY_CONFIG.ratingScale)
+                        .reverse()
+                        .map(([value, label]) => `
+                            <label class="rating-option relative flex flex-col items-center p-3 border rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50
+                                ${currentValue === value ? 'bg-blue-50 border-blue-500' : 'border-gray-300'}
+                                ${this.isReadOnly ? 'cursor-not-allowed' : ''}"
+                            >
+                                <input 
+                                    type="radio" 
+                                    name="q_${question.id}" 
+                                    value="${value}" 
+                                    ${currentValue === value ? 'checked' : ''}
+                                    ${isDisabled}
+                                    class="absolute opacity-0 w-full h-full cursor-pointer"
+                                    onchange="window.handleRatingChange(this)"
+                                >
+                                <span class="text-sm text-center ${currentValue === value ? 'text-blue-600 font-medium' : 'text-gray-600'}">${label}</span>
+                            </label>
+                        `).join('')}
                 </div>
-                ${this.generateComparisonView(question)}
             </div>
         `;
-    }
-
-    generateRatingOptions(questionId, currentValue, isDisabled) {
-        return Object.entries(SURVEY_CONFIG.ratingScale)
-            .reverse()
-            .map(([value, label]) => {
-                const isSelected = currentValue === value;
-                const optionClasses = [
-                    'rating-option',
-                    'relative flex flex-col items-center p-3 border rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50',
-                    isSelected ? 'bg-blue-50 border-blue-500' : 'border-gray-300',
-                    this.isReadOnly ? 'cursor-not-allowed' : ''
-                ].filter(Boolean).join(' ');
-
-                return `
-                    <label class="${optionClasses}">
-                        <input 
-                            type="radio" 
-                            name="q_${questionId}" 
-                            value="${value}" 
-                            ${isSelected ? 'checked' : ''}
-                            ${isDisabled}
-                            class="absolute opacity-0 w-full h-full cursor-pointer"
-                            onchange="window.handleRatingChange(this)"
-                        >
-                        <span class="text-sm text-center ${isSelected ? 'text-blue-600 font-medium' : 'text-gray-600'}">${label}</span>
-                    </label>
-                `;
-            })
-            .join('');
     }
 
     generateFreeTextQuestion(question) {
@@ -524,14 +539,10 @@ class SurveyRenderer {
         return `
             <div class="question-container" data-question-id="${question.id}">
                 <label class="block text-gray-700 font-medium mb-3">${question.text}</label>
-                <textarea 
-                    name="q_${question.id}" 
-                    rows="4" 
-                    ${isDisabled}
+                <textarea name="q_${question.id}" rows="4" ${isDisabled}
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500
-                        ${this.isReadOnly ? 'bg-gray-50' : ''}"
-                    placeholder="הוסף את תשובתך כאן..."
-                >${currentValue}</textarea>
+                    ${this.isReadOnly ? 'bg-gray-50' : ''}"
+                    placeholder="הוסף את תשובתך כאן...">${currentValue}</textarea>
                 ${this.generateComparisonView(question)}
             </div>
         `;
@@ -539,7 +550,7 @@ class SurveyRenderer {
 
     generateComparisonView(question) {
         if (!this.isReadOnly) return '';
-
+        
         const employeeAnswer = this.surveyData.employeeAnswers?.[question.id];
         const managerAnswer = this.surveyData.managerAnswers?.[question.id];
 
@@ -562,8 +573,8 @@ class SurveyRenderer {
     }
 
     formatAnswer(answer, isFreeText) {
-        if (!answer) return '-';
-        return isFreeText ? answer : (SURVEY_CONFIG.ratingScale[answer] || answer);
+        if (isFreeText) return answer;
+        return SURVEY_CONFIG.ratingScale[answer] || answer;
     }
 
     generateSubmitButton() {
@@ -574,7 +585,7 @@ class SurveyRenderer {
                         class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition duration-300">
                         <i class="fas fa-print ml-2"></i>הדפס
                     </button>
-                    <button type="button" onclick="window.downloadExcel()" 
+                    <button type="button" onclick="downloadExcel()" 
                         class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition duration-300">
                         <i class="fas fa-file-excel ml-2"></i>הורד לאקסל
                     </button>
@@ -594,82 +605,105 @@ class SurveyRenderer {
     }
 
     attachEventListeners() {
-        const form = utils.getDomElement('survey-form');
+        const form = document.getElementById('survey-form');
         if (!form) return;
 
-        form.addEventListener('submit', this.handleSubmit.bind(this));
+        // Form submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await this.handleSubmit();
+        });
 
+        // Auto-save on input changes
         if (!this.isReadOnly) {
             form.addEventListener('change', this.handleInputChange.bind(this));
         }
-    }
 
-    handleInputChange(event) {
-        const questionId = event.target.name?.replace('q_', '');
-        if (questionId) {
-            this.answers[questionId] = event.target.value;
-            this.updateProgressBar();
-            this.triggerAutoSave();
-        }
-    }
-
-    triggerAutoSave() {
-        clearTimeout(this.autoSaveTimeout);
-        this.autoSaveTimeout = setTimeout(() => this.saveProgress(), 1000);
-    }
-
-    async saveProgress() {
-        try {
-            const answers = this.gatherFormAnswers();
-            await utils.apiCall('saveDraft', {
-                guid: this.surveyData.guid,
-                step: this.currentStep,
-                answers
+        // Rating option click handlers
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const container = e.target.closest('.question-container');
+                container.querySelectorAll('.rating-option').forEach(label => {
+                    label.classList.remove('bg-blue-50', 'border-blue-500');
+                });
+                e.target.closest('.rating-option').classList.add('bg-blue-50', 'border-blue-500');
             });
-        } catch (error) {
-            console.error('Auto-save failed:', error);
-        }
-    }
-
-    gatherFormAnswers() {
-        const form = utils.getDomElement('survey-form');
-        if (!form) return {};
-
-        const formData = new FormData(form);
-        const answers = {};
-        
-        formData.forEach((value, key) => {
-            if (key.startsWith('q_')) {
-                answers[key.substring(2)] = value;
-            }
         });
-
-        return answers;
     }
 
-    async handleSubmit(event) {
-        event.preventDefault();
-        
+    async handleSubmit() {
         try {
-            const answers = this.gatherFormAnswers();
+            utils.showLoading();
+            
+            const formData = new FormData(document.getElementById('survey-form'));
+            const answers = {};
+            
+            formData.forEach((value, key) => {
+                if (key.startsWith('q_')) {
+                    answers[key.substring(2)] = value;
+                }
+            });
+
+            // Validate all required questions are answered
             const requiredQuestions = this.getQuestionsForRole(this.role)
                 .filter(q => !q.optional)
                 .map(q => q.id);
-
+            
             validationHandler.validateSurveyAnswers(answers, requiredQuestions);
 
-            const response = await utils.safeApiCall('submitSurveyAnswers', {
+            const response = await utils.apiCall('submitSurveyAnswers', {
                 guid: this.surveyData.guid,
                 step: this.currentStep,
-                answers
+                answers: answers
             });
 
             if (response.success) {
                 messageHandler.showSuccessMessage(this.currentStep);
-                setTimeout(() => window.location.reload(), 2000);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                throw new Error(response.error?.message || 'Failed to submit survey');
             }
         } catch (error) {
             utils.showError(error.message);
+        } finally {
+            utils.hideLoading();
+        }
+    }
+
+    initializeAutoSave() {
+        let autoSaveTimeout;
+        const form = document.getElementById('survey-form');
+        
+        if (!form || this.isReadOnly) return;
+
+        form.addEventListener('input', () => {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(async () => {
+                await this.saveProgress();
+            }, 1000);
+        });
+    }
+
+    async saveProgress() {
+        try {
+            const formData = new FormData(document.getElementById('survey-form'));
+            const answers = {};
+            
+            formData.forEach((value, key) => {
+                if (key.startsWith('q_')) {
+                    answers[key.substring(2)] = value;
+                }
+            });
+
+            await utils.apiCall('saveDraft', {
+                guid: this.surveyData.guid,
+                step: this.currentStep,
+                answers: answers
+            });
+        } catch (error) {
+            console.error('Failed to auto-save:', error);
         }
     }
 
@@ -697,23 +731,8 @@ class SurveyRenderer {
     }
 }
 
-// Make renderer available globally
+// Export for global access
 window.SurveyRenderer = SurveyRenderer;
-
-// Initialize survey when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const surveyId = urlParams.get('id');
-
-    if (surveyId) {
-        initializeSurvey().catch(error => {
-            console.error('Survey initialization failed:', error);
-            utils.showError('Failed to load survey. Please try again.');
-        });
-    } else {
-        new SurveyFormController();
-    }
-});
 // Comparison Report Handler
 class ComparisonReportHandler {
     constructor(surveyData) {
@@ -727,59 +746,45 @@ class ComparisonReportHandler {
     }
 
     generateComparisonData() {
-        return {
-            metadata: this.generateMetadata(),
-            categories: this.generateCategoriesComparison()
+        const comparisonData = {
+            metadata: {
+                employeeName: this.employeeName,
+                managerName: this.managerName,
+                position: SURVEY_CONFIG.roles[this.position],
+                year: this.year,
+                date: new Date().toLocaleDateString('he-IL')
+            },
+            categories: {}
         };
-    }
 
-    generateMetadata() {
-        return {
-            employeeName: this.employeeName,
-            managerName: this.managerName,
-            position: SURVEY_CONFIG.roles[this.position],
-            year: this.year,
-            date: new Date().toLocaleDateString('he-IL')
-        };
-    }
-
-    generateCategoriesComparison() {
-        const categories = {};
+        // Generate comparison for each category
         Object.entries(SURVEY_CONFIG.categories).forEach(([categoryId, category]) => {
             const categoryQuestions = this.getQuestionsForCategory(categoryId);
-            if (categoryQuestions.length > 0) {
-                categories[categoryId] = this.generateCategoryComparison(category, categoryQuestions);
-            }
-        });
-        return categories;
-    }
+            if (categoryQuestions.length === 0) return;
 
-    generateCategoryComparison(category, questions) {
-        return {
-            title: category.title,
-            questions: questions.map(question => ({
-                text: question.text,
-                employeeAnswer: this.formatAnswer(this.employeeAnswers[question.id], question.freeText),
-                managerAnswer: this.formatAnswer(this.managerAnswers[question.id], question.freeText),
-                gap: this.calculateGap(
-                    this.employeeAnswers[question.id], 
-                    this.managerAnswers[question.id], 
-                    question.freeText
-                )
-            }))
-        };
+            comparisonData.categories[categoryId] = {
+                title: category.title,
+                questions: categoryQuestions.map(question => ({
+                    text: question.text,
+                    employeeAnswer: this.formatAnswer(this.employeeAnswers[question.id], question.freeText),
+                    managerAnswer: this.formatAnswer(this.managerAnswers[question.id], question.freeText),
+                    gap: this.calculateGap(this.employeeAnswers[question.id], this.managerAnswers[question.id], question.freeText)
+                }))
+            };
+        });
+
+        return comparisonData;
     }
 
     formatAnswer(answer, isFreeText) {
         if (!answer) return '-';
-        return isFreeText ? answer : (SURVEY_CONFIG.ratingScale[answer] || answer);
+        if (isFreeText) return answer;
+        return SURVEY_CONFIG.ratingScale[answer] || answer;
     }
 
     calculateGap(employeeAnswer, managerAnswer, isFreeText) {
         if (isFreeText || !employeeAnswer || !managerAnswer) return null;
-        const empVal = parseInt(employeeAnswer);
-        const mgrVal = parseInt(managerAnswer);
-        return !isNaN(empVal) && !isNaN(mgrVal) ? empVal - mgrVal : null;
+        return parseInt(employeeAnswer) - parseInt(managerAnswer);
     }
 
     getQuestionsForCategory(categoryId) {
@@ -797,15 +802,26 @@ class ComparisonReportHandler {
         try {
             utils.showLoading();
             const comparisonData = this.generateComparisonData();
+            
+            // Generate Excel structure
             const workbookData = this.generateExcelStructure(comparisonData);
             
-            const response = await utils.safeApiCall('generateExcelReport', {
+            // Call API to generate Excel file
+            const response = await utils.apiCall('generateExcelReport', {
                 guid: this.surveyData.guid,
                 data: workbookData
             });
 
             if (response.success && response.data.fileUrl) {
-                this.triggerDownload(response.data.fileUrl);
+                // Trigger download
+                const link = document.createElement('a');
+                link.href = response.data.fileUrl;
+                link.download = `הערכת_עובד_${this.employeeName}_${this.year}.xlsx`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                throw new Error('Failed to generate Excel report');
             }
         } catch (error) {
             utils.showError('Failed to download Excel report: ' + error.message);
@@ -814,34 +830,23 @@ class ComparisonReportHandler {
         }
     }
 
-    triggerDownload(fileUrl) {
-        const link = document.createElement('a');
-        link.href = fileUrl;
-        link.download = `הערכת_עובד_${this.employeeName}_${this.year}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
     generateExcelStructure(comparisonData) {
         return {
-            sheets: [{
-                name: 'הערכת עובד',
-                headers: this.getExcelHeaders(),
-                data: this.flattenDataForExcel(comparisonData),
-                metadata: comparisonData.metadata
-            }]
+            sheets: [
+                {
+                    name: 'הערכת עובד',
+                    headers: [
+                        'קטגוריה',
+                        'שאלה',
+                        'הערכה עצמית',
+                        'הערכת מנהל',
+                        'פער'
+                    ],
+                    data: this.flattenDataForExcel(comparisonData),
+                    metadata: comparisonData.metadata
+                }
+            ]
         };
-    }
-
-    getExcelHeaders() {
-        return [
-            'קטגוריה',
-            'שאלה',
-            'הערכה עצמית',
-            'הערכת מנהל',
-            'פער'
-        ];
     }
 
     flattenDataForExcel(comparisonData) {
@@ -849,78 +854,67 @@ class ComparisonReportHandler {
         
         Object.entries(comparisonData.categories).forEach(([_, category]) => {
             // Add category header
-            rows.push(this.createCategoryHeaderRow(category.title));
+            rows.push([{
+                value: category.title,
+                style: {
+                    bold: true,
+                    backgroundColor: '#E5E7EB'
+                }
+            }]);
 
             // Add questions
             category.questions.forEach(question => {
-                rows.push(this.createQuestionRow(question));
+                rows.push([
+                    '', // Category column (empty for questions)
+                    question.text,
+                    question.employeeAnswer,
+                    question.managerAnswer,
+                    question.gap !== null ? question.gap : '-'
+                ]);
             });
         });
 
         return rows;
     }
-
-    createCategoryHeaderRow(title) {
-        return [{
-            value: title,
-            style: {
-                bold: true,
-                backgroundColor: '#E5E7EB'
-            }
-        }];
-    }
-
-    createQuestionRow(question) {
-        return [
-            '', // Category column (empty for questions)
-            question.text,
-            question.employeeAnswer,
-            question.managerAnswer,
-            question.gap !== null ? question.gap : '-'
-        ];
-    }
 }
 
-// Summary Generator for Comparison View
+// Survey Summary Generator
 class SurveySummaryGenerator {
     constructor(surveyData) {
         this.surveyData = surveyData;
-        this.comparisonHandler = new ComparisonReportHandler(surveyData);
     }
 
     generateSummary() {
         const summary = {
             averages: this.calculateAverages(),
-            significantGaps: this.findSignificantGaps()
+            significantGaps: this.findSignificantGaps(),
+            strengths: this.identifyStrengths(),
+            improvements: this.identifyImprovements(),
+            recommendations: this.generateRecommendations()
         };
 
         return this.formatSummaryHTML(summary);
     }
 
     calculateAverages() {
+        // Calculate category averages for both employee and manager ratings
         const averages = {};
         Object.entries(SURVEY_CONFIG.categories).forEach(([categoryId, category]) => {
-            const categoryQuestions = this.getNumericAnswers(categoryId);
+            const categoryQuestions = this.getNumericAnswersForCategory(categoryId);
             if (categoryQuestions.length > 0) {
-                averages[categoryId] = this.calculateCategoryAverages(category, categoryQuestions);
+                averages[categoryId] = {
+                    title: category.title,
+                    employee: this.calculateAverage(categoryQuestions.map(q => q.employeeAnswer)),
+                    manager: this.calculateAverage(categoryQuestions.map(q => q.managerAnswer)),
+                    gap: null
+                };
+                averages[categoryId].gap = averages[categoryId].employee - averages[categoryId].manager;
             }
         });
         return averages;
     }
 
-    calculateCategoryAverages(category, questions) {
-        const employeeAvg = this.calculateAverage(questions.map(q => q.employeeAnswer));
-        const managerAvg = this.calculateAverage(questions.map(q => q.managerAnswer));
-        
-        return {
-            title: category.title,
-            employee: employeeAvg,
-            manager: managerAvg,
-            gap: employeeAvg - managerAvg
-        };
-    }
-
-    getNumericAnswers(categoryId) {
+    getNumericAnswersForCategory(categoryId) {
         const questions = [];
         const category = SURVEY_CONFIG.categories[categoryId];
         
@@ -947,7 +941,7 @@ class SurveySummaryGenerator {
     findSignificantGaps() {
         const gaps = [];
         Object.entries(SURVEY_CONFIG.categories).forEach(([categoryId, category]) => {
-            const questions = this.getNumericAnswers(categoryId);
+            const questions = this.getNumericAnswersForCategory(categoryId);
             questions.forEach(({ questionId, employeeAnswer, managerAnswer }) => {
                 const gap = employeeAnswer - managerAnswer;
                 if (Math.abs(gap) >= 2) {
@@ -967,90 +961,168 @@ class SurveySummaryGenerator {
     formatSummaryHTML(summary) {
         return `
             <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                ${this.generateAveragesSection(summary.averages)}
-                ${this.generateGapsSection(summary.significantGaps)}
-            </div>
-        `;
-    }
-
-    generateAveragesSection(averages) {
-        return `
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">ממוצעים לפי קטגוריה</h3>
-                <div class="grid grid-cols-1 gap-4">
-                    ${Object.entries(averages).map(([_, data]) => this.generateAverageCard(data)).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    generateAverageCard(data) {
-        return `
-            <div class="p-4 bg-gray-50 rounded-lg">
-                <h4 class="font-medium mb-2">${data.title}</h4>
-                <div class="grid grid-cols-3 gap-4 text-sm">
-                    <div>
-                        <span class="text-gray-600">הערכה עצמית:</span>
-                        <span class="font-medium">${data.employee}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-600">הערכת מנהל:</span>
-                        <span class="font-medium">${data.manager}</span>
-                    </div>
-                    <div>
-                        <span class="text-gray-600">פער:</span>
-                        <span class="font-medium ${data.gap > 0 ? 'text-red-600' : 'text-green-600'}">
-                            ${data.gap > 0 ? '+' : ''}${data.gap}
-                        </span>
+                <h2 class="text-xl font-bold mb-4">סיכום הערכה</h2>
+                
+                <!-- Category Averages -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">ממוצעים לפי קטגוריה</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        ${Object.entries(summary.averages).map(([_, data]) => `
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-medium mb-2">${data.title}</h4>
+                                <div class="grid grid-cols-3 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-600">הערכה עצמית:</span>
+                                        <span class="font-medium">${data.employee}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">הערכת מנהל:</span>
+                                        <span class="font-medium">${data.manager}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600">פער:</span>
+                                        <span class="font-medium ${data.gap > 0 ? 'text-red-600' : 'text-green-600'}">
+                                            ${data.gap > 0 ? '+' : ''}${data.gap}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
-            </div>
-        `;
-    }
 
-    generateGapsSection(gaps) {
-        if (!gaps.length) return '';
-
-        return `
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">פערים משמעותיים</h3>
-                <div class="space-y-4">
-                    ${gaps.map(gap => this.generateGapCard(gap)).join('')}
-                </div>
-            </div>
-        `;
-    }
-
-    generateGapCard(gap) {
-        return `
-            <div class="p-4 bg-yellow-50 rounded-lg">
-                <p class="font-medium mb-2">${gap.category} - ${gap.question}</p>
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                        <span class="text-gray-600">הערכה עצמית:</span>
-                        <span class="font-medium">${gap.employeeRating}</span>
+                <!-- Significant Gaps -->
+                ${summary.significantGaps.length > 0 ? `
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3">פערים משמעותיים</h3>
+                        <div class="space-y-4">
+                            ${summary.significantGaps.map(gap => `
+                                <div class="p-4 bg-yellow-50 rounded-lg">
+                                    <p class="font-medium mb-2">${gap.category} - ${gap.question}</p>
+                                    <div class="grid grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <span class="text-gray-600">הערכה עצמית:</span>
+                                            <span class="font-medium">${gap.employeeRating}</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-600">הערכת מנהל:</span>
+                                            <span class="font-medium">${gap.managerRating}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
                     </div>
-                    <div>
-                        <span class="text-gray-600">הערכת מנהל:</span>
-                        <span class="font-medium">${gap.managerRating}</span>
-                    </div>
-                </div>
+                ` : ''}
             </div>
         `;
     }
 }
 
-// Initialize global handlers
-window.ComparisonReportHandler = ComparisonReportHandler;
-window.SurveySummaryGenerator = SurveySummaryGenerator;
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if we're on the survey page or login page
+    const urlParams = new URLSearchParams(window.location.search);
+    const surveyId = urlParams.get('id');
 
-// Global download handler
-window.downloadExcel = async function() {
-    if (!window.surveyData) {
-        utils.showError('Survey data not available');
+    if (surveyId) {
+        initializeSurvey();
+    } else {
+        new SurveyFormController();
+    }
+
+    // Initialize download handlers
+    window.downloadExcel = async function() {
+        const comparisonHandler = new ComparisonReportHandler(window.surveyData);
+        await comparisonHandler.downloadExcel();
+    };
+});
+// Survey Initialization Functions
+async function initializeSurvey() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const surveyGuid = urlParams.get('id');
+    
+    if (!surveyGuid) {
+        window.location.href = '/login';
         return;
     }
-    
-    const handler = new ComparisonReportHandler(window.surveyData);
-    await handler.downloadExcel();
-};
+
+    try {
+        utils.showLoading();
+        const response = await utils.apiCall('getSurveyStatus', {
+            guid: surveyGuid
+        });
+
+        if (!response.success) {
+            throw new Error('Failed to load survey status');
+        }
+
+        // Store survey data globally for access by other components
+        window.surveyData = response.data;
+        
+        // Initialize the appropriate survey view based on step
+        await loadSurveyStep(response.data.step, response.data);
+    } catch (error) {
+        utils.showError(error.message);
+        console.error('Survey initialization failed:', error);
+    } finally {
+        utils.hideLoading();
+    }
+}
+
+// Load appropriate survey step
+async function loadSurveyStep(step, surveyData) {
+    const renderer = new SurveyRenderer(surveyData);
+    await renderer.initialize();
+
+    // Show/hide appropriate UI elements
+    document.getElementById('login-form-container')?.classList.add('hidden');
+    document.getElementById('survey-container')?.classList.remove('hidden');
+
+    // Update page title based on step
+    updatePageTitle(step, surveyData);
+}
+
+// Update page title based on survey step
+function updatePageTitle(step, surveyData) {
+    const titles = {
+        1: 'הערכה עצמית',
+        2: `הערכת עובד - ${surveyData.employeeName}`,
+        3: 'סיכום והשוואה'
+    };
+
+    document.title = `${titles[step] || 'שאלון הערכה'} - ABRA`;
+}
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if we're on the survey page or login page
+    const urlParams = new URLSearchParams(window.location.search);
+    const surveyId = urlParams.get('id');
+
+    if (surveyId) {
+        initializeSurvey().catch(error => {
+            console.error('Failed to initialize survey:', error);
+            utils.showError('Failed to load survey. Please try again.');
+        });
+    } else {
+        new SurveyFormController();
+    }
+
+    // Initialize download handlers
+    window.downloadExcel = async function() {
+        try {
+            utils.showLoading();
+            const comparisonHandler = new ComparisonReportHandler(window.surveyData);
+            await comparisonHandler.downloadExcel();
+        } catch (error) {
+            utils.showError('Failed to download Excel file: ' + error.message);
+        } finally {
+            utils.hideLoading();
+        }
+    };
+});
+
+// Export necessary functions to global scope
+window.initializeSurvey = initializeSurvey;
+window.loadSurveyStep = loadSurveyStep;
