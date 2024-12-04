@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הערכת עובדים</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .survey-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .survey-container h1 {
+            font-size: 1.8rem;
+            color: #333333;
+        }
+        .question-label {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.required-marker {
+    color: #ff4444;
+    margin-right: 5px;
+}
+
+.question-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.rating-scale {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.rating-option {
+    flex: 1;
+    text-align: center;
+}
+
+.rating-option label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.rating-option input[type="radio"] {
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+        .category {
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eeeeee;
+            padding-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .rating-option {
+            text-align: center;
+            margin: 0 5px;
+        }
+        .rating-option input {
+            margin-top: 5px;
+            cursor: pointer;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            margin-top: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .role-selector {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #eef;
+            border-radius: 4px;
+        }
+        .role-selector select {
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="survey-container">
+        <h1>טופס הערכת עובדים</h1>
+        <div class="role-selector">
+            <label for="roleSelect">בחר תפקיד:</label>
+            <select id="roleSelect">
+                <option value="0">עובד</option>
+                <option value="1">מנהל</option>
+            </select>
+        </div>
+        <form id="evaluationForm">
+            <div id="surveyContent"></div>
+            <button type="submit" class="submit-btn">שלח הערכה</button>
+        </form>
+    </div>
+
+    <script>
+        const roles = {
+            MANAGER: "1",
+            EMPLOYEE: "0"
+        };
+
+        const ratingScale = {
+            4: 'מצטיין',
+            3: 'מעל לנדרש',
+            2: 'עבודה ע"פ הנדרש',
+            1: 'נדרש שיפור',
+            0: 'לא רלוונטי לתפקיד'
+        };
+
+const categories = {
+    'ידע מקצועי': [
+        { 
+            question: 'בקיאות במוצר – עד כמה העובד מבין לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'product_knowledge',
+            required: true,
+            ariaLabel: 'דירוג בקיאות במוצר',
+            description: 'הערכת רמת ההבנה והידע במוצר ורכיביו'
+        },
+        {
+            question: 'הכרות עם מתודולוגיות הפרויקט – כיצד העובד מיישם את שיטות העבודה המתודולוגיות בפרויקטים השונים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'methodology_knowledge',
+            required: true,
+            ariaLabel: 'דירוג הכרות עם מתודולוגיות',
+            description: 'הערכת יישום שיטות העבודה בפרויקטים'
+        },
+        {
+            question: 'הכרות מקצועית עם סביבת הלקוחות – עד כמה העובד מבין את הצרכים העסקיים של הלקוחות ומתאים את הפתרונות בהתאם?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'client_environment_knowledge',
+            required: true,
+            ariaLabel: 'דירוג הכרות עם סביבת לקוחות',
+            description: 'הערכת הבנת צרכי הלקוח והתאמת פתרונות'
+        },
+        {
+            question: 'זיהוי הזדמנויות אצל הלקוח – האם העובד מזהה אפשרויות להרחבת פתרונות ושירותים קיימים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'client_opportunities',
+            required: false,
+            ariaLabel: 'דירוג זיהוי הזדמנויות',
+            description: 'הערכת יכולת זיהוי הזדמנויות עסקיות'
+        },
+        {
+            question: 'השתתפות בוובינרים / העשרות מקצועיות – כיצד העובד משתתף בלמידה והעשרה מתמשכת?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'professional_development',
+            required: false,
+            ariaLabel: 'דירוג השתתפות בהעשרה מקצועית',
+            description: 'הערכת מעורבות בפעילויות למידה והתפתחות'
+        },
+        {
+            question: 'הכרות עם מוצרים משלימים – עד כמה העובד מכיר מוצרים רלוונטיים נוספים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'complementary_products',
+            required: false,
+            ariaLabel: 'דירוג הכרות עם מוצרים משלימים',
+            description: 'הערכת ידע במוצרים משלימים ורלוונטיים'
+        }
+    ],
+    'מיומנויות עבודה': [
+        {
+            question: 'יכולת ניהול עצמי – האם העובד מצליח לעבוד בצורה עצמאית תוך ייזום פתרונות?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'self_management',
+            required: true,
+            ariaLabel: 'דירוג יכולת ניהול עצמי',
+            description: 'הערכת יכולת עבודה עצמאית וייזום'
+        },
+        {
+            question: 'יכולת עבודה תחת לחץ – כיצד העובד מתמודד עם משימות דחופות או תחת עומס?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'pressure_handling',
+            required: true,
+            ariaLabel: 'דירוג עבודה תחת לחץ',
+            description: 'הערכת התמודדות עם מצבי לחץ ועומס'
+        },
+        {
+            question: 'אחריות מקצועית – האם העובד לוקח אחריות מלאה על המשימות שלו?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'professional_responsibility',
+            required: true,
+            ariaLabel: 'דירוג אחריות מקצועית',
+            description: 'הערכת רמת האחריות והמחויבות למשימות'
+        },
+        {
+            question: 'שיתוף פעולה ועבודת צוות – באיזו מידה העובד משתף פעולה ומכבד דעות שונות בצוות?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'team_collaboration',
+            required: true,
+            ariaLabel: 'דירוג שיתוף פעולה',
+            description: 'הערכת יכולת עבודה בצוות ושיתוף פעולה'
+        },
+        {
+            question: 'הקפדה על נהלים – באיזו מידה העובד מקפיד על נהלי העבודה?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'procedure_adherence',
+            required: true,
+            ariaLabel: 'דירוג הקפדה על נהלים',
+            description: 'הערכת מידת ההקפדה על נהלי העבודה'
+        },
+        {
+            question: 'תקשורת אפקטיבית – כיצד העובד מנהל תקשורת עם צוותים אחרים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'effective_communication',
+            required: true,
+            ariaLabel: 'דירוג תקשורת אפקטיבית',
+            description: 'הערכת יכולת תקשורת עם צוותים שונים'
+        }
+    ],
+    'גישה ומוטיבציה': [
+        {
+            question: 'מעורבות חברתית – עד כמה העובד תורם לאווירה החברתית והמקצועית בצוות?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'social_involvement',
+            required: false,
+            ariaLabel: 'דירוג מעורבות חברתית',
+            description: 'הערכת תרומה לאווירה החברתית בצוות'
+        },
+        {
+            question: 'קבלת ביקורת – כיצד העובד מתמודד עם ביקורות ומשובים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'feedback_reception',
+            required: true,
+            ariaLabel: 'דירוג קבלת ביקורת',
+            description: 'הערכת התמודדות עם משוב וביקורת'
+        },
+        {
+            question: 'מוטיבציה לייעול ושיפור – באיזו מידה העובד מעלה רעיונות חדשים לייעול תהליכים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'improvement_motivation',
+            required: false,
+            ariaLabel: 'דירוג מוטיבציה לשיפור',
+            description: 'הערכת יוזמה לשיפור תהליכים'
+        },
+        {
+            question: 'למידה עצמאית – האם העובד מראה יוזמה ללמידה מתמשכת ללא צורך בהנחיה?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'self_learning',
+            required: false,
+            ariaLabel: 'דירוג למידה עצמאית',
+            description: 'הערכת יוזמה ללמידה והתפתחות עצמאית'
+        }
+    ],
+    'סגנון עבודה': [
+        {
+            question: 'סדר וארגון בעבודה – עד כמה העובד שומר על סביבת עבודה מאורגנת ומסודרת?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'work_organization',
+            required: true,
+            ariaLabel: 'דירוג סדר וארגון',
+            description: 'הערכת ארגון וסדר בסביבת העבודה'
+        },
+        {
+            question: 'עמידה בזמנים – באיזו מידה העובד מקפיד על עמידה בלוחות זמנים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'time_management',
+            required: true,
+            ariaLabel: 'דירוג עמידה בזמנים',
+            description: 'הערכת עמידה בלוחות זמנים'
+        },
+        {
+            question: 'ניהול פרויקטים – האם העובד מצליח לנהל פרויקטים תוך שמירה על יעדים ברורים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'project_management',
+            required: true,
+            ariaLabel: 'דירוג ניהול פרויקטים',
+            description: 'הערכת יכולת ניהול פרויקטים ועמידה ביעדים'
+        }
+    ],
+    'מדידה עצמית': [
+        {
+            question: 'רמת שביעות רצון מהביצועים – כיצד את/ה מדרג את שביעות הרצון הכללית שלך?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'performance_satisfaction',
+            required: true,
+            ariaLabel: 'דירוג שביעות רצון עצמית',
+            description: 'הערכת שביעות רצון כללית מביצועים'
+        },
+        {
+            question: 'תחומים לשיפור – אילו תחומים את/ה מזהה שבהם תוכל/י להשתפר?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'improvement_areas',
+            required: true,
+            ariaLabel: 'תחומים לשיפור',
+            description: 'פירוט תחומים הדורשים שיפור'
+        },
+        {
+            question: 'הישגים בולטים – מהם ההישגים המרכזיים שהשגת בתקופה האחרונה?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'key_achievements',
+            required: true,
+            ariaLabel: 'הישגים בולטים',
+            description: 'פירוט הישגים משמעותיים בתקופה האחרונה'
+        }
+    ],
+    'מיומנויות ניהוליות': [
+        {
+            question: 'קבלת החלטות – קבלת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב',
+            type: 'rating',
+            roles: [1],
+            schema: 'decision_making',
+            required: true,
+            ariaLabel: 'דירוג קבלת החלטות',
+            description: 'הערכת יכולת קבלת החלטות מהירה ומדויקת'
+        },
+        {
+            question: 'ניהול זמן וסדר עדיפויות – ניהול זמן/משימות אפקטיבי של הצוות',
+            type: 'rating',
+            roles: [1],
+            schema: 'time_priority_management',
+            required: true,
+            ariaLabel: 'דירוג ניהול זמן וסדרי עדיפויות',
+            description: 'הערכת יכולת ניהול זמן ותעדוף משימות'
+        },
+        {
+            question: 'גמישות והתאמה לשינויים – יכולת הסתגלות והתמודדות עם שינויים בפרויקטים',
+            type: 'rating',
+            roles: [1],
+            schema: 'change_adaptation',
+            required: true,
+            ariaLabel: 'דירוג גמישות והסתגלות',
+            description: 'הערכת יכולת הסתגלות לשינויים'
+        },
+        {
+            question: 'הצבת יעדים ברורים – באיזו מידה המנהל מציב לעובדיו יעדים ברורים ומדידים?',
+            type: 'rating',
+            roles: [1],
+            schema: 'goal_setting',
+            required: true,
+            ariaLabel: 'דירוג הצבת יעדים',
+            description: 'הערכת יכולת הגדרת יעדים ברורים לצוות'
+        },
+        {
+            question: 'יכולת להניע את העובדים לביצועים מיטביים',
+            type: 'rating',
+            roles: [1],
+            schema: 'team_motivation',
+schema: 'team_motivation',
+            required: true,
+            ariaLabel: 'דירוג הנעת עובדים',
+            description: 'הערכת יכולת הנעת העובדים להשגת ביצועים מיטביים'
+        },
+        {
+            question: 'ניצול משאבים – האם המנהל מנצל את המשאבים העומדים לרשותו באופן אפקטיבי?',
+            type: 'rating',
+            roles: [1],
+            schema: 'resource_utilization',
+            required: true,
+            ariaLabel: 'דירוג ניצול משאבים',
+            description: 'הערכת יכולת ניצול יעיל של משאבי הארגון'
+        },
+        {
+            question: 'קידום ופיתוח עובדים – באיזו מידה המנהל מצליח לקדם ולפתח את עובדיו?',
+            type: 'rating',
+            roles: [1],
+            schema: 'employee_development',
+            required: true,
+            ariaLabel: 'דירוג פיתוח עובדים',
+            description: 'הערכת יכולת פיתוח וקידום הצוות'
+        },
+        {
+            question: 'למידה מלקחים – האם המנהל לומד מהצלחות ואי-הצלחות ומיישם את הלקחים?',
+            type: 'rating',
+            roles: [1],
+            schema: 'lessons_learned',
+            required: true,
+            ariaLabel: 'דירוג למידה מלקחים',
+            description: 'הערכת יכולת הפקת לקחים ויישומם'
+        },
+        {
+            question: 'ניהול קונפליקטים – כיצד המנהל מתמודד עם מצבי קונפליקט בצוות?',
+            type: 'rating',
+            roles: [1],
+            schema: 'conflict_management',
+            required: true,
+            ariaLabel: 'דירוג ניהול קונפליקטים',
+            description: 'הערכת יכולת פתרון קונפליקטים וניהול מחלוקות'
+        },
+        {
+            question: 'תכנון אסטרטגי – האם המנהל מפתח ומיישם תכניות אסטרטגיות ארוכות טווח?',
+            type: 'rating',
+            roles: [1],
+            schema: 'strategic_planning',
+            required: false,
+            ariaLabel: 'דירוג תכנון אסטרטגי',
+            description: 'הערכת יכולת תכנון וחשיבה אסטרטגית'
+        }
+    ],
+    'מדדי ביצוע': [
+        {
+            question: 'עמידה ביעדים – באיזו מידה הושגו היעדים שהוגדרו לתקופה זו?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'goals_achievement',
+            required: true,
+            ariaLabel: 'דירוג עמידה ביעדים',
+            description: 'הערכת מידת העמידה ביעדים שהוגדרו'
+        },
+        {
+            question: 'איכות העבודה – מהי רמת הדיוק והאיכות בתוצרי העבודה?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'work_quality',
+            required: true,
+            ariaLabel: 'דירוג איכות עבודה',
+            description: 'הערכת איכות ודיוק בביצוע המשימות'
+        },
+        {
+            question: 'יעילות בעבודה – האם העבודה מתבצעת באופן יעיל ואפקטיבי?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'work_efficiency',
+            required: true,
+            ariaLabel: 'דירוג יעילות בעבודה',
+            description: 'הערכת יעילות ואפקטיביות בביצוע משימות'
+        },
+        {
+            question: 'תרומה לצוות – מהי מידת התרומה הכוללת לצוות ולארגון?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'team_contribution',
+            required: true,
+            ariaLabel: 'דירוג תרומה לצוות',
+            description: 'הערכת התרומה הכוללת לצוות ולארגון'
+        }
+    ],
+    'סיכום והערות': [
+        {
+            question: 'נקודות חוזק עיקריות – מהן נקודות החוזק המשמעותיות ביותר?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'main_strengths',
+            required: true,
+            ariaLabel: 'נקודות חוזק עיקריות',
+            description: 'פירוט נקודות החוזק המשמעותיות'
+        },
+        {
+            question: 'תחומים לשיפור – מהם התחומים העיקריים הדורשים שיפור?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'improvement_needed',
+            required: true,
+            ariaLabel: 'תחומים לשיפור',
+            description: 'פירוט תחומים הדורשים שיפור והתפתחות'
+        },
+        {
+            question: 'יעדים לתקופה הבאה – מהם היעדים המרכזיים לתקופת ההערכה הבאה?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'future_goals',
+            required: true,
+            ariaLabel: 'יעדים לתקופה הבאה',
+            description: 'הגדרת יעדים לתקופה הבאה'
+        },
+        {
+            question: 'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'additional_comments',
+            required: false,
+            ariaLabel: 'הערות נוספות',
+            description: 'מקום להערות ותובנות נוספות'
+        }
+    ]
+};
+
+function createRatingQuestion(questionObj) {
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question';
+    questionDiv.setAttribute('role', 'group');
+    questionDiv.setAttribute('aria-labelledby', `${questionObj.schema}-label`);
+    
+    // Create the question label
+    const questionLabel = document.createElement('div');
+    questionLabel.id = `${questionObj.schema}-label`;
+    questionLabel.className = 'question-label';
+    questionLabel.innerHTML = `
+        ${questionObj.question}
+        ${questionObj.required ? '<span class="required-marker" style="color: red;">*</span>' : ''}
+        <div class="question-description" id="${questionObj.schema}-description">${questionObj.description}</div>
+    `;
+
+    // Create rating scale container
+    const ratingScaleDiv = document.createElement('div');
+    ratingScaleDiv.className = 'rating-scale';
+    ratingScaleDiv.setAttribute('role', 'radiogroup');
+    ratingScaleDiv.setAttribute('aria-describedby', `${questionObj.schema}-description`);
+
+    // Create rating options
+    if (questionObj.type === 'rating') {
+        Object.entries(ratingScale).reverse().forEach(([value, label]) => {
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'rating-option';
+            
+            const optionLabel = document.createElement('label');
+            optionLabel.innerHTML = `<div>${label}</div>`;
+            
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = questionObj.schema;
+            input.value = value;
+            if (questionObj.required) {
+                input.required = true;
+            }
+            input.setAttribute('aria-label', `${questionObj.ariaLabel} - ${label}`);
+            input.setAttribute('aria-required', questionObj.required);
+            
+            optionLabel.prepend(input);
+            optionDiv.appendChild(optionLabel);
+            ratingScaleDiv.appendChild(optionDiv);
+        });
+    } else if (questionObj.type === 'text') {
+        const textarea = document.createElement('textarea');
+        textarea.name = questionObj.schema;
+        if (questionObj.required) {
+            textarea.required = true;
+        }
+        textarea.setAttribute('aria-label', questionObj.ariaLabel);
+        textarea.setAttribute('aria-required', questionObj.required);
+        ratingScaleDiv.appendChild(textarea);
+    }
+
+    questionDiv.appendChild(questionLabel);
+    questionDiv.appendChild(ratingScaleDiv);
+
+    return questionDiv;
+}
+// Add loading state to submit button
+const submitBtn = document.querySelector('.submit-btn');
+submitBtn.innerHTML = `
+    <span class="submit-text">שלח הערכה</span>
+    <span class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+    </span>
+`;
+
+// Add styling for loading state
+const style = document.createElement('style');
+style.textContent = `
+    .submit-btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .loading-spinner {
+        width: 20px;
+        height: 20px;
+    }
+    .spinner {
+        width: 100%;
+        height: 100%;
+        border: 2px solid #ffffff;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .error-message {
+        color: #ff4444;
+        margin-top: 10px;
+        text-align: center;
+        display: none;
+    }
+`;
+document.head.appendChild(style);
+
+// Add error message element
+const errorDiv = document.createElement('div');
+errorDiv.className = 'error-message';
+document.getElementById('evaluationForm').appendChild(errorDiv);
+
+// Update form submission handler
+document.getElementById('evaluationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Show loading state
+    const submitText = submitBtn.querySelector('.submit-text');
+    const loadingSpinner = submitBtn.querySelector('.loading-spinner');
+    submitText.style.display = 'none';
+    loadingSpinner.style.display = 'block';
+    submitBtn.disabled = true;
+    errorDiv.style.display = 'none';
+
+    // Gather form data
+    const formData = new FormData(this);
+    const results = {
+        role: document.getElementById('roleSelect').value,
+        answers: {}
+    };
+
+    formData.forEach((value, key) => {
+        results.answers[key] = value;
+    });
+
+    try {
+        // Replace with your actual API endpoint
+        const response = await fetch('YOUR_API_ENDPOINT', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add any additional headers here (e.g., authorization)
+                // 'Authorization': 'Bearer YOUR_TOKEN'
+            },
+            body: JSON.stringify(results)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Survey submitted successfully:', data);
+        
+        // Show success message
+        alert('ההערכה נשלחה בהצלחה!');
+        
+        // Optional: Reset form
+        // this.reset();
+        
+    } catch (error) {
+        console.error('Error submitting survey:', error);
+        errorDiv.textContent = 'אירעה שגיאה בשליחת הטופס. אנא נסה שוב.';
+        errorDiv.style.display = 'block';
+    } finally {
+        // Reset button state
+        submitText.style.display = 'block';
+        loadingSpinner.style.display = 'none';
+        submitBtn.disabled = false;
+    }
+});
+        function loadSurvey() {
+            const surveyContent = document.getElementById('surveyContent');
+            const selectedRole = document.getElementById('roleSelect').value;
+            surveyContent.innerHTML = '';
+
+            Object.entries(categories).forEach(([category, questions]) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                categoryDiv.innerHTML = `<h3>${category}</h3>`;
+
+                questions
+                    .filter(q => q.roles.includes(parseInt(selectedRole)))
+                    .forEach(q => {
+                        categoryDiv.appendChild(createRatingQuestion(q));
+                    });
+
+                surveyContent.appendChild(categoryDiv);
+            });
+        }
+
+        document.getElementById('roleSelect').addEventListener('change', loadSurvey);
+        document.getElementById('evaluationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const results = {
+                role: document.getElementById('roleSelect').value,
+                answers: {}
+            };
+
+            formData.forEach((value, key) => {
+                results.answers[key] = value;
+            });
+
+            console.log('Survey Results:', results);
+            alert('ההערכה נשלחה בהצלחה!');
+        });
+
+        // Load survey on page load
+        loadSurvey();
+    </script>
+</body>
+</html>
