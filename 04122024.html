@@ -916,7 +916,63 @@ schema: 'team_motivation',
         }
     ]
 };
+const isSurveyAlreadyFilled = (surveyData, surveyParams) => {
+    if (!surveyData || !surveyParams) return false;
+    
+    // Access the properties directly as they appear in your API response
+    const managerFilled = surveyData.ManagerFilled;
+    const employeeFilled = surveyData.EmployeeFilled;
+    
+    console.log('Checking survey filled status:', {
+        position: surveyParams.position,
+        managerFilled,
+        employeeFilled
+    });
 
+    // Check if manager survey is filled
+    if (surveyParams.position === 'MANAGER' && managerFilled === "1") {
+        return true;
+    }
+    
+    // Check if employee survey is filled
+    if (surveyParams.position === 'EMPLOYEE' && employeeFilled === "1") {
+        return true;
+    }
+    
+    return false;
+};
+
+// Add this function to show the "already filled" message
+const showSurveyFilledMessage = (position) => {
+    const surveyContent = document.getElementById('surveyContent');
+    const footer = document.querySelector('.page-footer');
+    
+    // Create message element
+    const messageDiv = createElement('div', {
+        className: 'category-section text-center',
+        innerHTML: `
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading mb-3 font-bold text-xl">
+                    ${position === 'MANAGER' ? 'משוב מנהל כבר מולא' : 'משוב עובד כבר מולא'}
+                </h4>
+                <p class="mb-0">
+                    ${position === 'MANAGER' 
+                        ? 'כבר מילאת את המשוב עבור העובד/ת זה. לא ניתן למלא את המשוב פעם נוספת.' 
+                        : 'כבר מילאת את המשוב שלך. לא ניתן למלא את המשוב פעם נוספת.'}
+                </p>
+            </div>
+        `
+    });
+
+    // Clear existing content and add message
+    surveyContent.innerHTML = '';
+    surveyContent.appendChild(messageDiv);
+    
+    // Hide the footer with submit button
+    if (footer) {
+        footer.style.display = 'none';
+    }
+};
 
 const populateEmployeeInfo = (data) => {
     if (!data) {
@@ -1410,11 +1466,13 @@ const fetchSurveyData = async (params) => {
 
         // Return the data directly since it's already in the correct format
         return {
-            managment: data.managment || "0",
-            Manager: data.Manager || null,
-            Employee: data.Employee || null,
-            Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || ""
-        };
+    managment: data.managment || "0",
+    Manager: data.Manager || null,
+    Employee: data.Employee || null,
+    Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || "",
+    ManagerFilled: data.ManagerFilled || "0",    // Add this line
+    EmployeeFilled: data.EmployeeFilled || "0"   // Add this line
+};
     } catch (error) {
         console.error('Error in fetchSurveyData:', error);
         throw error;
@@ -1422,42 +1480,67 @@ const fetchSurveyData = async (params) => {
 };
 // Fix 2: Add form validation
 const validateForm = (form) => {
-    const requiredFields = form.querySelectorAll('[required]');
+    // Get all question cards, not just required fields
+    const allQuestionCards = form.querySelectorAll('.question-card');
     let isValid = true;
     let firstErrorElement = null;
+    let lastAnsweredIndex = -1;
 
     // Reset any existing error states
     form.querySelectorAll('.error').forEach(element => {
         element.classList.remove('error');
     });
 
-    requiredFields.forEach(field => {
-        if (field.type === 'radio') {
-            const groupName = field.name;
-            const checkedRadio = form.querySelector(`input[name="${groupName}"]:checked`);
-            if (!checkedRadio) {
+    // Convert NodeList to Array for easier handling
+    const questionCardsArray = Array.from(allQuestionCards);
+
+    // First pass: find the last answered question
+    questionCardsArray.forEach((card, index) => {
+        const radioInputs = card.querySelectorAll('input[type="radio"]');
+        const textArea = card.querySelector('textarea');
+
+        if (radioInputs.length > 0) {
+            const isAnswered = Array.from(radioInputs).some(radio => radio.checked);
+            if (isAnswered) {
+                lastAnsweredIndex = index;
+            }
+        } else if (textArea && textArea.value.trim()) {
+            lastAnsweredIndex = index;
+        }
+    });
+
+    // Second pass: validate and find first unanswered required question
+    questionCardsArray.forEach((card, index) => {
+        // Only check questions up to the last answered one
+        if (index > lastAnsweredIndex + 1) {
+            return;
+        }
+
+        const radioInputs = card.querySelectorAll('input[type="radio"]');
+        const textArea = card.querySelector('textarea');
+        const isRequired = card.querySelector('[required]') !== null;
+
+        if (radioInputs.length > 0) {
+            const isAnswered = Array.from(radioInputs).some(radio => radio.checked);
+            if (!isAnswered && isRequired) {
                 isValid = false;
-                const questionCard = field.closest('.question-card');
-                if (questionCard) {
-                    questionCard.classList.add('error');
-                    if (!firstErrorElement) {
-                        firstErrorElement = questionCard;
-                    }
+                card.classList.add('error');
+                if (!firstErrorElement) {
+                    firstErrorElement = card;
                 }
             }
-        } else if (!field.value.trim()) {
-            isValid = false;
-            const questionCard = field.closest('.question-card');
-            if (questionCard) {
-                questionCard.classList.add('error');
+        } else if (textArea) {
+            if (isRequired && !textArea.value.trim()) {
+                isValid = false;
+                card.classList.add('error');
                 if (!firstErrorElement) {
-                    firstErrorElement = questionCard;
+                    firstErrorElement = card;
                 }
             }
         }
     });
 
-    // Only scroll to the first error
+    // Scroll to first error if exists
     if (firstErrorElement) {
         firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setTimeout(() => {
@@ -1523,7 +1606,16 @@ const initializeSurvey = async () => {
                 // Populate employee info
                 populateEmployeeInfo(surveyData);
                 
-                // Pass management role to loadSurvey
+                // Check if survey is already filled
+                const isFilledOut = isSurveyAlreadyFilled(surveyData, surveyParams);
+                console.log('Is survey filled out:', isFilledOut);
+                
+                if (isFilledOut) {
+                    showSurveyFilledMessage(surveyParams.position);
+                    return; // Exit early if survey is already filled
+                }
+                
+                // Continue with normal survey loading if not filled
                 loadSurvey(surveyParams, surveyData.managment);
                 addDownloadButton();
                 
