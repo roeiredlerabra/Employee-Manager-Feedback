@@ -20,7 +20,123 @@
             --bg-primary: #f0f2f5;
             --bg-secondary: #ffffff;
         }
+/* Survey Sections Layout */
+.category-section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
 
+.category-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+    text-align: center;
+}
+
+/* Questions Grid Layout */
+.questions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.question-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+    height: 100%; /* Full height */
+}
+
+.question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Rating Scale Vertical Layout */
+.rating-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.rating-option {
+    width: 100%;
+}
+
+.rating-option label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.rating-option label:hover {
+    border-color: var(--primary-color);
+    background: #f0f7ff;
+}
+
+.rating-option input[type="radio"]:checked + div {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    width: 100%;
+    text-align: center;
+}
+
+/* Question Text */
+.question-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    flex-grow: 1;
+}
+
+.question-description {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1400px) {
+    .questions-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    }
+}
+
+@media (max-width: 1024px) {
+    .questions-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    }
+}
+
+@media (max-width: 768px) {
+    .questions-grid {
+        grid-template-columns: 1fr; /* 1 column */
+    }
+    
+    .category-section {
+        padding: 1rem;
+    }
+}
         /* Base Layout */
         body {
             min-height: 100vh;
@@ -1012,8 +1128,9 @@ const createRatingQuestion = (questionObj) => {
         'aria-labelledby': `${questionObj.schema}-label`
     });
 
+    const questionLabel = createQuestionLabel(questionObj);
     const ratingScaleDiv = createElement('div', {
-        className: 'rating-scale mt-4 gap-2',
+        className: 'rating-scale',
         role: 'radiogroup',
         'aria-describedby': `${questionObj.schema}-description`
     });
@@ -1028,7 +1145,7 @@ const createRatingQuestion = (questionObj) => {
         ratingScaleDiv.appendChild(createTextArea(questionObj));
     }
 
-    questionDiv.appendChild(createQuestionLabel(questionObj));
+    questionDiv.appendChild(questionLabel);
     questionDiv.appendChild(ratingScaleDiv);
     return questionDiv;
 };
@@ -1090,27 +1207,30 @@ const loadSurvey = () => {
     const surveyContent = document.getElementById('surveyContent');
     surveyContent.innerHTML = '';
 
-    Object.entries(categories)
-        .forEach(([category, questions]) => {
-            const categoryDiv = createElement('div', {
-                className: 'bg-white rounded-lg shadow-sm p-6 mb-8'
-            });
-            
-            const categoryHeader = createElement('h2', {
-                className: 'text-2xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200',
-                innerHTML: category
-            });
-            
-            categoryDiv.appendChild(categoryHeader);
-            
-            questions
-                .filter(q => q.roles.includes(parseInt(surveyParams.role)))
-                .forEach(q => categoryDiv.appendChild(createRatingQuestion(q)));
-                
-            surveyContent.appendChild(categoryDiv);
+    Object.entries(categories).forEach(([category, questions]) => {
+        const categorySection = createElement('div', {
+            className: 'category-section'
+        });
+        
+        const categoryHeader = createElement('h2', {
+            className: 'category-title',
+            innerHTML: category
+        });
+        
+        const questionsGrid = createElement('div', {
+            className: 'questions-grid'
         });
 
-    // Load auto-saved data if exists
+        questions
+            .filter(q => q.roles.includes(parseInt(surveyParams.role)))
+            .forEach(q => questionsGrid.appendChild(createRatingQuestion(q)));
+
+        categorySection.appendChild(categoryHeader);
+        categorySection.appendChild(questionsGrid);
+        surveyContent.appendChild(categorySection);
+    });
+
+
     
 
 };
