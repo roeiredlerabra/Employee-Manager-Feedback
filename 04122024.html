@@ -201,7 +201,23 @@ textarea:focus {
     justify-content: space-between;
     align-items: center;
 }
+.loading-spinner {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
 
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none !important;
+}
 /* Buttons */
 .submit-btn {
     background: #1747af;
@@ -428,11 +444,20 @@ textarea:focus {
                                 <span class="info-label">דואר אלקטרוני</span>
                                 <span class="info-value" id="employeeEmail"></span>
                             </div>
-                            <div class="info-item">
-                                <span class="info-label">תאריך תחילת עבודה</span>
-                                <span class="info-value" id="employeeHireDate"></span>
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <span class="info-label">תאריך תחילת עבודה</span>
+                                    <span class="info-value" id="employeeHireDate"></span>
+                                    <span class="info-value" id="employeeTenure"></span>
+                                </div>
+                                
+                            
+                                
                             </div>
                         </div>
+                        
+
+                    
 
                         <div class="info-section">
                             <h3 class="info-section-title">פרטי מנהל</h3>
@@ -481,7 +506,7 @@ textarea:focus {
 
     <script>
     // Configuration and Constants
-    const API_ENDPOINT = 'YOUR_API_ENDPOINT';
+    const API_ENDPOINT = 'https://hjgkhjk.free.beeceptor.com';
     const SURVEY_CONFIG = {
         paramPrefix: { 
             EMPLOYEE: 'E', 
@@ -880,23 +905,6 @@ schema: 'team_motivation',
     ]
 };
 
-const EMPLOYEE_DATA = {
-    employee: {
-        name: "ישראל ישראלי",
-        email: "israel@company.com",
-        department: "פיתוח תוכנה",
-        hireDate: "2022-01-15"
-    },
-    manager: {
-        name: "שרה מנהלת",
-        email: "sara@company.com",
-        department: "פיתוח תוכנה"
-    },
-    evaluation: {
-        period: new Date().getFullYear(),
-        submissionDate: new Date().toLocaleDateString('he-IL')
-    }
-};
 
 const populateEmployeeInfo = (data) => {
     if (!data) {
@@ -912,11 +920,39 @@ const populateEmployeeInfo = (data) => {
             document.getElementById('employeeDepartment').textContent = data.Employee.Department || '';
         }
 
-        // Handle the date
-        if (data.Working_x0020_Start_x0020_Date) {
-            const startDate = new Date(data.Working_x0020_Start_x0020_Date);
-            document.getElementById('employeeHireDate').textContent = startDate.toLocaleDateString('he-IL');
-        }
+
+// Handle the date
+if (data.Working_x0020_Start_x0020_Date) {
+    const startDate = new Date(data.Working_x0020_Start_x0020_Date);
+    const today = new Date();
+
+    // Format the start date in Hebrew
+    document.getElementById('employeeHireDate').textContent = startDate.toLocaleDateString('he-IL');
+
+    // Calculate tenure
+    let years = today.getFullYear() - startDate.getFullYear();
+    let months = today.getMonth() - startDate.getMonth();
+    let days = today.getDate() - startDate.getDate();
+
+    // Adjust for negative days
+    if (days < 0) {
+        months -= 1;
+        const previousMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+        days += previousMonth.getDate();
+    }
+
+    // Adjust for negative months
+    if (months < 0) {
+        years -= 1;
+        months += 12;
+    }
+
+    // Populate the tenure field in Hebrew
+    document.getElementById('employeeTenure').textContent = 
+        `(${years} שנים, ${months} חודשים, ${days} ימים)`;
+}
+
+
 
         // Manager details
         if (data.Manager) {
@@ -1228,10 +1264,32 @@ const submitSurvey = async (data) => {
 const handleSubmit = async (event) => {
     event.preventDefault();
     
+    // Since the button is in the footer, let's search the entire document
     const form = event.target;
-    const submitBtn = document.querySelector('.submit-btn');
-    const submitText = submitBtn.querySelector('.submit-text');
-    const loadingSpinner = submitBtn.querySelector('.loading-spinner');
+    const submitBtn = document.querySelector('button[form="evaluationForm"]');
+    
+    if (!submitBtn) {
+        console.error('Submit button not found');
+        alert('שגיאה טכנית בטופס');
+        return;
+    }
+    
+    // Create text and spinner elements if they don't exist
+    let submitText = submitBtn.querySelector('.submit-text');
+    let loadingSpinner = submitBtn.querySelector('.loading-spinner');
+    
+    if (!submitText) {
+        submitText = document.createElement('span');
+        submitText.className = 'submit-text';
+        submitText.textContent = 'שלח הערכה';
+        submitBtn.appendChild(submitText);
+    }
+    
+    if (!loadingSpinner) {
+        loadingSpinner = document.createElement('span');
+        loadingSpinner.className = 'loading-spinner hidden';
+        submitBtn.appendChild(loadingSpinner);
+    }
     
     // Validate form before submission
     const isValid = validateForm(form);
@@ -1246,21 +1304,28 @@ const handleSubmit = async (event) => {
         loadingSpinner.classList.remove('hidden');
 
         if (!confirm('האם אתה בטוח שברצונך לשלוח את ההערכה?')) {
+            // Reset button state if user cancels
+            submitBtn.disabled = false;
+            submitText.style.display = 'block';
+            loadingSpinner.classList.add('hidden');
             return;
         }
 
         const results = collectFormData(form);
         const response = await submitSurvey(results);
-
-        // Clear auto-save data
         
-
         showSuccessMessage();
         disableForm(form);
+        
+        // Show the download button after successful submission
+        const downloadBtn = document.getElementById('downloadExcelBtn');
+        if (downloadBtn) {
+            downloadBtn.style.display = 'block';
+        }
 
     } catch (error) {
         console.error('Error submitting survey:', error);
-        showErrorMessage(error.message);
+        showErrorMessage(error.message || 'אירעה שגיאה בשליחת הטופס');
     } finally {
         submitBtn.disabled = false;
         submitText.style.display = 'block';
