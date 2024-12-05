@@ -265,7 +265,9 @@
             border-radius: 9999px;
             overflow: hidden;
         }
-
+.hidden{
+    visibility: hidden;
+}
         .progress-bar {
             height: 100%;
             background: linear-gradient(to right, var(--primary-color), var(--primary-hover));
@@ -1030,7 +1032,7 @@ const MOCK_EMPLOYEE_DATA = {
         department: "פיתוח תוכנה"
     },
     evaluation: {
-        period: "2024 Q1",
+        period: new Date().getFullYear(),
         submissionDate: new Date().toLocaleDateString('he-IL')
     }
 };
