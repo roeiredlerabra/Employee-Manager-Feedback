@@ -631,10 +631,6 @@
             EMPLOYEE: 'E', 
             MANAGER: 'M' 
         },
-        roles: { 
-            MANAGER: "1", 
-            EMPLOYEE: "0" 
-        },
         position: { 
             MANAGER: "MANAGER", 
             EMPLOYEE: "EMPLOYEE" 
@@ -1047,23 +1043,39 @@ const EMPLOYEE_DATA = {
 };
 
 const populateEmployeeInfo = (data) => {
-    // Convert SharePoint date to JavaScript Date
-    const startDate = new Date(data.Working_x0020_Start_x0020_Date);
+    if (!data) {
+        console.error('No data provided to populateEmployeeInfo');
+        return;
+    }
 
-    // Employee details
-    document.getElementById('employeeName').textContent = data.Employee.DisplayName;
-    document.getElementById('employeeEmail').textContent = data.Employee.Email;
-    document.getElementById('employeeDepartment').textContent = data.Employee.Department;
-    document.getElementById('employeeHireDate').textContent = startDate.toLocaleDateString('he-IL');
+    try {
+        // Employee details
+        if (data.Employee) {
+            document.getElementById('employeeName').textContent = data.Employee.DisplayName || '';
+            document.getElementById('employeeEmail').textContent = data.Employee.Email || '';
+            document.getElementById('employeeDepartment').textContent = data.Employee.Department || '';
+        }
 
-    // Manager details
-    document.getElementById('managerName').textContent = data.Manager.DisplayName;
-    document.getElementById('managerEmail').textContent = data.Manager.Email;
-    document.getElementById('managerDepartment').textContent = data.Manager.Department;
+        // Handle the date
+        if (data.Working_x0020_Start_x0020_Date) {
+            const startDate = new Date(data.Working_x0020_Start_x0020_Date);
+            document.getElementById('employeeHireDate').textContent = startDate.toLocaleDateString('he-IL');
+        }
 
-    // Evaluation details
-    document.getElementById('evaluationPeriod').textContent = new Date().getFullYear();
-    document.getElementById('submissionDate').textContent = new Date().toLocaleDateString('he-IL');
+        // Manager details
+        if (data.Manager) {
+            document.getElementById('managerName').textContent = data.Manager.DisplayName || '';
+            document.getElementById('managerEmail').textContent = data.Manager.Email || '';
+            document.getElementById('managerDepartment').textContent = data.Manager.Department || '';
+        }
+
+        // Evaluation period
+        document.getElementById('evaluationPeriod').textContent = new Date().getFullYear();
+        document.getElementById('submissionDate').textContent = new Date().toLocaleDateString('he-IL');
+
+    } catch (error) {
+        console.error('Error in populateEmployeeInfo:', error);
+    }
 };
 // DOM Helper Functions
 const createElement = (tag, attributes = {}, children = []) => {
@@ -1202,29 +1214,37 @@ const getSurveyParams = () => {
         throw new Error('Invalid survey parameters');
     }
 
-    const [rolePrefix, id, position] = param.split('-');
+    const [id, position] = param.split('-');
     
     return { 
         surveyId: id,
-        rolePrefix,
         position
     };
 };
 
 // Survey Loading and Initialization
-const loadSurvey = () => {
-    const surveyParams = getSurveyParams();
+const loadSurvey = (surveyParams, managmentRole) => {
     const surveyContent = document.getElementById('surveyContent');
     surveyContent.innerHTML = '';
 
+    // Convert management role to integer for comparison
+    const roleNumber = parseInt(managmentRole);
+
     Object.entries(categories).forEach(([category, questions]) => {
-        // Skip the entire managerial section (including title) for employees
-        if (category === 'מיומנויות ניהוליות' && 
-            (surveyParams.position === 'EMPLOYEE' || surveyParams.rolePrefix === 'E')) {
-            return; // Skip creating any elements for this category
+        // Filter questions based on management role
+        const filteredQuestions = questions.filter(q => q.roles.includes(roleNumber));
+
+        // Skip if no questions match the role
+        if (filteredQuestions.length === 0) {
+            return;
         }
 
-        // Continue with creating section for other categories or for managers
+        // Skip managerial section for non-managers
+        if (category === 'מיומנויות ניהוליות' && roleNumber === 0) {
+            return;
+        }
+
+        // Create category section
         const categorySection = createElement('div', {
             className: 'category-section'
         });
@@ -1238,13 +1258,7 @@ const loadSurvey = () => {
             className: 'questions-grid'
         });
 
-        const filteredQuestions = questions.filter(q => q.roles.includes(parseInt(surveyParams.role)));
-        
-        // Skip empty sections but keep checking position
-        if (filteredQuestions.length === 0) {
-            return;
-        }
-
+        // Add filtered questions
         filteredQuestions.forEach(q => questionsGrid.appendChild(createRatingQuestion(q)));
 
         categorySection.appendChild(categoryHeader);
@@ -1401,7 +1415,9 @@ const handleSubmit = async (event) => {
 };
 const fetchSurveyData = async (params) => {
     try {
-        const response = await fetch(`${API_ENDPOINT}`, {
+        console.log('Sending request with params:', params);
+
+        const response = await fetch(`https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -1417,10 +1433,23 @@ const fetchSurveyData = async (params) => {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        return await response.json();
+        const data = await response.json();
+        console.log('Received data:', data);
+
+        // Verify data structure
+        if (!data || typeof data !== 'object') {
+            throw new Error('Invalid data received from server');
+        }
+
+        // Return the data directly since it's already in the correct format
+        return {
+            managment: data.managment || "0",
+            Manager: data.Manager || null,
+            Employee: data.Employee || null,
+            Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || ""
+        };
     } catch (error) {
-        console.error('Error fetching survey data:', error);
-        showErrorMessage('אירעה שגיאה בטעינת נתוני הסקר');
+        console.error('Error in fetchSurveyData:', error);
         throw error;
     }
 };
@@ -1488,33 +1517,40 @@ const disableForm = (form) => {
 const initializeSurvey = async () => {
     try {
         const surveyParams = getSurveyParams();
-        const surveyData = await fetchSurveyData(surveyParams);
+        console.log('Survey Params:', surveyParams);
 
-        // Update the position based on management field from API
-        surveyParams.position = surveyData.managment === 1 ? 'MANAGER' : 'EMPLOYEE';
-        
-        // Populate employee info from API response
-        populateEmployeeInfo(surveyData);
-        
-        // Load survey with updated parameters
-        loadSurvey(surveyParams);
-        addDownloadButton();
-        
-        const form = document.getElementById('evaluationForm');
-        
-        form.addEventListener('change', (e) => {
-            updateProgress();
-            validateForm(form);
-            const questionCard = e.target.closest('.question-card');
-            if (questionCard && questionCard.classList.contains('error')) {
-                questionCard.classList.remove('error');
+        let surveyData;
+        try {
+            surveyData = await fetchSurveyData(surveyParams);
+            console.log('Survey Data:', surveyData);
+
+            if (surveyData) {
+                // Populate employee info
+                populateEmployeeInfo(surveyData);
+                
+                // Pass management role to loadSurvey
+                loadSurvey(surveyParams, surveyData.managment);
+                addDownloadButton();
+                
+                const form = document.getElementById('evaluationForm');
+                
+                form.addEventListener('change', (e) => {
+                    updateProgress();
+                    validateForm(form);
+                    const questionCard = e.target.closest('.question-card');
+                    if (questionCard && questionCard.classList.contains('error')) {
+                        questionCard.classList.remove('error');
+                    }
+                });
+
+                form.addEventListener('submit', handleSubmit);
             }
-        });
-
-        form.addEventListener('submit', handleSubmit);
-        
+        } catch (error) {
+            console.error('Failed to fetch survey data:', error);
+            showErrorMessage('אירעה שגיאה בטעינת נתוני הסקר');
+        }
     } catch (error) {
-        console.error('Error initializing survey:', error);
+        console.error('Error in initializeSurvey:', error);
         showErrorMessage('אירעה שגיאה בטעינת הטופס. אנא נסה לטעון מחדש את העמוד.');
     }
 };
