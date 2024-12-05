@@ -1047,21 +1047,23 @@ const EMPLOYEE_DATA = {
 };
 
 const populateEmployeeInfo = (data) => {
+    // Convert SharePoint date to JavaScript Date
+    const startDate = new Date(data.Working_x0020_Start_x0020_Date);
+
     // Employee details
-    document.getElementById('employeeName').textContent = data.employee.name;
-    document.getElementById('employeeEmail').textContent = data.employee.email;
-    document.getElementById('employeeDepartment').textContent = data.employee.department;
-    document.getElementById('employeeHireDate').textContent = new Date(data.employee.hireDate)
-        .toLocaleDateString('he-IL');
+    document.getElementById('employeeName').textContent = data.Employee.DisplayName;
+    document.getElementById('employeeEmail').textContent = data.Employee.Email;
+    document.getElementById('employeeDepartment').textContent = data.Employee.Department;
+    document.getElementById('employeeHireDate').textContent = startDate.toLocaleDateString('he-IL');
 
     // Manager details
-    document.getElementById('managerName').textContent = data.manager.name;
-    document.getElementById('managerEmail').textContent = data.manager.email;
-    document.getElementById('managerDepartment').textContent = data.manager.department;
+    document.getElementById('managerName').textContent = data.Manager.DisplayName;
+    document.getElementById('managerEmail').textContent = data.Manager.Email;
+    document.getElementById('managerDepartment').textContent = data.Manager.Department;
 
     // Evaluation details
-    document.getElementById('evaluationPeriod').textContent = data.evaluation.period;
-    document.getElementById('submissionDate').textContent = data.evaluation.submissionDate;
+    document.getElementById('evaluationPeriod').textContent = new Date().getFullYear();
+    document.getElementById('submissionDate').textContent = new Date().toLocaleDateString('he-IL');
 };
 // DOM Helper Functions
 const createElement = (tag, attributes = {}, children = []) => {
@@ -1200,14 +1202,12 @@ const getSurveyParams = () => {
         throw new Error('Invalid survey parameters');
     }
 
-    // Parse E-19-EMPLOYEE format
     const [rolePrefix, id, position] = param.split('-');
     
     return { 
-        role: rolePrefix === SURVEY_CONFIG.paramPrefix.EMPLOYEE ? 
-            SURVEY_CONFIG.roles.EMPLOYEE : SURVEY_CONFIG.roles.MANAGER,
         surveyId: id,
-        position: position // Use exact position from URL
+        rolePrefix,
+        position
     };
 };
 
@@ -1320,7 +1320,7 @@ const downloadExcel = () => {
     XLSX.writeFile(wb, filename);
 };
 
-// Add this to your validateForm function
+
 
 
 // Add this to your HTML before the submit button in the footer
@@ -1399,6 +1399,31 @@ const handleSubmit = async (event) => {
         loadingSpinner.classList.add('hidden');
     }
 };
+const fetchSurveyData = async (params) => {
+    try {
+        const response = await fetch(`${API_ENDPOINT}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                surveyId: params.surveyId,
+                role: params.rolePrefix,
+                position: params.position
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching survey data:', error);
+        showErrorMessage('אירעה שגיאה בטעינת נתוני הסקר');
+        throw error;
+    }
+};
 // Fix 2: Add form validation
 const validateForm = (form) => {
     const requiredFields = form.querySelectorAll('[required]');
@@ -1460,17 +1485,26 @@ const disableForm = (form) => {
     form.classList.add('form-submitted');
 };
 // Initialization
-const initializeSurvey = () => {
+const initializeSurvey = async () => {
     try {
-        populateEmployeeInfo(EMPLOYEE_DATA);
-        loadSurvey();
+        const surveyParams = getSurveyParams();
+        const surveyData = await fetchSurveyData(surveyParams);
+
+        // Update the position based on management field from API
+        surveyParams.position = surveyData.managment === 1 ? 'MANAGER' : 'EMPLOYEE';
+        
+        // Populate employee info from API response
+        populateEmployeeInfo(surveyData);
+        
+        // Load survey with updated parameters
+        loadSurvey(surveyParams);
         addDownloadButton();
         
         const form = document.getElementById('evaluationForm');
         
         form.addEventListener('change', (e) => {
             updateProgress();
-            validateForm(form);  // Validate on every change
+            validateForm(form);
             const questionCard = e.target.closest('.question-card');
             if (questionCard && questionCard.classList.contains('error')) {
                 questionCard.classList.remove('error');
