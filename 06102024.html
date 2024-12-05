@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>השוואת משוב</title>
+    <title>סיכום משוב הדדי</title>
     
     <!-- Bootstrap RTL CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
@@ -159,7 +159,181 @@
     width: 100%;
     text-align: center;
 }
+/* Add these print styles to your CSS */
+@media print {
+    /* General page setup */
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
 
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+
+    /* Hide non-essential elements */
+    .page-footer,
+    #submitButton,
+    .loading-spinner {
+        display: none !important;
+    }
+
+    /* Reset backgrounds and shadows for better printing */
+    .page-header,
+    .category-section,
+    .info-section,
+    .comparison-card,
+    .chart-container,
+    .comparison-wrapper {
+        background: white !important;
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+        margin: 10px 0 !important;
+        padding: 10px !important;
+    }
+
+    /* Header adjustments */
+    .page-header {
+        position: static;
+        background: none !important;
+        color: black !important;
+        border-bottom: 2px solid #000 !important;
+        padding: 10px 0 !important;
+    }
+
+    /* Employee info section */
+    .employee-info-header {
+        background: none !important;
+        border: 1px solid #ccc !important;
+        margin-bottom: 20px;
+    }
+
+    .employee-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    /* Category sections */
+    .category-section {
+        page-break-inside: avoid;
+        margin-top: 20px !important;
+    }
+
+    .category-title {
+        color: black !important;
+        border-bottom: 2px solid #000 !important;
+    }
+
+    /* Charts */
+    .chart-container {
+        height: 400px !important;
+        page-break-inside: avoid;
+        border: 1px solid #ccc !important;
+    }
+
+    canvas {
+        max-width: 100% !important;
+    }
+
+    /* Tables */
+    .table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+    }
+
+    .table th,
+    .table td {
+        background: white !important;
+        border: 1px solid #000 !important;
+        padding: 5px !important;
+        text-align: right !important;
+    }
+
+    .table-warning {
+        background-color: #fff3cd !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Text content */
+    .text-comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        page-break-inside: avoid;
+    }
+
+    .comparison-card {
+        border: 1px solid #ccc !important;
+    }
+
+    /* Font colors and styles */
+    .text-primary,
+    .text-success,
+    .text-danger {
+        color: black !important;
+    }
+
+    .text-muted {
+        color: #666 !important;
+    }
+
+    /* Links */
+    a {
+        text-decoration: none !important;
+        color: black !important;
+    }
+
+    /* Add page breaks */
+    .category-section {
+        page-break-before: auto;
+    }
+
+    /* Force show background colors for warnings */
+    .table-warning td {
+        background-color: #fff3cd !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Summary section */
+    #summarySection {
+        page-break-before: always;
+    }
+
+    /* Ensure text is readable */
+    h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+        font-weight: bold !important;
+    }
+
+    /* Hide textarea if empty */
+    textarea:empty {
+        display: none;
+    }
+
+    /* Print only filled textarea */
+    textarea {
+        border: none !important;
+        resize: none !important;
+        color: black !important;
+    }
+
+    /* Add print info */
+    .comparison-wrapper::after {
+        content: "הודפס בתאריך: " attr(data-print-date);
+        display: block;
+        text-align: center;
+        font-size: 10pt;
+        margin-top: 20px;
+        color: #666;
+    }
+}
 /* Form Elements */
 textarea {
     width: 100%;
@@ -221,7 +395,7 @@ textarea:focus {
     cursor: pointer;
     transition: all 0.2s ease;
 }
-const additionalStyles = `
+
 .chart-container {
     background: white;
     border-radius: 8px;
@@ -229,8 +403,19 @@ const additionalStyles = `
     padding: 20px;
     margin: 20px 0;
     overflow: hidden;
+    max-width: 100%;
 }
-
+@media (max-width: 997px) {
+    .chart-container {
+        min-height: 300px;
+        height: 50vh;
+    }
+    
+    canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
 .ratings-comparison-table {
     background: white;
     border-radius: 8px;
@@ -310,7 +495,12 @@ const additionalStyles = `
     .questions-grid {
         grid-template-columns: 1fr;
     }
-    
+    .chart-container {
+        min-height: 250px;
+        height: 40vh;
+        padding: 10px;
+    }
+
     .category-section {
         padding: 1rem;
     }
@@ -327,6 +517,12 @@ const additionalStyles = `
     
     .rating-option {
         width: 100%;
+    }
+}
+@media (max-width: 480px) {
+    .chart-container {
+        min-height: 200px;
+        height: 35vh;
     }
 }
 /* General Container Styling */
@@ -528,7 +724,138 @@ const additionalStyles = `
             }
         }
 
-        /* Copy rest of your existing CSS here */
+        @media (max-width: 768px) {
+    /* Adjust chart container for mobile */
+    .chart-container {
+        height: 400px !important; /* Smaller height for mobile */
+        padding: 10px !important;
+        margin: 10px 0 !important;
+    }
+    
+    /* Adjust table display for mobile */
+    .table-responsive {
+        border: 0;
+        margin-bottom: 0;
+    }
+    
+    .ratings-comparison-table {
+        padding: 10px !important;
+    }
+    
+    /* Make table more readable on mobile */
+    .table {
+        font-size: 14px;
+    }
+    
+    .table td, .table th {
+        padding: 8px 4px;
+    }
+    
+    /* Stack table columns on very small screens */
+    @media (max-width: 480px) {
+        .table thead {
+            display: none;
+        }
+        
+        .table tr {
+            display: block;
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        
+        .table td {
+            display: block;
+            text-align: right;
+            padding: 8px;
+            border: none;
+            position: relative;
+            padding-right: 50%;
+        }
+        
+        .table td::before {
+            content: attr(data-label);
+            position: absolute;
+            right: 8px;
+            width: 45%;
+            text-align: right;
+            font-weight: bold;
+        }
+    }
+    
+    /* Adjust text comparison cards */
+    .text-comparison {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+        padding: 0.5rem !important;
+    }
+    
+    .comparison-card {
+        padding: 1rem !important;
+    }
+    
+    /* Adjust section spacing */
+    .category-section {
+        padding: 1rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .category-title {
+        font-size: 1.25rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Adjust header content */
+    .header-content {
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .comparison-wrapper {
+        padding: 1rem !important;
+        margin: 1rem !important;
+    }
+    
+    /* Adjust employee info header */
+    .employee-info-header {
+        padding: 1rem !important;
+    }
+    
+    .info-section {
+        padding: 1rem !important;
+    }
+    
+    /* Footer adjustments */
+    .footer-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .submit-btn {
+        width: 100%;
+    }
+}
+
+/* Tablet-specific adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .chart-container {
+        height: 450px !important;
+    }
+    
+    .comparison-wrapper {
+        padding: 1.5rem !important;
+    }
+    
+    .category-section {
+        padding: 1.5rem !important;
+    }
+}
+
+/* Update table responsive styles */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
     </style>
 </head>
 <body>
@@ -537,7 +864,7 @@ const additionalStyles = `
         <div class="header-content">
             <img src="https://raw.githubusercontent.com/roeiredlerabra/abra-on-boarding/main/img/_master_logo_%D7%90%D7%91%D7%A8%D7%90%20%D7%91%D7%9C%D7%91%D7%9F.gif" alt="Company Logo" class="header-logo">
             <div>
-                <h1 class="text-2xl font-bold">השוואת משוב</h1>
+                <h1 class="text-2xl font-bold">סיכום משוב הדדי</h1>
                 <div class="text-sm opacity-90">תקופת הערכה: <span id="evaluationPeriod"></span></div>
             </div>
         </div>
@@ -1058,13 +1385,24 @@ const createComparisonSection = (category, questions, data) => {
     const ratingQuestions = questions.filter(q => q.type === 'rating');
     if (ratingQuestions.length > 0) {
         const chartContainer = createElement('div', {
-            className: 'chart-container',
-            style: 'position: relative; height: 500px; width: 100%; margin: 20px 0;'
-        });
-        
-        const canvas = createElement('canvas', {
-            style: 'max-height: 100%; max-width: 100%;'
-        });
+    className: 'chart-container',
+    style: `
+        position: relative; 
+        min-height: 300px;
+        height: 60vh;
+        max-height: 500px;
+        width: 100%;
+        margin: 20px 0;
+    `
+});
+
+const canvas = createElement('canvas', {
+    style: `
+        display: block;
+        width: 100% !important;
+        height: 100% !important;
+    `
+});
         chartContainer.appendChild(canvas);
         section.appendChild(chartContainer);
 
@@ -1146,46 +1484,46 @@ const createComparisonSection = (category, questions, data) => {
 
         // Add ratings comparison table with text values
         const ratingsTable = createElement('div', {
-            className: 'ratings-comparison-table mt-4',
-            innerHTML: `
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr class="table-secondary">
-                                <th style="width: 40%;">שאלה</th>
-                                <th style="width: 25%;">הערכת עובד</th>
-                                <th style="width: 25%;">הערכת מנהל</th>
-                                <th style="width: 10%;">פער</th>
+    className: 'ratings-comparison-table mt-4',
+    innerHTML: `
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="table-secondary">
+                        <th style="width: 40%;">שאלה</th>
+                        <th style="width: 25%;">הערכת עובד</th>
+                        <th style="width: 25%;">הערכת מנהל</th>
+                        <th style="width: 10%;">פער</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${ratingQuestions.map(q => {
+                        const empScore = employee[q.schema] || 0;
+                        const mgrScore = manager[q.schema] || 0;
+                        const gap = Math.abs(empScore - mgrScore);
+                        return `
+                            <tr ${gap >= 2 ? 'class="table-warning"' : ''}>
+                                <td data-label="שאלה">${q.question}</td>
+                                <td data-label="הערכת עובד" class="text-center">
+                                    <div>${getRatingText(empScore)}</div>
+                                    <small class="text-muted">(${empScore})</small>
+                                </td>
+                                <td data-label="הערכת מנהל" class="text-center">
+                                    <div>${getRatingText(mgrScore)}</div>
+                                    <small class="text-muted">(${mgrScore})</small>
+                                </td>
+                                <td data-label="פער" class="text-center ${gap >= 2 ? 'text-danger fw-bold' : ''}">${gap}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            ${ratingQuestions.map(q => {
-                                const empScore = employee[q.schema] || 0;
-                                const mgrScore = manager[q.schema] || 0;
-                                const gap = Math.abs(empScore - mgrScore);
-                                return `
-                                    <tr ${gap >= 2 ? 'class="table-warning"' : ''}>
-                                        <td>${q.question}</td>
-                                        <td class="text-center">
-                                            <div>${getRatingText(empScore)}</div>
-                                            <small class="text-muted">(${empScore})</small>
-                                        </td>
-                                        <td class="text-center">
-                                            <div>${getRatingText(mgrScore)}</div>
-                                            <small class="text-muted">(${mgrScore})</small>
-                                        </td>
-                                        <td class="text-center ${gap >= 2 ? 'text-danger fw-bold' : ''}">${gap}</td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-3 text-muted small">
-                    * שורות מודגשות מציינות פער משמעותי (2 נקודות או יותר) בין הערכת העובד למנהל
-                </div>
-            `
-        });
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3 text-muted small">
+            * שורות מודגשות מציינות פער משמעותי (2 נקודות או יותר) בין הערכת העובד למנהל
+        </div>
+    `
+});
         section.appendChild(ratingsTable);
     }
 
@@ -1200,14 +1538,14 @@ const createComparisonSection = (category, questions, data) => {
             const textComparison = createElement('div', {
                 className: 'text-comparison mb-4',
                 innerHTML: `
-                    <h4 class="mb-3">${q.question}</h4>
+                    <h6 class="mb-3">${q.question}</h6>
                     <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
                         <div class="comparison-card">
-                            <h5 class="text-primary mb-2">תשובת עובד</h5>
+                            <h6 class="text-primary mb-2">תשובת עובד</h6>
                             <p class="border rounded p-3 bg-light">${employee[q.schema] || 'לא נענה'}</p>
                         </div>
                         <div class="comparison-card">
-                            <h5 class="text-success mb-2">תשובת מנהל</h5>
+                            <h6 class="text-success mb-2">תשובת מנהל</h6>
                             <p class="border rounded p-3 bg-light">${manager[q.schema] || 'לא נענה'}</p>
                         </div>
                     </div>
@@ -1238,7 +1576,31 @@ const createComparisonSection = (category, questions, data) => {
                 });
 
                 const data = await response.json();
-                
+                if (data.Manager_Notes) {
+            // Hide summary section and submit button
+            const summarySection = document.getElementById('summarySection');
+            const submitButton = document.getElementById('submitButton');
+            
+            if (summarySection) {
+                summarySection.style.display = 'none';
+            }
+            if (submitButton) {
+                submitButton.style.display = 'none';
+            }
+            
+            // Optionally, add a message showing the existing manager notes
+            const surveyContent = document.getElementById('surveyContent');
+            const notesSection = createElement('div', {
+                className: 'category-section',
+                innerHTML: `
+                    <h2 class="category-title">מילות סיכום שנכתבו</h2>
+                    <div class="p-4 bg-light rounded">
+                        ${data.Manager_Notes}
+                    </div>
+                `
+            });
+            surveyContent.appendChild(notesSection);
+        }
                 // Populate employee info
                 document.getElementById('employeeName').textContent = data.Employee?.DisplayName || '';
                 document.getElementById('employeeDepartment').textContent = data.Employee?.Department || '';
