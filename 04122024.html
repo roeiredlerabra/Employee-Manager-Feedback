@@ -37,7 +37,7 @@ body {
 .page-header {
     background: linear-gradient(to left, var(--primary-color), var(--primary-hover));
     color: white;
-    padding: 1.5rem 0;
+    padding: 0.2rem 0;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -54,7 +54,7 @@ body {
 }
 
 .header-logo {
-    height: 60px;
+    height: 30px;
     object-fit: contain;
     margin-right: 1rem;
 }
@@ -104,7 +104,19 @@ body {
     gap: 1.5rem;
     margin-top: 2rem;
 }
+.progress-bar {
+    height: 100%;
+    transition: width 0.3s ease-out, background 0.3s ease;
+    background: linear-gradient(to right, var(--primary-color), var(--primary-hover));
+    border-radius: inherit;
+}
 
+.progress {
+    height: 0.5rem;
+    background: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+}
 /* Question Cards */
 .question-card {
     display: flex;
@@ -1065,12 +1077,46 @@ const createRatingQuestion = (questionObj) => {
     return questionDiv;
 };
 
-// Progress Tracking
 const updateProgress = () => {
-    const totalQuestions = document.querySelectorAll('input[type="radio"], textarea').length;
-    const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked, textarea:valid').length;
-    const progress = (answeredQuestions / totalQuestions) * 100;
-    document.querySelector('.progress-bar').style.width = `${progress}%`;
+    const questionCards = document.querySelectorAll('.question-card');
+    let totalQuestions = 0;
+    let answeredQuestions = 0;
+
+    questionCards.forEach(card => {
+        const radioGroup = card.querySelector('input[type="radio"]');
+        const textarea = card.querySelector('textarea');
+
+        if (radioGroup || textarea) {
+            totalQuestions++;
+
+            if (radioGroup) {
+                const groupName = radioGroup.getAttribute('name');
+                const isAnswered = card.querySelector(`input[name="${groupName}"]:checked`);
+                if (isAnswered) {
+                    answeredQuestions++;
+                }
+            } else if (textarea) {
+                if (textarea.value.trim()) {
+                    answeredQuestions++;
+                }
+            }
+        }
+    });
+
+    // Calculate progress
+    const progress = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
+    const progressBar = document.querySelector('.progress-bar');
+    
+    if (progressBar) {
+        progressBar.style.width = `${Math.round(progress)}%`;
+        
+        // Change color to green when progress is 100%
+        if (progress === 100) {
+            progressBar.style.background = '#059669'; // Using success-color green
+        } else {
+            progressBar.style.background = 'linear-gradient(to right, var(--primary-color), var(--primary-hover))'; // Reset to default color
+        }
+    }
 };
 
 // Form Data Management
@@ -1376,6 +1422,12 @@ const fetchSurveyData = async (params) => {
 const validateForm = (form) => {
     const requiredFields = form.querySelectorAll('[required]');
     let isValid = true;
+    let firstErrorElement = null;
+
+    // Reset any existing error states
+    form.querySelectorAll('.error').forEach(element => {
+        element.classList.remove('error');
+    });
 
     requiredFields.forEach(field => {
         if (field.type === 'radio') {
@@ -1383,13 +1435,35 @@ const validateForm = (form) => {
             const checkedRadio = form.querySelector(`input[name="${groupName}"]:checked`);
             if (!checkedRadio) {
                 isValid = false;
-                highlightError(field.closest('.question-card'));
+                const questionCard = field.closest('.question-card');
+                if (questionCard) {
+                    questionCard.classList.add('error');
+                    if (!firstErrorElement) {
+                        firstErrorElement = questionCard;
+                    }
+                }
             }
         } else if (!field.value.trim()) {
             isValid = false;
-            highlightError(field.closest('.question-card'));
+            const questionCard = field.closest('.question-card');
+            if (questionCard) {
+                questionCard.classList.add('error');
+                if (!firstErrorElement) {
+                    firstErrorElement = questionCard;
+                }
+            }
         }
     });
+
+    // Only scroll to the first error
+    if (firstErrorElement) {
+        firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => {
+            document.querySelectorAll('.error').forEach(element => {
+                element.classList.remove('error');
+            });
+        }, 3000);
+    }
 
     // Show/hide download button based on validation
     const downloadBtn = document.getElementById('downloadExcelBtn');
