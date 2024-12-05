@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>הערכת עובדים</title>
+    <title>משוב הדדי</title>
     
     <!-- Bootstrap RTL CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
@@ -85,7 +85,15 @@
     border: 1px solid #e5e7eb;
     transition: all 0.2s ease;
 }
+/* Add to your styles */
+.excel-btn {
+    background: var(--success-color);
+    margin-right: 1rem;
+}
 
+.excel-btn:hover {
+    background: #047857;
+}
 .rating-option label:hover {
     border-color: var(--primary-color);
     background: #f0f7ff;
@@ -528,7 +536,7 @@
     
             <!-- Text Content and Progress Bar -->
             <div class="flex flex-col items-start">
-                <h1 class="text-2xl font-bold">הערכת עובדים</h1>
+                <h1 class="text-2xl font-bold">משוב הדדי</h1>
                 <div class="text-sm opacity-90">
                     תקופת הערכה: <span id="evaluationPeriod"></span>
                 </div>
@@ -609,7 +617,8 @@
             </button>
         </div>
     </footer>
-
+<!-- Add in <head> -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Your existing JavaScript code goes here -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -1245,6 +1254,91 @@ const loadSurvey = () => {
 
     updateProgress();
 };
+// Add this function to your JavaScript
+const downloadExcel = () => {
+    // Get all form data
+    const form = document.getElementById('evaluationForm');
+    const formData = new FormData(form);
+    const answers = {};
+    formData.forEach((value, key) => {
+        answers[key] = value;
+    });
+
+    // Create worksheet data
+    const wsData = [];
+
+    // Add header row
+    wsData.push(['קטגוריה', 'שאלה', 'תשובה']);
+
+    // Add employee info
+    wsData.push(['פרטי עובד', 'שם', document.getElementById('employeeName').textContent]);
+    wsData.push(['פרטי עובד', 'מחלקה', document.getElementById('employeeDepartment').textContent]);
+    wsData.push(['פרטי עובד', 'דואר אלקטרוני', document.getElementById('employeeEmail').textContent]);
+    wsData.push(['פרטי עובד', 'תאריך תחילת עבודה', document.getElementById('employeeHireDate').textContent]);
+    wsData.push([]);  // Empty row for spacing
+
+    // Add survey answers
+    Object.entries(categories).forEach(([category, questions]) => {
+        questions.forEach(question => {
+            const answer = answers[question.schema];
+            let displayAnswer = answer;
+            
+            if (question.type === 'rating' && answer) {
+                displayAnswer = SURVEY_CONFIG.ratingScale[answer];
+            }
+
+            wsData.push([
+                category,
+                question.question,
+                displayAnswer || ''
+            ]);
+        });
+        wsData.push([]); // Empty row between categories
+    });
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // Set RTL and column widths
+    ws['!dir'] = 'rtl';
+    ws['!cols'] = [
+        { wch: 20 },  // Category width
+        { wch: 50 },  // Question width
+        { wch: 30 }   // Answer width
+    ];
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "הערכת עובד");
+
+    // Generate filename
+    const employeeName = document.getElementById('employeeName').textContent;
+    const date = new Date().toLocaleDateString('he-IL').replace(/\./g, '-');
+    const filename = `הערכת_עובד_${employeeName}_${date}.xlsx`;
+
+    // Download file
+    XLSX.writeFile(wb, filename);
+};
+
+// Add this to your validateForm function
+
+
+// Add this to your HTML before the submit button in the footer
+const addDownloadButton = () => {
+    const downloadBtn = createElement('button', {
+        id: 'downloadExcelBtn',
+        className: 'submit-btn',
+        type: 'button',
+        style: 'display: none; margin-right: 1rem; background: #059669;',
+        innerHTML: 'הורד לאקסל',
+        onclick: 'downloadExcel()'
+    });
+    
+    const submitBtn = document.querySelector('.submit-btn');
+    submitBtn.parentNode.insertBefore(downloadBtn, submitBtn);
+};
+
+
 
 // Form Submission
 const submitSurvey = async (data) => {
@@ -1324,6 +1418,12 @@ const validateForm = (form) => {
         }
     });
 
+    // Show/hide download button based on validation
+    const downloadBtn = document.getElementById('downloadExcelBtn');
+    if (downloadBtn) {
+        downloadBtn.style.display = isValid ? 'block' : 'none';
+    }
+
     return isValid;
 };
 
@@ -1364,12 +1464,13 @@ const initializeSurvey = () => {
     try {
         populateEmployeeInfo(EMPLOYEE_DATA);
         loadSurvey();
+        addDownloadButton();
         
         const form = document.getElementById('evaluationForm');
         
-        
         form.addEventListener('change', (e) => {
             updateProgress();
+            validateForm(form);  // Validate on every change
             const questionCard = e.target.closest('.question-card');
             if (questionCard && questionCard.classList.contains('error')) {
                 questionCard.classList.remove('error');
