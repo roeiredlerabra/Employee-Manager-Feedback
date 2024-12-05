@@ -1019,7 +1019,7 @@ schema: 'team_motivation',
     ]
 };
 
-const MOCK_EMPLOYEE_DATA = {
+const EMPLOYEE_DATA = {
     employee: {
         name: "ישראל ישראלי",
         email: "israel@company.com",
@@ -1191,15 +1191,14 @@ const getSurveyParams = () => {
         throw new Error('Invalid survey parameters');
     }
 
-    // Updated to handle the new param format: E-19-EMPLOYEE
+    // Parse E-19-EMPLOYEE format
     const [rolePrefix, id, position] = param.split('-');
-    const role = rolePrefix === SURVEY_CONFIG.paramPrefix.EMPLOYEE ? 
-        SURVEY_CONFIG.roles.EMPLOYEE : SURVEY_CONFIG.roles.MANAGER;
-
+    
     return { 
-        role,
+        role: rolePrefix === SURVEY_CONFIG.paramPrefix.EMPLOYEE ? 
+            SURVEY_CONFIG.roles.EMPLOYEE : SURVEY_CONFIG.roles.MANAGER,
         surveyId: id,
-        position: position || 'EMPLOYEE' // Default to EMPLOYEE if not provided
+        position: position // Use exact position from URL
     };
 };
 
@@ -1210,6 +1209,13 @@ const loadSurvey = () => {
     surveyContent.innerHTML = '';
 
     Object.entries(categories).forEach(([category, questions]) => {
+        // Skip the entire managerial section (including title) for employees
+        if (category === 'מיומנויות ניהוליות' && 
+            (surveyParams.position === 'EMPLOYEE' || surveyParams.rolePrefix === 'E')) {
+            return; // Skip creating any elements for this category
+        }
+
+        // Continue with creating section for other categories or for managers
         const categorySection = createElement('div', {
             className: 'category-section'
         });
@@ -1223,18 +1229,21 @@ const loadSurvey = () => {
             className: 'questions-grid'
         });
 
-        questions
-            .filter(q => q.roles.includes(parseInt(surveyParams.role)))
-            .forEach(q => questionsGrid.appendChild(createRatingQuestion(q)));
+        const filteredQuestions = questions.filter(q => q.roles.includes(parseInt(surveyParams.role)));
+        
+        // Skip empty sections but keep checking position
+        if (filteredQuestions.length === 0) {
+            return;
+        }
+
+        filteredQuestions.forEach(q => questionsGrid.appendChild(createRatingQuestion(q)));
 
         categorySection.appendChild(categoryHeader);
         categorySection.appendChild(questionsGrid);
         surveyContent.appendChild(categorySection);
     });
 
-
-    
-
+    updateProgress();
 };
 
 // Form Submission
@@ -1353,7 +1362,7 @@ const disableForm = (form) => {
 // Initialization
 const initializeSurvey = () => {
     try {
-        populateEmployeeInfo(MOCK_EMPLOYEE_DATA);
+        populateEmployeeInfo(EMPLOYEE_DATA);
         loadSurvey();
         
         const form = document.getElementById('evaluationForm');
