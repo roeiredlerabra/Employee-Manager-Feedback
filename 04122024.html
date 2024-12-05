@@ -289,56 +289,75 @@ textarea:focus {
         width: 100%;
     }
 }
-/* Employee Info Header Container */
+/* General Container Styling */
 .employee-info-header {
-    background: linear-gradient(to right, #f8fafc, #f1f5f9);
+    background: linear-gradient(to left, #f8fafc, #f1f5f9);
     border-bottom: 1px solid #e2e8f0;
-    padding: 1.25rem;
+    padding: 1.5rem;
+    direction: rtl; /* Ensures proper RTL alignment */
+    text-align: right;
 }
 
-/* Info Grid Layout */
+/* Grid Layout for Info Sections */
 .employee-info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
-/* Individual Info Sections */
+/* Styling for Individual Info Sections */
 .info-section {
-    background: white;
-    padding: 1rem;
+    background-color: #ffffff;
+    padding: 1.25rem;
     border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.info-section:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
 }
 
 /* Section Title */
 .info-section-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e40af; /* Deep blue accent color */
+    margin-bottom: 1rem;
+    border-bottom: 3px solid #1e40af;
     padding-bottom: 0.25rem;
-    border-bottom: 1px solid var(--primary-color);
 }
 
 /* Individual Info Items */
 .info-item {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    align-items: center;
 }
 
-/* Info Labels and Values */
+/* Info Labels */
 .info-label {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    min-width: 100px;
+    font-size: 1rem;
+    color: #6b7280; /* Neutral gray text */
+    min-width: 120px;
+    font-weight: 500;
 }
 
+/* Info Values */
 .info-value {
-    color: var(--text-primary);
-    font-size: 0.9375rem;
+    font-size: 1rem;
+    color: #374151; /* Darker text color */
+    font-weight: 400;
+    word-wrap: break-word;
+}
+
+/* Add Classy Hover Effects */
+.info-value:hover {
+    color: #1e40af; /* Matches accent color */
+    text-decoration: underline;
 }
 
 /* Responsive Adjustments */
@@ -349,11 +368,12 @@ textarea:focus {
 
     .employee-info-grid {
         grid-template-columns: 1fr;
-        gap: 0.75rem;
+        gap: 1rem;
     }
 
     .info-item {
         flex-direction: column;
+        align-items: flex-start;
         gap: 0.25rem;
     }
 
