@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>השוואת משוב</title>
+    
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
+    
+    <!-- Chart.js for radar charts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+    <!-- Your existing CSS -->
+    <style>
+        /* C/* Header Styles */
+.page-header {
+    background: linear-gradient(to left, var(--primary-color), var(--primary-hover));
+    color: white;
+    padding: 0.2rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-logo {
+    height: 30px;
+    object-fit: contain;
+    margin-right: 1rem;
+}
+
+/* Main Container Styles */
+.main-container {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+.survey-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Survey Form Sections */
+.survey-form-wrapper {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.category-section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.category-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+    text-align: center;
+}
+
+/* Questions Grid Layout */
+.questions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+.progress-bar {
+    height: 100%;
+    transition: width 0.3s ease-out, background 0.3s ease;
+    background: linear-gradient(to right, var(--primary-color), var(--primary-hover));
+    border-radius: inherit;
+}
+
+.progress {
+    height: 0.5rem;
+    background: #e5e7eb;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+/* Question Cards */
+.question-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.question-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.question-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    flex-grow: 1;
+}
+
+/* Rating Scale */
+.rating-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.rating-option {
+    width: 100%;
+}
+
+.rating-option label {
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center vertically */
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    text-align: center; /* Ensure text is centered */
+}
+
+.rating-option label:hover {
+    border-color: var(--primary-color);
+    background: #f0f7ff;
+}
+
+.rating-option input[type="radio"]:checked + div {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    width: 100%;
+    text-align: center;
+}
+
+/* Form Elements */
+textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    resize: vertical;
+    font-size: 1rem;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Footer */
+.page-footer {
+    background: #1f2937;
+    color: white;
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.loading-spinner {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none !important;
+}
+/* Buttons */
+.submit-btn {
+    background: #1747af;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+const additionalStyles = `
+.chart-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.ratings-comparison-table {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.text-comparisons-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.comparison-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+}
+
+.submit-btn:hover {
+    background: var(--primary-hover);
+}
+
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Utility Classes */
+.hidden {
+    visibility: hidden;
+}
+
+.error {
+    border: 2px solid var(--danger-color);
+    animation: shake 0.5s;
+}
+
+.fixed-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    animation: slideIn 0.3s;
+}
+
+/* Animations */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+    .questions-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .questions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .questions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-section {
+        padding: 1rem;
+    }
+    
+    .header-content,
+    .survey-container,
+    .footer-content {
+        padding: 0 1rem;
+    }
+    
+    .rating-scale {
+        flex-direction: column;
+    }
+    
+    .rating-option {
+        width: 100%;
+    }
+}
+/* General Container Styling */
+.employee-info-header {
+    background: linear-gradient(to left, #f8fafc, #f1f5f9);
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    direction: rtl; /* Ensures proper RTL alignment */
+    text-align: right;
+}
+
+/* Grid Layout for Info Sections */
+.employee-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Styling for Individual Info Sections */
+.info-section {
+    background-color: #ffffff;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.info-section:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+/* Section Title */
+.info-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e40af; /* Deep blue accent color */
+    margin-bottom: 1rem;
+    border-bottom: 3px solid #1e40af;
+    padding-bottom: 0.25rem;
+}
+
+/* Individual Info Items */
+.info-item {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Info Labels */
+.info-label {
+    font-size: 1rem;
+    color: #6b7280; /* Neutral gray text */
+    min-width: 120px;
+    font-weight: 500;
+}
+
+/* Info Values */
+.info-value {
+    font-size: 1rem;
+    color: #374151; /* Darker text color */
+    font-weight: 400;
+    word-wrap: break-word;
+}
+
+/* Add Classy Hover Effects */
+.info-value:hover {
+    color: #1e40af; /* Matches accent color */
+    text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .employee-info-header {
+        padding: 1rem;
+    }
+
+    .employee-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .info-label {
+        min-width: auto;
+    }
+}
+        :root {
+            --primary-color: #092052;
+            --primary-hover: #1d4ed8;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+        }
+
+        /* Base Layout */
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .page-header {
+            background: linear-gradient(to left, var(--primary-color), var(--primary-hover));
+            color: white;
+            padding: 0.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-logo {
+            height: 30px;
+            object-fit: contain;
+            margin-right: 1rem;
+        }
+
+        /* Add new comparison-specific styles */
+        .comparison-wrapper {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+            max-width: 1400px;
+            padding: 2rem;
+        }
+
+        .chart-container {
+            margin: 2rem 0;
+            height: 400px;
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .text-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+        }
+
+        .comparison-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .gaps-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+        }
+
+        .gap-item {
+            background: white;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .text-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Copy rest of your existing CSS here */
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="page-header">
+        <div class="header-content">
+            <img src="https://raw.githubusercontent.com/roeiredlerabra/abra-on-boarding/main/img/_master_logo_%D7%90%D7%91%D7%A8%D7%90%20%D7%91%D7%9C%D7%91%D7%9F.gif" alt="Company Logo" class="header-logo">
+            <div>
+                <h1 class="text-2xl font-bold">השוואת משוב</h1>
+                <div class="text-sm opacity-90">תקופת הערכה: <span id="evaluationPeriod"></span></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Employee Info Section -->
+        <div class="comparison-wrapper">
+            <div class="employee-info-header">
+                <div class="employee-info-grid">
+                    <div class="info-section">
+                        <h3 class="info-section-title">פרטי עובד</h3>
+                        <div class="info-item">
+                            <span class="info-label">שם העובד/ת</span>
+                            <span class="info-value" id="employeeName"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">מחלקה</span>
+                            <span class="info-value" id="employeeDepartment"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">תאריך תחילת עבודה</span>
+                            <span class="info-value" id="employeeHireDate"></span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3 class="info-section-title">פרטי מנהל</h3>
+                        <div class="info-item">
+                            <span class="info-label">שם המנהל/ת</span>
+                            <span class="info-value" id="managerName"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">מחלקה</span>
+                            <span class="info-value" id="managerDepartment"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Survey Comparison Content -->
+            <div id="surveyContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+
+            <!-- Summary Section -->
+            <div id="summarySection" class="category-section">
+                <h2 class="category-title">סיכום והערות</h2>
+                <div class="mb-4">
+                    <textarea 
+                        id="summaryNotes"
+                        class="w-full p-4 min-h-[200px] border rounded-lg"
+                        placeholder="הזן כאן את הערות הסיכום..."
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="page-footer">
+        <div class="footer-content">
+            <div>
+                <div class="text-sm opacity-75">תאריך מילוי</div>
+                <div id="submissionDate"></div>
+            </div>
+            <button type="button" id="submitButton" class="submit-btn">
+                <span class="submit-text">שלח סיכום</span>
+                <span class="loading-spinner hidden"></span>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // Constants
+        const API_ENDPOINT = 'https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA';
+        
+        // Categories configuration (copy your existing categories object)
+        const categories = {
+    'ידע מקצועי': [
+        { 
+            question: 'בקיאות במוצר – עד כמה העובד מבין לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'product_knowledge',
+            required: true,
+            ariaLabel: 'דירוג בקיאות במוצר',
+            description: 'הערכת רמת ההבנה והידע במוצר ורכיביו'
+        },
+        {
+            question: 'הכרות עם מתודולוגיות הפרויקט – כיצד העובד מיישם את שיטות העבודה המתודולוגיות בפרויקטים השונים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'methodology_knowledge',
+            required: true,
+            ariaLabel: 'דירוג הכרות עם מתודולוגיות',
+            description: 'הערכת יישום שיטות העבודה בפרויקטים'
+        },
+        {
+            question: 'הכרות מקצועית עם סביבת הלקוחות – עד כמה העובד מבין את הצרכים העסקיים של הלקוחות ומתאים את הפתרונות בהתאם?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'client_environment_knowledge',
+            required: true,
+            ariaLabel: 'דירוג הכרות עם סביבת לקוחות',
+            description: 'הערכת הבנת צרכי הלקוח והתאמת פתרונות'
+        },
+        {
+            question: 'זיהוי הזדמנויות אצל הלקוח – האם העובד מזהה אפשרויות להרחבת פתרונות ושירותים קיימים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'client_opportunities',
+            required: false,
+            ariaLabel: 'דירוג זיהוי הזדמנויות',
+            description: 'הערכת יכולת זיהוי הזדמנויות עסקיות'
+        },
+        {
+            question: 'השתתפות בוובינרים / העשרות מקצועיות – כיצד העובד משתתף בלמידה והעשרה מתמשכת?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'professional_development',
+            required: false,
+            ariaLabel: 'דירוג השתתפות בהעשרה מקצועית',
+            description: 'הערכת מעורבות בפעילויות למידה והתפתחות'
+        },
+        {
+            question: 'הכרות עם מוצרים משלימים – עד כמה העובד מכיר מוצרים רלוונטיים נוספים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'complementary_products',
+            required: false,
+            ariaLabel: 'דירוג הכרות עם מוצרים משלימים',
+            description: 'הערכת ידע במוצרים משלימים ורלוונטיים'
+        }
+    ],
+    'מיומנויות עבודה': [
+        {
+            question: 'יכולת ניהול עצמי – האם העובד מצליח לעבוד בצורה עצמאית תוך ייזום פתרונות?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'self_management',
+            required: true,
+            ariaLabel: 'דירוג יכולת ניהול עצמי',
+            description: 'הערכת יכולת עבודה עצמאית וייזום'
+        },
+        {
+            question: 'יכולת עבודה תחת לחץ – כיצד העובד מתמודד עם משימות דחופות או תחת עומס?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'pressure_handling',
+            required: true,
+            ariaLabel: 'דירוג עבודה תחת לחץ',
+            description: 'הערכת התמודדות עם מצבי לחץ ועומס'
+        },
+        {
+            question: 'אחריות מקצועית – האם העובד לוקח אחריות מלאה על המשימות שלו?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'professional_responsibility',
+            required: true,
+            ariaLabel: 'דירוג אחריות מקצועית',
+            description: 'הערכת רמת האחריות והמחויבות למשימות'
+        },
+        {
+            question: 'שיתוף פעולה ועבודת צוות – באיזו מידה העובד משתף פעולה ומכבד דעות שונות בצוות?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'team_collaboration',
+            required: true,
+            ariaLabel: 'דירוג שיתוף פעולה',
+            description: 'הערכת יכולת עבודה בצוות ושיתוף פעולה'
+        },
+        {
+            question: 'הקפדה על נהלים – באיזו מידה העובד מקפיד על נהלי העבודה?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'procedure_adherence',
+            required: true,
+            ariaLabel: 'דירוג הקפדה על נהלים',
+            description: 'הערכת מידת ההקפדה על נהלי העבודה'
+        },
+        {
+            question: 'תקשורת אפקטיבית – כיצד העובד מנהל תקשורת עם צוותים אחרים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'effective_communication',
+            required: true,
+            ariaLabel: 'דירוג תקשורת אפקטיבית',
+            description: 'הערכת יכולת תקשורת עם צוותים שונים'
+        }
+    ],
+    'גישה ומוטיבציה': [
+        {
+            question: 'מעורבות חברתית – עד כמה העובד תורם לאווירה החברתית והמקצועית בצוות?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'social_involvement',
+            required: false,
+            ariaLabel: 'דירוג מעורבות חברתית',
+            description: 'הערכת תרומה לאווירה החברתית בצוות'
+        },
+        {
+            question: 'קבלת ביקורת – כיצד העובד מתמודד עם ביקורות ומשובים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'feedback_reception',
+            required: true,
+            ariaLabel: 'דירוג קבלת ביקורת',
+            description: 'הערכת התמודדות עם משוב וביקורת'
+        },
+        {
+            question: 'מוטיבציה לייעול ושיפור – באיזו מידה העובד מעלה רעיונות חדשים לייעול תהליכים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'improvement_motivation',
+            required: false,
+            ariaLabel: 'דירוג מוטיבציה לשיפור',
+            description: 'הערכת יוזמה לשיפור תהליכים'
+        },
+        {
+            question: 'למידה עצמאית – האם העובד מראה יוזמה ללמידה מתמשכת ללא צורך בהנחיה?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'self_learning',
+            required: false,
+            ariaLabel: 'דירוג למידה עצמאית',
+            description: 'הערכת יוזמה ללמידה והתפתחות עצמאית'
+        }
+    ],
+    'סגנון עבודה': [
+        {
+            question: 'סדר וארגון בעבודה – עד כמה העובד שומר על סביבת עבודה מאורגנת ומסודרת?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'work_organization',
+            required: true,
+            ariaLabel: 'דירוג סדר וארגון',
+            description: 'הערכת ארגון וסדר בסביבת העבודה'
+        },
+        {
+            question: 'עמידה בזמנים – באיזו מידה העובד מקפיד על עמידה בלוחות זמנים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'time_management',
+            required: true,
+            ariaLabel: 'דירוג עמידה בזמנים',
+            description: 'הערכת עמידה בלוחות זמנים'
+        },
+        {
+            question: 'ניהול פרויקטים – האם העובד מצליח לנהל פרויקטים תוך שמירה על יעדים ברורים?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'project_management',
+            required: true,
+            ariaLabel: 'דירוג ניהול פרויקטים',
+            description: 'הערכת יכולת ניהול פרויקטים ועמידה ביעדים'
+        }
+    ],
+    'מדידה עצמית': [
+        {
+            question: 'רמת שביעות רצון מהביצועים – כיצד את/ה מדרג את שביעות הרצון הכללית שלך?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'performance_satisfaction',
+            required: true,
+            ariaLabel: 'דירוג שביעות רצון עצמית',
+            description: 'הערכת שביעות רצון כללית מביצועים'
+        },
+        {
+            question: 'תחומים לשיפור – אילו תחומים את/ה מזהה שבהם תוכל/י להשתפר?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'improvement_areas',
+            required: true,
+            ariaLabel: 'תחומים לשיפור',
+            description: 'פירוט תחומים הדורשים שיפור'
+        },
+        {
+            question: 'הישגים בולטים – מהם ההישגים המרכזיים שהשגת בתקופה האחרונה?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'key_achievements',
+            required: true,
+            ariaLabel: 'הישגים בולטים',
+            description: 'פירוט הישגים משמעותיים בתקופה האחרונה'
+        }
+    ],
+    'מיומנויות ניהוליות': [
+        {
+            question: 'קבלת החלטות – קבלת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב',
+            type: 'rating',
+            roles: [1],
+            schema: 'decision_making',
+            required: true,
+            ariaLabel: 'דירוג קבלת החלטות',
+            description: 'הערכת יכולת קבלת החלטות מהירה ומדויקת'
+        },
+        {
+            question: 'ניהול זמן וסדר עדיפויות – ניהול זמן/משימות אפקטיבי של הצוות',
+            type: 'rating',
+            roles: [1],
+            schema: 'time_priority_management',
+            required: true,
+            ariaLabel: 'דירוג ניהול זמן וסדרי עדיפויות',
+            description: 'הערכת יכולת ניהול זמן ותעדוף משימות'
+        },
+        {
+            question: 'גמישות והתאמה לשינויים – יכולת הסתגלות והתמודדות עם שינויים בפרויקטים',
+            type: 'rating',
+            roles: [1],
+            schema: 'change_adaptation',
+            required: true,
+            ariaLabel: 'דירוג גמישות והסתגלות',
+            description: 'הערכת יכולת הסתגלות לשינויים'
+        },
+        {
+            question: 'הצבת יעדים ברורים – באיזו מידה המנהל מציב לעובדיו יעדים ברורים ומדידים?',
+            type: 'rating',
+            roles: [1],
+            schema: 'goal_setting',
+            required: true,
+            ariaLabel: 'דירוג הצבת יעדים',
+            description: 'הערכת יכולת הגדרת יעדים ברורים לצוות'
+        },
+        {
+            question: 'יכולת להניע את העובדים לביצועים מיטביים',
+            type: 'rating',
+            roles: [1],
+            schema: 'team_motivation',
+schema: 'team_motivation',
+            required: true,
+            ariaLabel: 'דירוג הנעת עובדים',
+            description: 'הערכת יכולת הנעת העובדים להשגת ביצועים מיטביים'
+        },
+        {
+            question: 'ניצול משאבים – האם המנהל מנצל את המשאבים העומדים לרשותו באופן אפקטיבי?',
+            type: 'rating',
+            roles: [1],
+            schema: 'resource_utilization',
+            required: true,
+            ariaLabel: 'דירוג ניצול משאבים',
+            description: 'הערכת יכולת ניצול יעיל של משאבי הארגון'
+        },
+        {
+            question: 'קידום ופיתוח עובדים – באיזו מידה המנהל מצליח לקדם ולפתח את עובדיו?',
+            type: 'rating',
+            roles: [1],
+            schema: 'employee_development',
+            required: true,
+            ariaLabel: 'דירוג פיתוח עובדים',
+            description: 'הערכת יכולת פיתוח וקידום הצוות'
+        },
+        {
+            question: 'למידה מלקחים – האם המנהל לומד מהצלחות ואי-הצלחות ומיישם את הלקחים?',
+            type: 'rating',
+            roles: [1],
+            schema: 'lessons_learned',
+            required: true,
+            ariaLabel: 'דירוג למידה מלקחים',
+            description: 'הערכת יכולת הפקת לקחים ויישומם'
+        },
+        {
+            question: 'ניהול קונפליקטים – כיצד המנהל מתמודד עם מצבי קונפליקט בצוות?',
+            type: 'rating',
+            roles: [1],
+            schema: 'conflict_management',
+            required: true,
+            ariaLabel: 'דירוג ניהול קונפליקטים',
+            description: 'הערכת יכולת פתרון קונפליקטים וניהול מחלוקות'
+        },
+        {
+            question: 'תכנון אסטרטגי – האם המנהל מפתח ומיישם תכניות אסטרטגיות ארוכות טווח?',
+            type: 'rating',
+            roles: [1],
+            schema: 'strategic_planning',
+            required: false,
+            ariaLabel: 'דירוג תכנון אסטרטגי',
+            description: 'הערכת יכולת תכנון וחשיבה אסטרטגית'
+        }
+    ],
+    'מדדי ביצוע': [
+        {
+            question: 'עמידה ביעדים – באיזו מידה הושגו היעדים שהוגדרו לתקופה זו?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'goals_achievement',
+            required: true,
+            ariaLabel: 'דירוג עמידה ביעדים',
+            description: 'הערכת מידת העמידה ביעדים שהוגדרו'
+        },
+        {
+            question: 'איכות העבודה – מהי רמת הדיוק והאיכות בתוצרי העבודה?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'work_quality',
+            required: true,
+            ariaLabel: 'דירוג איכות עבודה',
+            description: 'הערכת איכות ודיוק בביצוע המשימות'
+        },
+        {
+            question: 'יעילות בעבודה – האם העבודה מתבצעת באופן יעיל ואפקטיבי?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'work_efficiency',
+            required: true,
+            ariaLabel: 'דירוג יעילות בעבודה',
+            description: 'הערכת יעילות ואפקטיביות בביצוע משימות'
+        },
+        {
+            question: 'תרומה לצוות – מהי מידת התרומה הכוללת לצוות ולארגון?',
+            type: 'rating',
+            roles: [0, 1],
+            schema: 'team_contribution',
+            required: true,
+            ariaLabel: 'דירוג תרומה לצוות',
+            description: 'הערכת התרומה הכוללת לצוות ולארגון'
+        }
+    ],
+    'סיכום והערות': [
+        {
+            question: 'נקודות חוזק עיקריות – מהן נקודות החוזק המשמעותיות ביותר?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'main_strengths',
+            required: true,
+            ariaLabel: 'נקודות חוזק עיקריות',
+            description: 'פירוט נקודות החוזק המשמעותיות'
+        },
+        {
+            question: 'תחומים לשיפור – מהם התחומים העיקריים הדורשים שיפור?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'improvement_needed',
+            required: true,
+            ariaLabel: 'תחומים לשיפור',
+            description: 'פירוט תחומים הדורשים שיפור והתפתחות'
+        },
+        {
+            question: 'יעדים לתקופה הבאה – מהם היעדים המרכזיים לתקופת ההערכה הבאה?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'future_goals',
+            required: true,
+            ariaLabel: 'יעדים לתקופה הבאה',
+            description: 'הגדרת יעדים לתקופה הבאה'
+        },
+        {
+            question: 'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?',
+            type: 'text',
+            roles: [0, 1],
+            schema: 'additional_comments',
+            required: false,
+            ariaLabel: 'הערות נוספות',
+            description: 'מקום להערות ותובנות נוספות'
+        }
+    ]
+};
+
+
+        // Helper Functions
+        const createElement = (tag, attributes = {}) => {
+            const element = document.createElement(tag);
+            Object.entries(attributes).forEach(([key, value]) => {
+                if (key === 'className') {
+                    element.className = value;
+                } else if (key === 'innerHTML') {
+                    element.innerHTML = value;
+                } else {
+                    element.setAttribute(key, value);
+                }
+            });
+            return element;
+        };
+
+        const transformApiData = (data) => {
+            const employee = {};
+            const manager = {};
+
+            Object.keys(data).forEach(key => {
+                if (key.startsWith('E_x002d_')) {
+                    const cleanKey = key.replace('E_x002d_', '');
+                    employee[cleanKey] = data[key];
+                } else if (key.startsWith('M_x002d_')) {
+                    const cleanKey = key.replace('M_x002d_', '');
+                    manager[cleanKey] = data[key];
+                }
+            });
+
+            return { employee, manager };
+        };
+
+        const RATING_SCALE = {
+    4: 'מצטיין',
+    3: 'מעל לנדרש',
+    2: 'עבודה ע"פ הנדרש',
+    1: 'נדרש שיפור',
+    0: 'לא רלוונטי לתפקיד'
+};
+
+// Helper function to get rating text
+const getRatingText = (value) => RATING_SCALE[value] || 'לא צוין';
+
+// Update the createComparisonSection function
+const createComparisonSection = (category, questions, data) => {
+    const { employee, manager } = transformApiData(data);
+    const section = createElement('div', {
+        className: 'category-section'
+    });
+
+    // Add category title
+    section.appendChild(createElement('h2', {
+        className: 'category-title',
+        innerHTML: category
+    }));
+
+    // Create rating questions section
+    const ratingQuestions = questions.filter(q => q.type === 'rating');
+    if (ratingQuestions.length > 0) {
+        const chartContainer = createElement('div', {
+            className: 'chart-container',
+            style: 'position: relative; height: 500px; width: 100%; margin: 20px 0;'
+        });
+        
+        const canvas = createElement('canvas', {
+            style: 'max-height: 100%; max-width: 100%;'
+        });
+        chartContainer.appendChild(canvas);
+        section.appendChild(chartContainer);
+
+        const chartData = ratingQuestions.map(q => ({
+            question: q.question.substring(0, 400) + (q.question.length > 400 ? '...' : ''),
+            employee: employee[q.schema] || 0,
+            manager: manager[q.schema] || 0
+        }));
+
+        new Chart(canvas, {
+            type: 'radar',
+            data: {
+                labels: chartData.map(d => d.question),
+                datasets: [
+                    {
+                        label: 'הערכת עובד',
+                        data: chartData.map(d => d.employee),
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.2)',
+                        pointBackgroundColor: '#1e40af',
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'הערכת מנהל',
+                        data: chartData.map(d => d.manager),
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.2)',
+                        pointBackgroundColor: '#059669',
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 20
+                },
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 4,
+                        ticks: { 
+                            stepSize: 1,
+                            font: {
+                                size: 12
+                            }
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                size: 14
+                            },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.raw;
+                                return `${label}: ${getRatingText(value)}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Add ratings comparison table with text values
+        const ratingsTable = createElement('div', {
+            className: 'ratings-comparison-table mt-4',
+            innerHTML: `
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th style="width: 40%;">שאלה</th>
+                                <th style="width: 25%;">הערכת עובד</th>
+                                <th style="width: 25%;">הערכת מנהל</th>
+                                <th style="width: 10%;">פער</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${ratingQuestions.map(q => {
+                                const empScore = employee[q.schema] || 0;
+                                const mgrScore = manager[q.schema] || 0;
+                                const gap = Math.abs(empScore - mgrScore);
+                                return `
+                                    <tr ${gap >= 2 ? 'class="table-warning"' : ''}>
+                                        <td>${q.question}</td>
+                                        <td class="text-center">
+                                            <div>${getRatingText(empScore)}</div>
+                                            <small class="text-muted">(${empScore})</small>
+                                        </td>
+                                        <td class="text-center">
+                                            <div>${getRatingText(mgrScore)}</div>
+                                            <small class="text-muted">(${mgrScore})</small>
+                                        </td>
+                                        <td class="text-center ${gap >= 2 ? 'text-danger fw-bold' : ''}">${gap}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3 text-muted small">
+                    * שורות מודגשות מציינות פער משמעותי (2 נקודות או יותר) בין הערכת העובד למנהל
+                </div>
+            `
+        });
+        section.appendChild(ratingsTable);
+    }
+
+    // Add text comparisons
+    const textQuestions = questions.filter(q => q.type === 'text');
+    if (textQuestions.length > 0) {
+        const textSection = createElement('div', {
+            className: 'text-comparisons-section mt-4'
+        });
+
+        textQuestions.forEach(q => {
+            const textComparison = createElement('div', {
+                className: 'text-comparison mb-4',
+                innerHTML: `
+                    <h4 class="mb-3">${q.question}</h4>
+                    <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                        <div class="comparison-card">
+                            <h5 class="text-primary mb-2">תשובת עובד</h5>
+                            <p class="border rounded p-3 bg-light">${employee[q.schema] || 'לא נענה'}</p>
+                        </div>
+                        <div class="comparison-card">
+                            <h5 class="text-success mb-2">תשובת מנהל</h5>
+                            <p class="border rounded p-3 bg-light">${manager[q.schema] || 'לא נענה'}</p>
+                        </div>
+                    </div>
+                `
+            });
+            textSection.appendChild(textComparison);
+        });
+
+        section.appendChild(textSection);
+    }
+
+    return section;
+};
+
+        // Initialize the comparison view
+        const initializeComparison = async () => {
+            try {
+                const surveyId = new URLSearchParams(window.location.search).get('param').split('-')[0];
+                
+                // Fetch data
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        surveyId,
+                        action: "summarize"
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Populate employee info
+                document.getElementById('employeeName').textContent = data.Employee?.DisplayName || '';
+                document.getElementById('employeeDepartment').textContent = data.Employee?.Department || '';
+                document.getElementById('employeeHireDate').textContent = new Date(data.Working_x0020_Start_x0020_Date).toLocaleDateString('he-IL');
+                document.getElementById('managerName').textContent = data.Manager?.DisplayName || '';
+                document.getElementById('managerDepartment').textContent = data.Manager?.Department || '';
+                
+                // Create comparison sections
+                const surveyContent = document.getElementById('surveyContent');
+                Object.entries(categories).forEach(([category, questions]) => {
+                    surveyContent.appendChild(createComparisonSection(category, questions, data));
+                });
+
+                // Set up submit button handler
+                document.getElementById('submitButton').addEventListener('click', async () => {
+                    const summaryNotes = document.getElementById('summaryNotes').value;
+                    
+                    try {
+                        const response = await fetch(API_ENDPOINT, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                surveyId,
+                                action: "after-summarize",
+                                summaryNotes
+                            })
+                        });
+
+                        if (response.ok) {
+                            alert('הסיכום נשלח בהצלחה!');
+                            document.getElementById('summaryNotes').disabled = true;
+                            document.getElementById('submitButton').disabled = true;
+                        }
+                    } catch (error) {
+                        console.error('Error submitting summary:', error);
+                        alert('אירעה שגיאה בשליחת הסיכום');
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error initializing comparison:', error);
+                alert('אירעה שגיאה בטעינת הנתונים');
+            }
+        };
+
+        // Start everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeComparison);
+    </script>
+</body>
+</html>
