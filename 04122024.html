@@ -518,7 +518,7 @@ textarea:focus {
 
     <script>
     // Configuration and Constants
-    const API_ENDPOINT = 'https://hjgkhjk.free.beeceptor.com';
+    const API_ENDPOINT = 'https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA';
     const SURVEY_CONFIG = {
         paramPrefix: { 
             EMPLOYEE: 'E', 
@@ -1129,6 +1129,7 @@ const collectFormData = (form) => {
         role: surveyParams.role,
         position: surveyParams.position,
         timestamp: new Date().toISOString(),
+        action: 'submitform',
         answers: {}
     };
 
@@ -1280,7 +1281,7 @@ const addDownloadButton = () => {
         className: 'submit-btn',
         type: 'button',
         style: 'display: none; margin-right: 1rem; background: #059669;',
-        innerHTML: 'הורד לאקסל',
+        innerHTML: 'הורדה לאקסל',
         onclick: 'downloadExcel()'
     });
     
@@ -1390,7 +1391,8 @@ const fetchSurveyData = async (params) => {
             body: JSON.stringify({
                 surveyId: params.surveyId,
                 role: params.rolePrefix,
-                position: params.position
+                position: params.position,
+                action:"getsurveydata"
             })
         });
 
