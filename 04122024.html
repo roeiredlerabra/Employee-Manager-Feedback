@@ -9,18 +9,76 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     
     <style>
-        :root {
-            --primary-color: #092052;
-            --primary-hover: #1d4ed8;
-            --success-color: #059669;
-            --warning-color: #d97706;
-            --danger-color: #dc2626;
-            --text-primary: #1f2937;
-            --text-secondary: #4b5563;
-            --bg-primary: #f0f2f5;
-            --bg-secondary: #ffffff;
-        }
-/* Survey Sections Layout */
+       :root {
+    --primary-color: #092052;
+    --primary-hover: #1d4ed8;
+    --success-color: #059669;
+    --warning-color: #d97706;
+    --danger-color: #dc2626;
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --bg-primary: #f0f2f5;
+    --bg-secondary: #ffffff;
+}
+
+/* Base Layout */
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.page-header {
+    background: linear-gradient(to left, var(--primary-color), var(--primary-hover));
+    color: white;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-logo {
+    height: 60px;
+    object-fit: contain;
+    margin-right: 1rem;
+}
+
+/* Main Container Styles */
+.main-container {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+.survey-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Survey Form Sections */
+.survey-form-wrapper {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
 .category-section {
     margin-bottom: 3rem;
     padding: 2rem;
@@ -42,11 +100,12 @@
 /* Questions Grid Layout */
 .questions-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
     margin-top: 2rem;
 }
 
+/* Question Cards */
 .question-card {
     display: flex;
     flex-direction: column;
@@ -55,7 +114,7 @@
     border-radius: 0.75rem;
     padding: 1.25rem;
     transition: all 0.3s ease;
-    height: 100%; /* Full height */
+    height: 100%;
 }
 
 .question-card:hover {
@@ -63,7 +122,15 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Rating Scale Vertical Layout */
+.question-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    flex-grow: 1;
+}
+
+/* Rating Scale */
 .rating-scale {
     display: flex;
     flex-direction: column;
@@ -77,23 +144,16 @@
 
 .rating-option label {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center vertically */
     padding: 0.75rem 1rem;
     background: #f8fafc;
     border-radius: 0.5rem;
     border: 1px solid #e5e7eb;
     transition: all 0.2s ease;
-}
-/* Add to your styles */
-.excel-btn {
-    background: var(--success-color);
-    margin-right: 1rem;
+    text-align: center; /* Ensure text is centered */
 }
 
-.excel-btn:hover {
-    background: #047857;
-}
 .rating-option label:hover {
     border-color: var(--primary-color);
     background: #f0f7ff;
@@ -108,423 +168,199 @@
     text-align: center;
 }
 
-/* Question Text */
-.question-title {
+/* Form Elements */
+textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    resize: vertical;
     font-size: 1rem;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Footer */
+.page-footer {
+    background: #1f2937;
+    color: white;
+    padding: 1.5rem 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Buttons */
+.submit-btn {
+    background: #1747af;
+    color: white;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
     font-weight: 500;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-    flex-grow: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.question-description {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
+.submit-btn:hover {
+    background: var(--primary-hover);
 }
 
-/* Responsive Adjustments */
+.submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Utility Classes */
+.hidden {
+    visibility: hidden;
+}
+
+.error {
+    border: 2px solid var(--danger-color);
+    animation: shake 0.5s;
+}
+
+.fixed-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    animation: slideIn 0.3s;
+}
+
+/* Animations */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive Design */
 @media (max-width: 1400px) {
     .questions-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 columns */
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 1024px) {
     .questions-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
     .questions-grid {
-        grid-template-columns: 1fr; /* 1 column */
+        grid-template-columns: 1fr;
     }
     
     .category-section {
         padding: 1rem;
     }
+    
+    .header-content,
+    .survey-container,
+    .footer-content {
+        padding: 0 1rem;
+    }
+    
+    .rating-scale {
+        flex-direction: column;
+    }
+    
+    .rating-option {
+        width: 100%;
+    }
 }
-        /* Base Layout */
-        body {
-            min-height: 100vh;
-            margin: 0;
-            padding: 0;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: system-ui, -apple-system, sans-serif;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header Styles */
-        .page-header {
-            background: linear-gradient(to left, var(--primary-color), var(--primary-hover));
-            color: white;
-            padding: 1.5rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-/* Logo Styles */
-.header-logo {
-    height: 60px; /* Adjust logo height for visibility */
-    object-fit: contain; /* Ensure the logo scales without distortion */
-    margin-right: 1rem; /* Space between logo and the text content */
+/* Employee Info Header Container */
+.employee-info-header {
+    background: linear-gradient(to right, #f8fafc, #f1f5f9);
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.25rem;
 }
 
-/* Adjust Header Content Layout */
-.header-content {
+/* Info Grid Layout */
+.employee-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+/* Individual Info Sections */
+.info-section {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Title */
+.info-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--primary-color);
+}
+
+/* Individual Info Items */
+.info-item {
+    margin-bottom: 0.5rem;
     display: flex;
-    align-items: center;
-    gap: 1rem; /* Adds spacing between logo and other elements */
+    align-items: baseline;
+    gap: 0.5rem;
 }
 
-
-        /* Main Container */
-        .main-container {
-            flex: 1;
-            padding: 2rem 0;
-        }
-
-        .survey-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .survey-form-wrapper {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        /* Employee Info Sections */
-        .employee-info-header {
-            background: linear-gradient(to right, #f8fafc, #f1f5f9);
-            border-bottom: 1px solid #e2e8f0;
-            padding: 2rem;
-        }
-
-        .employee-info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .info-section {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .info-section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        .info-item {
-            margin-bottom: 1rem;
-        }
-
-        .info-label {
-            display: block;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.25rem;
-        }
-
-        .info-value {
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        /* Survey Form Sections */
-        .progress-container {
-            position: sticky;
-            top: 0;
-            background: white;
-            padding: 1rem 2rem;
-            z-index: 50;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .progress {
-            height: 0.5rem;
-            background: #e5e7eb;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-.hidden{
-    visibility: hidden;
-}
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(to right, var(--primary-color), var(--primary-hover));
-            transition: width 0.3s ease-out;
-        }
-
-        /* Question Cards */
-        .category-section {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .category-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid #e5e7eb;
-        }
-
-        .question-card {
-            background: #f8fafc;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .question-title {
-            font-size: 1.125rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        /* Rating Options */
-        .rating-scale {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .rating-option {
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .rating-option label {
-            display: block;
-            cursor: pointer;
-            padding: 0.75rem;
-            text-align: center;
-            background: white;
-            border-radius: 0.5rem;
-            border: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        .rating-option label:hover {
-            border-color: var(--primary-color);
-            background: #f0f7ff;
-        }
-
-        .rating-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .rating-option input[type="radio"]:checked + span {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            display: block;
-        }
-
-        /* Text Areas */
-        textarea {
-            width: 100%;
-            min-height: 120px;
-            padding: 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            resize: vertical;
-            font-size: 1rem;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        /* Footer */
-        .page-footer {
-            background: #1f2937;
-            color: white;
-            padding: 1.5rem 0;
-            margin-top: auto;
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Submit Button */
-        .submit-btn {
-            background: #1747af;
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .submit-btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Required Marker */
-        .required-marker {
-            color: var(--danger-color);
-            margin-right: 0.25rem;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .header-content,
-            .survey-container,
-            .footer-content {
-                padding: 0 1rem;
-            }
-
-            .employee-info-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .rating-scale {
-                flex-direction: column;
-            }
-
-            .rating-option {
-                width: 100%;
-            }
-
-            .category-section {
-                padding: 1rem;
-            }
-
-            .question-card {
-                padding: 1rem;
-            }
-        }
-
-        /* Loading Spinner */
-        .loading-spinner {
-            display: inline-block;
-            width: 1.5rem;
-            height: 1.5rem;
-            border: 2px solid white;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Print Styles */
-        @media print {
-            .page-header,
-            .page-footer,
-            .submit-btn {
-                display: none;
-            }
-
-            .survey-form-wrapper {
-                box-shadow: none;
-            }
-
-            .question-card {
-                break-inside: avoid;
-            }
-        }
-        .error-message {
-    display: none;
-    color: #dc2626;
-    background-color: #fef2f2;
-    border: 1px solid #fee2e2;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin: 1rem 0;
+/* Info Labels and Values */
+.info-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    min-width: 100px;
 }
 
-.alert-success {
-    color: #065f46;
-    background-color: #ecfdf5;
-    border: 1px solid #a7f3d0;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    margin: 1rem 0;
+.info-value {
+    color: var(--text-primary);
+    font-size: 0.9375rem;
 }
-.error {
-        border: 2px solid var(--danger-color);
-        animation: shake 0.5s;
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .employee-info-header {
+        padding: 1rem;
     }
 
-    .fixed-message {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
-        animation: slideIn 0.3s;
+    .employee-info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
     }
 
-    .form-submitted {
-        opacity: 0.7;
-        pointer-events: none;
+    .info-item {
+        flex-direction: column;
+        gap: 0.25rem;
     }
 
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(5px); }
-        75% { transform: translateX(-5px); }
+    .info-label {
+        min-width: auto;
     }
-
-    @keyframes slideIn {
-        from { transform: translateY(-100%); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-    }
+}
     </style>
 </head>
 <body>
@@ -1097,15 +933,13 @@ const createElement = (tag, attributes = {}, children = []) => {
 const createQuestionLabel = (questionObj) => {
     return createElement('div', {
         id: `${questionObj.schema}-label`,
-        className: 'mb-4',
+        className: 'mb-1',
         innerHTML: `
             <div class="text-lg font-semibold text-gray-700 mb-2">
                 ${questionObj.question}
                 ${questionObj.required ? '<span class="required-marker">*</span>' : ''}
             </div>
-            <div class="text-sm text-gray-600" id="${questionObj.schema}-description">
-                ${questionObj.description}
-            </div>
+
         `
     });
 };
