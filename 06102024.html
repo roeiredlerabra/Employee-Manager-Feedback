@@ -1406,11 +1406,14 @@ const canvas = createElement('canvas', {
         chartContainer.appendChild(canvas);
         section.appendChild(chartContainer);
 
-        const chartData = ratingQuestions.map(q => ({
-            question: q.question.substring(0, 400) + (q.question.length > 400 ? '...' : ''),
-            employee: employee[q.schema] || 0,
-            manager: manager[q.schema] || 0
-        }));
+        const chartData = ratingQuestions.map(q => {
+    const maxLength = window.innerWidth <= 768 ? 35 : 400;
+    return {
+        question: q.question.substring(0, maxLength) + (q.question.length > maxLength ? '...' : ''),
+        employee: employee[q.schema] || 0,
+        manager: manager[q.schema] || 0
+    };
+});
 
         new Chart(canvas, {
             type: 'radar',
