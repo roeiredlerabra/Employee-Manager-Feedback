@@ -622,10 +622,6 @@ textarea:focus {
     // Configuration and Constants
     const API_ENDPOINT = 'https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA';
     const SURVEY_CONFIG = {
-        paramPrefix: { 
-            EMPLOYEE: 'E', 
-            MANAGER: 'M' 
-        },
         position: { 
             MANAGER: "MANAGER", 
             EMPLOYEE: "EMPLOYEE" 
@@ -673,7 +669,7 @@ const categories = {
             type: 'rating',
             roles: [0, 1],
             schema: 'client_opportunities',
-            required: false,
+            required: true,
             ariaLabel: 'דירוג זיהוי הזדמנויות',
             description: 'הערכת יכולת זיהוי הזדמנויות עסקיות'
         },
@@ -682,7 +678,7 @@ const categories = {
             type: 'rating',
             roles: [0, 1],
             schema: 'professional_development',
-            required: false,
+            required: true,
             ariaLabel: 'דירוג השתתפות בהעשרה מקצועית',
             description: 'הערכת מעורבות בפעילויות למידה והתפתחות'
         },
@@ -691,7 +687,7 @@ const categories = {
             type: 'rating',
             roles: [0, 1],
             schema: 'complementary_products',
-            required: false,
+            required: true,
             ariaLabel: 'דירוג הכרות עם מוצרים משלימים',
             description: 'הערכת ידע במוצרים משלימים ורלוונטיים'
         }
@@ -758,7 +754,7 @@ const categories = {
             type: 'rating',
             roles: [0, 1],
             schema: 'social_involvement',
-            required: false,
+            required: true,
             ariaLabel: 'דירוג מעורבות חברתית',
             description: 'הערכת תרומה לאווירה החברתית בצוות'
         },
@@ -776,7 +772,7 @@ const categories = {
             type: 'rating',
             roles: [0, 1],
             schema: 'improvement_motivation',
-            required: false,
+            required: true,
             ariaLabel: 'דירוג מוטיבציה לשיפור',
             description: 'הערכת יוזמה לשיפור תהליכים'
         },
@@ -785,7 +781,7 @@ const categories = {
             type: 'rating',
             roles: [0, 1],
             schema: 'self_learning',
-            required: false,
+            required: true,
             ariaLabel: 'דירוג למידה עצמאית',
             description: 'הערכת יוזמה ללמידה והתפתחות עצמאית'
         }
@@ -936,7 +932,7 @@ schema: 'team_motivation',
             type: 'rating',
             roles: [1],
             schema: 'strategic_planning',
-            required: false,
+            required: true,
             ariaLabel: 'דירוג תכנון אסטרטגי',
             description: 'הערכת יכולת תכנון וחשיבה אסטרטגית'
         }
@@ -1012,7 +1008,7 @@ schema: 'team_motivation',
             type: 'text',
             roles: [0, 1],
             schema: 'additional_comments',
-            required: false,
+            required: true,
             ariaLabel: 'הערות נוספות',
             description: 'מקום להערות ותובנות נוספות'
         }
@@ -1549,35 +1545,64 @@ const fetchSurveyData = async (params) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                surveyId: params.surveyId,
-                role: params.rolePrefix,
+                surveyId: params.surveyId,               
                 position: params.position,
                 action:"getsurveydata"
             })
         });
 
         if (!response.ok) {
+            showCustomPopup({
+                type: 'error',
+                title: 'שגיאת שרת',
+                message: `השרת החזיר שגיאה: ${response.status} - ${response.statusText}. אנא נסה שוב מאוחר יותר או פנה לתמיכה.`,
+                showConfirm: true,
+                showCancel: false
+            });
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-       
 
         // Verify data structure
         if (!data || typeof data !== 'object') {
+            showCustomPopup({
+                type: 'error',
+                title: 'שגיאת מידע',
+                message: 'התקבל מידע לא תקין מהשרת. אנא נסה שוב או פנה לתמיכה.',
+                showConfirm: true,
+                showCancel: false
+            });
             throw new Error('Invalid data received from server');
         }
 
-        // Return the data directly since it's already in the correct format
         return {
-    managment: data.managment || "0",
-    Manager: data.Manager || null,
-    Employee: data.Employee || null,
-    Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || "",
-    ManagerFilled: data.ManagerFilled || "0",    // Add this line
-    EmployeeFilled: data.EmployeeFilled || "0"   // Add this line
-};
+            managment: data.managment || "0",
+            Manager: data.Manager || null,
+            Employee: data.Employee || null,
+            Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || "",
+            ManagerFilled: data.ManagerFilled || "0",
+            EmployeeFilled: data.EmployeeFilled || "0"
+        };
     } catch (error) {
+        // Handle network errors
+        if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            showCustomPopup({
+                type: 'error',
+                title: 'שגיאת תקשורת',
+                message: 'לא ניתן להתחבר לשרת. אנא בדוק את חיבור האינטרנט שלך ונסה שוב.',
+                showConfirm: true,
+                showCancel: false
+            });
+        } else if (!error.message.includes('HTTP error')) { // Don't show another popup for HTTP errors
+            showCustomPopup({
+                type: 'error',
+                title: 'שגיאה',
+                message: 'אירעה שגיאה לא צפויה. אנא נסה שוב או פנה לתמיכה.',
+                showConfirm: true,
+                showCancel: false
+            });
+        }
         console.error('Error in fetchSurveyData:', error);
         throw error;
     }
@@ -1638,31 +1663,7 @@ const validateForm = (form) => {
     return isValid;
 };
 
-const highlightError = (element) => {
-    element.classList.add('error');
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => element.classList.remove('error'), 3000);
-};
 
-const showSuccessMessage = () => {
-    const successDiv = createElement('div', {
-        className: 'alert alert-success text-center mt-4 fixed-message',
-        innerHTML: 'ההערכה נשלחה בהצלחה!'
-    });
-    
-    document.querySelector('.survey-form-wrapper').appendChild(successDiv);
-    setTimeout(() => successDiv.remove(), 5000);
-};
-
-const showErrorMessage = (message) => {
-    const errorDiv = createElement('div', {
-        className: 'alert alert-danger text-center mt-4 fixed-message',
-        innerHTML: message || 'אירעה שגיאה בשליחת הטופס. אנא נסה שוב.'
-    });
-    
-    document.querySelector('.survey-form-wrapper').appendChild(errorDiv);
-    setTimeout(() => errorDiv.remove(), 5000);
-};
 
 const disableForm = (form) => {
     form.querySelectorAll('input, textarea').forEach(element => {
