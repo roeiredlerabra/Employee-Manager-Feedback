@@ -4,514 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>משוב הדדי</title>
-    
+    <link rel="stylesheet" href="/new_style.css">
     <!-- Bootstrap RTL CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <style>
-       :root {
-    --primary-color: #092052;
-    --primary-hover: #1d4ed8;
-    --success-color: #059669;
-    --warning-color: #d97706;
-    --danger-color: #dc2626;
-    --text-primary: #1f2937;
-    --text-secondary: #4b5563;
-    --bg-primary: #f0f2f5;
-    --bg-secondary: #ffffff;
-}
-
-/* Base Layout */
-body {
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-family: system-ui, -apple-system, sans-serif;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Header Styles */
-.page-header {
-    background: linear-gradient(to left, var(--primary-color), var(--primary-hover));
-    color: white;
-    padding: 0.2rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.header-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-.custom-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    z-index: 1000;
-    max-width: 90%;
-    width: 400px;
-    text-align: center;
-    direction: rtl;
-}
-
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-}
-
-.popup-icon {
-    margin: 0 auto 1rem;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.popup-icon.success {
-    background: #dcfce7;
-    color: #059669;
-}
-
-.popup-icon.error {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.popup-icon.warning {
-    background: #fff7ed;
-    color: #d97706;
-}
-
-.popup-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.popup-message {
-    color: #4b5563;
-    margin-bottom: 1.5rem;
-}
-
-.popup-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.popup-button {
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.popup-button.primary {
-    background: #1747af;
-    color: white;
-}
-
-.popup-button.primary:hover {
-    background: #1d4ed8;
-}
-
-.popup-button.secondary {
-    background: #e5e7eb;
-    color: #374151;
-}
-
-.popup-button.secondary:hover {
-    background: #d1d5db;
-}
-
-.download-prompt {
-    background: #f0f9ff;
-    border: 1px solid #bae6fd;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    margin: 1rem 0;
-    text-align: center;
-    direction: rtl;
-}
-.header-logo {
-    height: 30px;
-    object-fit: contain;
-    margin-right: 1rem;
-}
-
-/* Main Container Styles */
-.main-container {
-    flex: 1;
-    padding: 2rem 0;
-}
-
-.survey-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-/* Survey Form Sections */
-.survey-form-wrapper {
-    background: white;
-    border-radius: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-.category-section {
-    margin-bottom: 3rem;
-    padding: 2rem;
-    background: white;
-    border-radius: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.category-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--primary-color);
-    text-align: center;
-}
-
-/* Questions Grid Layout */
-.questions-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-top: 2rem;
-}
-.progress-bar {
-    height: 100%;
-    transition: width 0.3s ease-out, background 0.3s ease;
-    background: linear-gradient(to right, var(--primary-color), var(--primary-hover));
-    border-radius: inherit;
-}
-
-.progress {
-    height: 0.5rem;
-    background: #e5e7eb;
-    border-radius: 9999px;
-    overflow: hidden;
-}
-/* Question Cards */
-.question-card {
-    display: flex;
-    flex-direction: column;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.75rem;
-    padding: 1.25rem;
-    transition: all 0.3s ease;
-    height: 100%;
-}
-
-.question-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.question-title {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-    flex-grow: 1;
-}
-
-/* Rating Scale */
-.rating-scale {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-.rating-option {
-    width: 100%;
-}
-
-.rating-option label {
-    display: flex;
-    justify-content: center; /* Center the content horizontally */
-    align-items: center; /* Center vertically */
-    padding: 0.75rem 1rem;
-    background: #f8fafc;
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
-    transition: all 0.2s ease;
-    text-align: center; /* Ensure text is centered */
-}
-
-.rating-option label:hover {
-    border-color: var(--primary-color);
-    background: #f0f7ff;
-}
-
-.rating-option input[type="radio"]:checked + div {
-    background: var(--primary-color);
-    color: white;
-    border-radius: 0.375rem;
-    padding: 0.5rem;
-    width: 100%;
-    text-align: center;
-}
-
-/* Form Elements */
-textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 1rem;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    resize: vertical;
-    font-size: 1rem;
-}
-
-textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-/* Footer */
-.page-footer {
-    background: #1f2937;
-    color: white;
-    padding: 1.5rem 0;
-    margin-top: auto;
-}
-
-.footer-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.loading-spinner {
-    display: inline-block;
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.hidden {
-    display: none !important;
-}
-/* Buttons */
-.submit-btn {
-    background: #1747af;
-    color: white;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.submit-btn:hover {
-    background: var(--primary-hover);
-}
-
-.submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Utility Classes */
-.hidden {
-    visibility: hidden;
-}
-
-.error {
-    border: 2px solid var(--danger-color);
-    animation: shake 0.5s;
-}
-
-.fixed-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    animation: slideIn 0.3s;
-}
-
-/* Animations */
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-}
-
-@keyframes slideIn {
-    from { transform: translateY(-100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-/* Responsive Design */
-@media (max-width: 1400px) {
-    .questions-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 1024px) {
-    .questions-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .questions-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .category-section {
-        padding: 1rem;
-    }
-    
-    .header-content,
-    .survey-container,
-    .footer-content {
-        padding: 0 1rem;
-    }
-    
-    .rating-scale {
-        flex-direction: column;
-    }
-    
-    .rating-option {
-        width: 100%;
-    }
-}
-/* General Container Styling */
-.employee-info-header {
-    background: linear-gradient(to left, #f8fafc, #f1f5f9);
-    border-bottom: 1px solid #e2e8f0;
-    padding: 1.5rem;
-    direction: rtl; /* Ensures proper RTL alignment */
-    text-align: right;
-}
-
-/* Grid Layout for Info Sections */
-.employee-info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-/* Styling for Individual Info Sections */
-.info-section {
-    background-color: #ffffff;
-    padding: 1.25rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.info-section:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transform: translateY(-3px);
-}
-
-/* Section Title */
-.info-section-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1e40af; /* Deep blue accent color */
-    margin-bottom: 1rem;
-    border-bottom: 3px solid #1e40af;
-    padding-bottom: 0.25rem;
-}
-
-/* Individual Info Items */
-.info-item {
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: flex-start;
-    gap: 0.75rem;
-    align-items: center;
-}
-
-/* Info Labels */
-.info-label {
-    font-size: 1rem;
-    color: #6b7280; /* Neutral gray text */
-    min-width: 120px;
-    font-weight: 500;
-}
-
-/* Info Values */
-.info-value {
-    font-size: 1rem;
-    color: #374151; /* Darker text color */
-    font-weight: 400;
-    word-wrap: break-word;
-}
-
-/* Add Classy Hover Effects */
-.info-value:hover {
-    color: #1e40af; /* Matches accent color */
-    text-decoration: underline;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .employee-info-header {
-        padding: 1rem;
-    }
-
-    .employee-info-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .info-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.25rem;
-    }
-
-    .info-label {
-        min-width: auto;
-    }
-}
+     
     </style>
 </head>
 <body>
@@ -1462,21 +961,111 @@ const handleSubmit = async (event) => {
     event.preventDefault();
     
     const form = event.target;
-    const submitBtn = document.querySelector('button[form="evaluationForm"]');
-    const downloadBtn = document.getElementById('downloadExcelBtn');
+    const requiredFields = form.querySelectorAll('[required]');
+    let unansweredQuestions = [];
+    let isValid = true;
+    let firstErrorElement = null;
+
+    // Group radio buttons by name to avoid duplicates
+    const radioGroups = new Set();
     
-    // Validate form
-    const isValid = validateForm(form);
+    // Reset any existing error states
+    form.querySelectorAll('.error').forEach(element => {
+        element.classList.remove('error');
+    });
+
+    requiredFields.forEach(field => {
+        if (field.type === 'radio') {
+            const groupName = field.name;
+            
+            // Only check each radio group once
+            if (!radioGroups.has(groupName)) {
+                radioGroups.add(groupName);
+                const checkedRadio = form.querySelector(`input[name="${groupName}"]:checked`);
+                
+                if (!checkedRadio) {
+                    isValid = false;
+                    const questionCard = field.closest('.question-card');
+                    if (questionCard) {
+                        questionCard.classList.add('error');
+                        if (!firstErrorElement) {
+                            firstErrorElement = questionCard;
+                        }
+                        // Get the question text and category
+                        const questionLabel = questionCard.querySelector(`#${groupName}-label .text-lg`);
+                        const categoryTitle = questionCard.closest('.category-section').querySelector('.category-title');
+                        if (questionLabel && categoryTitle) {
+                            unansweredQuestions.push({
+                                category: categoryTitle.textContent,
+                                question: questionLabel.textContent.split('–')[0].trim()
+                            });
+                        }
+                    }
+                }
+            }
+        } else if (!field.value.trim()) {
+            isValid = false;
+            const questionCard = field.closest('.question-card');
+            if (questionCard) {
+                questionCard.classList.add('error');
+                if (!firstErrorElement) {
+                    firstErrorElement = questionCard;
+                }
+                // Get the question text and category for textarea
+                const questionLabel = questionCard.querySelector(`#${field.name}-label .text-lg`);
+                const categoryTitle = questionCard.closest('.category-section').querySelector('.category-title');
+                if (questionLabel && categoryTitle) {
+                    unansweredQuestions.push({
+                        category: categoryTitle.textContent,
+                        question: questionLabel.textContent.split('–')[0].trim()
+                    });
+                }
+            }
+        }
+    });
+
     if (!isValid) {
+        // Group questions by category
+        const groupedQuestions = unansweredQuestions.reduce((acc, { category, question }) => {
+            if (!acc[category]) {
+                acc[category] = [];
+            }
+            acc[category].push(question);
+            return acc;
+        }, {});
+
+        // Format the message with categories
+        let formattedMessage = '<div style="text-align: right; margin-bottom: 1rem;">אנא השלם את השאלות הבאות:</div><div style="text-align: right; max-height: 300px; overflow-y: auto;">';
+        
+        Object.entries(groupedQuestions).forEach(([category, questions]) => {
+            formattedMessage += `<div style="margin-bottom: 1rem;">
+                <strong>${category}:</strong>
+                <ul style="list-style-type: none; padding-right: 1rem; margin-top: 0.5rem;">
+                    ${questions.map(q => `<li style="margin-bottom: 0.5rem;">• ${q}</li>`).join('')}
+                </ul>
+            </div>`;
+        });
+        
+        formattedMessage += '</div>';
+
         showCustomPopup({
             type: 'error',
-            title: 'שגיאה',
-            message: 'נא למלא את כל השדות החובה'
+            title: 'שאלות חובה שלא נענו',
+            message: formattedMessage,
+            showConfirm: true,
+            showCancel: false
         });
+
+        if (firstErrorElement) {
+            firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         return;
     }
 
-    // Show confirmation popup
+    const submitBtn = document.querySelector('button[form="evaluationForm"]');
+    const downloadBtn = document.getElementById('downloadExcelBtn');
+
+    // Show confirmation popup if form is valid
     showCustomPopup({
         type: 'warning',
         title: 'אישור שליחה',
@@ -1495,11 +1084,9 @@ const handleSubmit = async (event) => {
                 const results = collectFormData(form);
                 const response = await submitSurvey(results);
                 
-                // Hide submit button and show download button
                 submitBtn.style.display = 'none';
                 if (downloadBtn) downloadBtn.style.display = 'block';
                 
-                // Show success message with download prompt
                 showCustomPopup({
                     type: 'success',
                     title: 'ההערכה נשלחה בהצלחה!',
