@@ -52,7 +52,109 @@ body {
     align-items: center;
     gap: 1rem;
 }
+.custom-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    max-width: 90%;
+    width: 400px;
+    text-align: center;
+    direction: rtl;
+}
 
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.popup-icon {
+    margin: 0 auto 1rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-icon.success {
+    background: #dcfce7;
+    color: #059669;
+}
+
+.popup-icon.error {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.popup-icon.warning {
+    background: #fff7ed;
+    color: #d97706;
+}
+
+.popup-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.popup-message {
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.popup-button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.popup-button.primary {
+    background: #1747af;
+    color: white;
+}
+
+.popup-button.primary:hover {
+    background: #1d4ed8;
+}
+
+.popup-button.secondary {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.popup-button.secondary:hover {
+    background: #d1d5db;
+}
+
+.download-prompt {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+    direction: rtl;
+}
 .header-logo {
     height: 30px;
     object-fit: contain;
@@ -1363,73 +1465,79 @@ const submitSurvey = async (data) => {
 const handleSubmit = async (event) => {
     event.preventDefault();
     
-    // Since the button is in the footer, let's search the entire document
     const form = event.target;
     const submitBtn = document.querySelector('button[form="evaluationForm"]');
+    const downloadBtn = document.getElementById('downloadExcelBtn');
     
-    if (!submitBtn) {
-        console.error('Submit button not found');
-        alert('שגיאה טכנית בטופס');
-        return;
-    }
-    
-    // Create text and spinner elements if they don't exist
-    let submitText = submitBtn.querySelector('.submit-text');
-    let loadingSpinner = submitBtn.querySelector('.loading-spinner');
-    
-    if (!submitText) {
-        submitText = document.createElement('span');
-        submitText.className = 'submit-text';
-        submitText.textContent = 'שלח הערכה';
-        submitBtn.appendChild(submitText);
-    }
-    
-    if (!loadingSpinner) {
-        loadingSpinner = document.createElement('span');
-        loadingSpinner.className = 'loading-spinner hidden';
-        submitBtn.appendChild(loadingSpinner);
-    }
-    
-    // Validate form before submission
+    // Validate form
     const isValid = validateForm(form);
     if (!isValid) {
-        alert('נא למלא את כל השדות החובה');
+        showCustomPopup({
+            type: 'error',
+            title: 'שגיאה',
+            message: 'נא למלא את כל השדות החובה'
+        });
         return;
     }
 
-    try {
-        submitBtn.disabled = true;
-        submitText.style.display = 'none';
-        loadingSpinner.classList.remove('hidden');
+    // Show confirmation popup
+    showCustomPopup({
+        type: 'warning',
+        title: 'אישור שליחה',
+        message: 'האם אתה בטוח שברצונך לשלוח את ההערכה?',
+        showConfirm: true,
+        showCancel: true,
+        onConfirm: async () => {
+            try {
+                submitBtn.disabled = true;
+                const submitText = submitBtn.querySelector('.submit-text');
+                const loadingSpinner = submitBtn.querySelector('.loading-spinner');
+                
+                if (submitText) submitText.style.display = 'none';
+                if (loadingSpinner) loadingSpinner.classList.remove('hidden');
 
-        if (!confirm('האם אתה בטוח שברצונך לשלוח את ההערכה?')) {
-            // Reset button state if user cancels
-            submitBtn.disabled = false;
-            submitText.style.display = 'block';
-            loadingSpinner.classList.add('hidden');
-            return;
+                const results = collectFormData(form);
+                const response = await submitSurvey(results);
+                
+                // Hide submit button and show download button
+                submitBtn.style.display = 'none';
+                if (downloadBtn) downloadBtn.style.display = 'block';
+                
+                // Show success message with download prompt
+                showCustomPopup({
+                    type: 'success',
+                    title: 'ההערכה נשלחה בהצלחה!',
+                    message: `
+                        <div class="download-prompt">
+                            <p>האם תרצה להוריד את ההערכה כקובץ אקסל?</p>
+                        </div>
+                    `,
+                    showConfirm: true,
+                    showCancel: true,
+                    onConfirm: () => {
+                        downloadExcel();
+                    }
+                });
+                
+                disableForm(form);
+
+            } catch (error) {
+                console.error('Error submitting survey:', error);
+                showCustomPopup({
+                    type: 'error',
+                    title: 'שגיאה',
+                    message: error.message || 'אירעה שגיאה בשליחת הטופס'
+                });
+            } finally {
+                const submitText = submitBtn.querySelector('.submit-text');
+                const loadingSpinner = submitBtn.querySelector('.loading-spinner');
+                
+                if (submitText) submitText.style.display = 'block';
+                if (loadingSpinner) loadingSpinner.classList.add('hidden');
+                submitBtn.disabled = false;
+            }
         }
-
-        const results = collectFormData(form);
-        const response = await submitSurvey(results);
-        
-        showSuccessMessage();
-        disableForm(form);
-        
-        // Show the download button after successful submission
-        const downloadBtn = document.getElementById('downloadExcelBtn');
-        if (downloadBtn) {
-            downloadBtn.style.display = 'block';
-        }
-
-    } catch (error) {
-        console.error('Error submitting survey:', error);
-        showErrorMessage(error.message || 'אירעה שגיאה בשליחת הטופס');
-    } finally {
-        submitBtn.disabled = false;
-        submitText.style.display = 'block';
-        loadingSpinner.classList.add('hidden');
-    }
+    });
 };
 const fetchSurveyData = async (params) => {
     try {
@@ -1561,6 +1669,82 @@ const disableForm = (form) => {
         element.disabled = true;
     });
     form.classList.add('form-submitted');
+};
+const showCustomPopup = ({
+    type = 'info',
+    title,
+    message,
+    showConfirm = false,
+    onConfirm = null,
+    onCancel = null,
+    showCancel = true
+}) => {
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'popup-overlay';
+    
+    // Create popup
+    const popup = document.createElement('div');
+    popup.className = 'custom-popup';
+    
+    // Icon based on type
+    const iconDiv = document.createElement('div');
+    iconDiv.className = `popup-icon ${type}`;
+    
+    let iconSvg = '';
+    switch(type) {
+        case 'success':
+            iconSvg = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>`;
+            break;
+        case 'error':
+            iconSvg = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>`;
+            break;
+        case 'warning':
+            iconSvg = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>`;
+            break;
+    }
+    
+    iconDiv.innerHTML = iconSvg;
+    
+    // Create content
+    popup.innerHTML = `
+        ${iconDiv.outerHTML}
+        <h3 class="popup-title">${title}</h3>
+        <p class="popup-message">${message}</p>
+        <div class="popup-buttons">
+            ${showConfirm ? `
+                <button class="popup-button primary">${showCancel ? 'אישור' : 'אוקיי'}</button>
+                ${showCancel ? '<button class="popup-button secondary">ביטול</button>' : ''}
+            ` : `
+                <button class="popup-button primary">סגור</button>
+            `}
+        </div>
+    `;
+    
+    // Add event listeners
+    const buttons = popup.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.classList.contains('primary')) {
+                if (onConfirm) onConfirm();
+            } else {
+                if (onCancel) onCancel();
+            }
+            document.body.removeChild(overlay);
+        });
+    });
+    
+    // Add to document
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    return popup;
 };
 // Initialization
 const initializeSurvey = async () => {
