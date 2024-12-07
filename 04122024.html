@@ -13,86 +13,183 @@
      
     </style>
 </head>
-<body>
-    <!-- Header -->
+<body class="skeleton-content">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">טוען...</span>
+        </div>
+    </div>
+
+    <!-- Header Section -->
     <header class="page-header">
         <div class="header-content">
-            <!-- Logo -->
-            <img src="https://raw.githubusercontent.com/roeiredlerabra/abra-on-boarding/main/img/_master_logo_%D7%90%D7%91%D7%A8%D7%90%20%D7%91%D7%9C%D7%91%D7%9F.gif" alt="Company Logo" class="header-logo">
-    
-            <!-- Text Content and Progress Bar -->
-            <div class="flex flex-col items-start">
-                <h1 class="text-2xl font-bold">משוב הדדי</h1>
-                <div class="text-sm opacity-90">
-                    תקופת הערכה: <span id="evaluationPeriod"></span>
+            <!-- Skeleton Logo -->
+            <div class="skeleton-content">
+                <div class="placeholder-glow">
+                    <span class="placeholder col-4" style="height: 50px;"></span>
                 </div>
             </div>
-    
+            
+            <!-- Real Logo -->
+            <div class="real-content">
+                <img src="https://raw.githubusercontent.com/roeiredlerabra/abra-on-boarding/main/img/_master_logo_%D7%90%D7%91%D7%A8%D7%90%20%D7%91%D7%9C%D7%91%D7%9F.gif" alt="Company Logo" class="header-logo">
+            </div>
+
+            <!-- Text Content -->
+            <div class="flex flex-col items-start">
+                <!-- Skeleton Title -->
+                <div class="skeleton-content">
+                    <div class="placeholder-glow mb-2">
+                        <span class="placeholder col-6"></span>
+                    </div>
+                    <div class="placeholder-glow">
+                        <span class="placeholder col-4"></span>
+                    </div>
+                </div>
+                
+                <!-- Real Title -->
+                <div class="real-content">
+                    <h1 class="text-2xl font-bold">משוב הדדי</h1>
+                    <div class="text-sm opacity-90">
+                        תקופת הערכה: <span id="evaluationPeriod"></span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Progress Bar -->
             <div class="progress" style="width: 200px">
                 <div class="progress-bar" role="progressbar"></div>
             </div>
         </div>
     </header>
-    
-    
 
     <!-- Main Content -->
     <div class="main-container">
         <div class="survey-container">
             <div class="survey-form-wrapper">
-                <!-- Employee Info -->
+                <!-- Employee Info Section -->
                 <div class="employee-info-header">
                     <div class="employee-info-grid">
+                        <!-- Employee Section -->
                         <div class="info-section">
-                            <h3 class="info-section-title">
-                                <i class="fas fa-user"></i> פרטי עובד
-                            </h3>
-                            <div class="info-item">
-                                <span class="info-label"><i class="fas fa-user-tag"></i> שם העובד/ת</span>
-                                <span class="info-value" id="employeeName"></span>
+                            <!-- Skeleton Employee Info -->
+                            <div class="skeleton-content">
+                                <div class="placeholder-glow mb-3">
+                                    <span class="placeholder col-4"></span>
+                                </div>
+                                <div class="info-item placeholder-glow mb-3">
+                                    <span class="placeholder col-3"></span>
+                                    <span class="placeholder col-6"></span>
+                                </div>
+                                <div class="info-item placeholder-glow mb-3">
+                                    <span class="placeholder col-3"></span>
+                                    <span class="placeholder col-4"></span>
+                                </div>
+                                <div class="info-item placeholder-glow mb-3">
+                                    <span class="placeholder col-3"></span>
+                                    <span class="placeholder col-7"></span>
+                                </div>
                             </div>
-                            <div class="info-item">
-                                <span class="info-label"><i class="fas fa-briefcase"></i> מחלקה</span>
-                                <span class="info-value" id="employeeDepartment"></span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label"><i class="fas fa-envelope"></i> דואר אלקטרוני</span>
-                                <span class="info-value" id="employeeEmail"></span>
-                            </div>
-                            <div class="info-row">
+
+                            <!-- Real Employee Info -->
+                            <div class="real-content">
+                                <h3 class="info-section-title">
+                                    <i class="fas fa-user"></i> פרטי עובד
+                                </h3>
                                 <div class="info-item">
-                                    <span class="info-label"><i class="fas fa-calendar-day"></i> תאריך תחילת עבודה</span>
-                                    <span class="info-value" id="employeeHireDate"></span>
-                                    <span class="info-value" id="employeeTenure"></span>
+                                    <span class="info-label"><i class="fas fa-user-tag"></i> שם העובד/ת</span>
+                                    <span class="info-value" id="employeeName"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label"><i class="fas fa-briefcase"></i> מחלקה</span>
+                                    <span class="info-value" id="employeeDepartment"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label"><i class="fas fa-envelope"></i> דואר אלקטרוני</span>
+                                    <span class="info-value" id="employeeEmail"></span>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-item">
+                                        <span class="info-label"><i class="fas fa-calendar-day"></i> תאריך תחילת עבודה</span>
+                                        <span class="info-value" id="employeeHireDate"></span>
+                                        <span class="info-value" id="employeeTenure"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                
+
+                        <!-- Manager Section -->
                         <div class="info-section">
-                            <h3 class="info-section-title">
-                                <i class="fas fa-users-cog"></i> פרטי מנהל
-                            </h3>
-                            <div class="info-item">
-                                <span class="info-label"><i class="fas fa-user-tie"></i> שם המנהל/ת</span>
-                                <span class="info-value" id="managerName"></span>
+                            <!-- Skeleton Manager Info -->
+                            <div class="skeleton-content">
+                                <div class="placeholder-glow mb-3">
+                                    <span class="placeholder col-4"></span>
+                                </div>
+                                <div class="info-item placeholder-glow mb-3">
+                                    <span class="placeholder col-3"></span>
+                                    <span class="placeholder col-6"></span>
+                                </div>
+                                <div class="info-item placeholder-glow mb-3">
+                                    <span class="placeholder col-3"></span>
+                                    <span class="placeholder col-4"></span>
+                                </div>
+                                <div class="info-item placeholder-glow mb-3">
+                                    <span class="placeholder col-3"></span>
+                                    <span class="placeholder col-7"></span>
+                                </div>
                             </div>
-                            <div class="info-item">
-                                <span class="info-label"><i class="fas fa-briefcase"></i> מחלקה</span>
-                                <span class="info-value" id="managerDepartment"></span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label"><i class="fas fa-envelope"></i> דואר אלקטרוני</span>
-                                <span class="info-value" id="managerEmail"></span>
+
+                            <!-- Real Manager Info -->
+                            <div class="real-content">
+                                <h3 class="info-section-title">
+                                    <i class="fas fa-users-cog"></i> פרטי מנהל
+                                </h3>
+                                <div class="info-item">
+                                    <span class="info-label"><i class="fas fa-user-tie"></i> שם המנהל/ת</span>
+                                    <span class="info-value" id="managerName"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label"><i class="fas fa-briefcase"></i> מחלקה</span>
+                                    <span class="info-value" id="managerDepartment"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label"><i class="fas fa-envelope"></i> דואר אלקטרוני</span>
+                                    <span class="info-value" id="managerEmail"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
 
                 <!-- Survey Form -->
                 <form id="evaluationForm">
-                    <div id="surveyContent"></div>
+                    <!-- Skeleton Survey Content -->
+                    <div class="skeleton-content">
+                        <div class="category-section mb-4">
+                            <div class="placeholder-glow mb-4">
+                                <span class="placeholder col-3"></span>
+                            </div>
+                            <div class="questions-grid">
+                                <div class="question-card mb-4">
+                                    <div class="placeholder-glow mb-3">
+                                        <span class="placeholder col-8"></span>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <span class="placeholder col-2 p-3"></span>
+                                        <span class="placeholder col-2 p-3"></span>
+                                        <span class="placeholder col-2 p-3"></span>
+                                        <span class="placeholder col-2 p-3"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Real Survey Content -->
+                    <div class="real-content">
+                        <div id="surveyContent"></div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -101,14 +198,27 @@
     <!-- Footer -->
     <footer class="page-footer">
         <div class="footer-content">
-            <div>
-                <div class="text-sm opacity-75">תאריך מילוי</div>
-                <div id="submissionDate" class="font-medium"></div>
+            <!-- Skeleton Footer -->
+            <div class="skeleton-content">
+                <div class="placeholder-glow mb-2">
+                    <span class="placeholder col-4"></span>
+                </div>
+                <div class="placeholder-glow">
+                    <span class="placeholder col-3 p-3"></span>
+                </div>
             </div>
-            <button type="submit" class="submit-btn" form="evaluationForm">
-                <span class="submit-text">שלח הערכה</span>
-                <span class="loading-spinner hidden"></span>
-            </button>
+
+            <!-- Real Footer -->
+            <div class="real-content">
+                <div>
+                    <div class="text-sm opacity-75">תאריך מילוי</div>
+                    <div id="submissionDate" class="font-medium"></div>
+                </div>
+                <button type="submit" class="submit-btn" form="evaluationForm">
+                    <span class="submit-text">שלח הערכה</span>
+                    <span class="loading-spinner hidden"></span>
+                </button>
+            </div>
         </div>
     </footer>
 <!-- Add in <head> -->
@@ -929,7 +1039,7 @@ const addDownloadButton = () => {
         id: 'downloadExcelBtn',
         className: 'submit-btn',
         type: 'button',
-        style: 'display: none; margin-right: 1rem; background: #059669;',
+        style: 'display: none; background: #059669;',
         innerHTML: 'הורדה לאקסל',
         onclick: 'downloadExcel()'
     });
@@ -1244,7 +1354,7 @@ const validateForm = (form) => {
     // Show/hide download button based on validation
     const downloadBtn = document.getElementById('downloadExcelBtn');
     if (downloadBtn) {
-        downloadBtn.style.display = isValid ? 'block' : 'none';
+        downloadBtn.style.display = isValid ? 'inline' : 'none';
     }
 
     return isValid;
@@ -1384,7 +1494,35 @@ const initializeSurvey = async () => {
 };
 
 // Start everything when DOM is ready
-document.addEventListener('DOMContentLoaded', initializeSurvey);
+document.addEventListener('DOMContentLoaded', async () => {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        
+        try {
+            // Show loading state
+            loadingOverlay.style.display = 'flex';
+            
+            // Initialize survey
+            await initializeSurvey();
+            
+            // Hide skeleton and show real content
+            document.body.classList.remove('skeleton-content');
+            document.body.classList.add('content-loaded');
+            
+            // Hide loading overlay with fade effect
+            loadingOverlay.style.opacity = '0';
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+            }, 300);
+            
+        } catch (error) {
+            console.error('Error initializing survey:', error);
+            showCustomPopup({
+                type: 'error',
+                title: 'שגיאה',
+                message: 'אירעה שגיאה בטעינת הטופס. אנא נסה שוב מאוחר יותר.'
+            });
+        }
+    });
     </script>
 </body>
 </html>
