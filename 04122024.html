@@ -923,11 +923,7 @@ const isSurveyAlreadyFilled = (surveyData, surveyParams) => {
     const managerFilled = surveyData.ManagerFilled;
     const employeeFilled = surveyData.EmployeeFilled;
     
-    console.log('Checking survey filled status:', {
-        position: surveyParams.position,
-        managerFilled,
-        employeeFilled
-    });
+
 
     // Check if manager survey is filled
     if (surveyParams.position === 'MANAGER' && managerFilled === "1") {
@@ -1437,7 +1433,7 @@ const handleSubmit = async (event) => {
 };
 const fetchSurveyData = async (params) => {
     try {
-        console.log('Sending request with params:', params);
+       
 
         const response = await fetch(`https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA`, {
             method: 'POST',
@@ -1457,7 +1453,7 @@ const fetchSurveyData = async (params) => {
         }
 
         const data = await response.json();
-        console.log('Received data:', data);
+       
 
         // Verify data structure
         if (!data || typeof data !== 'object') {
@@ -1480,67 +1476,42 @@ const fetchSurveyData = async (params) => {
 };
 // Fix 2: Add form validation
 const validateForm = (form) => {
-    // Get all question cards, not just required fields
-    const allQuestionCards = form.querySelectorAll('.question-card');
+    const requiredFields = form.querySelectorAll('[required]');
     let isValid = true;
     let firstErrorElement = null;
-    let lastAnsweredIndex = -1;
 
     // Reset any existing error states
     form.querySelectorAll('.error').forEach(element => {
         element.classList.remove('error');
     });
 
-    // Convert NodeList to Array for easier handling
-    const questionCardsArray = Array.from(allQuestionCards);
-
-    // First pass: find the last answered question
-    questionCardsArray.forEach((card, index) => {
-        const radioInputs = card.querySelectorAll('input[type="radio"]');
-        const textArea = card.querySelector('textarea');
-
-        if (radioInputs.length > 0) {
-            const isAnswered = Array.from(radioInputs).some(radio => radio.checked);
-            if (isAnswered) {
-                lastAnsweredIndex = index;
-            }
-        } else if (textArea && textArea.value.trim()) {
-            lastAnsweredIndex = index;
-        }
-    });
-
-    // Second pass: validate and find first unanswered required question
-    questionCardsArray.forEach((card, index) => {
-        // Only check questions up to the last answered one
-        if (index > lastAnsweredIndex + 1) {
-            return;
-        }
-
-        const radioInputs = card.querySelectorAll('input[type="radio"]');
-        const textArea = card.querySelector('textarea');
-        const isRequired = card.querySelector('[required]') !== null;
-
-        if (radioInputs.length > 0) {
-            const isAnswered = Array.from(radioInputs).some(radio => radio.checked);
-            if (!isAnswered && isRequired) {
+    requiredFields.forEach(field => {
+        if (field.type === 'radio') {
+            const groupName = field.name;
+            const checkedRadio = form.querySelector(`input[name="${groupName}"]:checked`);
+            if (!checkedRadio) {
                 isValid = false;
-                card.classList.add('error');
-                if (!firstErrorElement) {
-                    firstErrorElement = card;
+                const questionCard = field.closest('.question-card');
+                if (questionCard) {
+                    questionCard.classList.add('error');
+                    if (!firstErrorElement) {
+                        firstErrorElement = questionCard;
+                    }
                 }
             }
-        } else if (textArea) {
-            if (isRequired && !textArea.value.trim()) {
-                isValid = false;
-                card.classList.add('error');
+        } else if (!field.value.trim()) {
+            isValid = false;
+            const questionCard = field.closest('.question-card');
+            if (questionCard) {
+                questionCard.classList.add('error');
                 if (!firstErrorElement) {
-                    firstErrorElement = card;
+                    firstErrorElement = questionCard;
                 }
             }
         }
     });
 
-    // Scroll to first error if exists
+    // Only scroll to the first error
     if (firstErrorElement) {
         firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         setTimeout(() => {
@@ -1595,20 +1566,18 @@ const disableForm = (form) => {
 const initializeSurvey = async () => {
     try {
         const surveyParams = getSurveyParams();
-        console.log('Survey Params:', surveyParams);
-
+       
         let surveyData;
         try {
             surveyData = await fetchSurveyData(surveyParams);
-            console.log('Survey Data:', surveyData);
-
+          
             if (surveyData) {
                 // Populate employee info
                 populateEmployeeInfo(surveyData);
                 
                 // Check if survey is already filled
                 const isFilledOut = isSurveyAlreadyFilled(surveyData, surveyParams);
-                console.log('Is survey filled out:', isFilledOut);
+               
                 
                 if (isFilledOut) {
                     showSurveyFilledMessage(surveyParams.position);
