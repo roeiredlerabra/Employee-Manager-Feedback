@@ -759,13 +759,13 @@
                 }
                 
                 .table td::before {
-                    content: attr(data-label);
-                    position: absolute;
-                    right: 8px;
-                    width: 45%;
-                    text-align: right;
-                    font-weight: bold;
+                    content: attr(data-label); /* Display the value of the data-label attribute */
+                    display: block; /* Ensure the label appears on its own line */
+                    font-weight: bold; /* Make the label stand out */
+                    text-align: center; /* Align the label to the left for better readability */
+                    margin-bottom: 4px; /* Add space between the label and the content */
                 }
+                
             }
             
             /* Adjust text comparison cards */
