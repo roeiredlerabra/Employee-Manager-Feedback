@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אפיון מערכת משוב הדדי</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --heading-color: #1e40af;
+            --background-color: #f8fafc;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            background: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: var(--heading-color);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        h2 {
+            color: var(--heading-color);
+            font-size: 1.8rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            color: var(--heading-color);
+            font-size: 1.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            color: var(--heading-color);
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        section {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        ul, ol {
+            padding-right: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .table-section {
+            margin: 2rem 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            text-align: right;
+        }
+
+        th {
+            background-color: #f8fafc;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background-color: #f0f9ff;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>אפיון מערכת משוב הדדי</h1>
+
+        <section id="overview">
+            <h2>1. סקירה כללית</h2>
+
+            <h3>1.1 מטרת המערכת</h3>
+            <p>מערכת לניהול תהליך משוב דו-כיווני בין עובדים למנהלים בארגון, המאפשרת:</p>
+            <ul>
+                <li>מילוי משוב מקיף על ידי העובד והמנהל</li>
+                <li>השוואה בין המשובים וניתוח פערים</li>
+                <li>מעקב אחר התקדמות והתפתחות העובד</li>
+                <li>תיעוד ושמירת היסטוריית משובים</li>
+            </ul>
+
+            <h3>1.2 משתמשי המערכת</h3>
+            <ul>
+                <li>עובדים - מילוי משוב עצמי</li>
+                <li>מנהלים ישירים - מילוי משוב לעובדים וצפייה בהשוואות</li>
+                <li>מנהלי משאבי אנוש - ניהול וצפייה במשובים</li>
+            </ul>
+        </section>
+
+        <section id="functionality">
+            <h2>2. דרישות פונקציונליות</h2>
+
+            <h3>2.1 טופס משוב</h3>
+            
+            <h4>2.1.1 כניסה למערכת</h4>
+            <ul>
+                <li>כניסה באמצעות URL עם פרמטר מזהה</li>
+                <li>זיהוי אוטומטי של סוג המשתמש (עובד/מנהל)</li>
+                <li>הצגת פרטי העובד והמנהל המתאימים</li>
+            </ul>
+
+            <h4>2.1.2 קטגוריות הערכה</h4>
+            <div class="table-section">
+                <table>
+                    <tr>
+                        <th>קטגוריה</th>
+                        <th>תיאור</th>
+                        <th>סוג שאלות</th>
+                    </tr>
+                    <tr>
+                        <td>ידע מקצועי</td>
+                        <td>הערכת רמת הידע והמומחיות בתחום</td>
+                        <td>דירוג + טקסט</td>
+                    </tr>
+                    <tr>
+                        <td>מיומנויות עבודה</td>
+                        <td>הערכת יכולות ביצוע ויישום</td>
+                        <td>דירוג + טקסט</td>
+                    </tr>
+                    <tr>
+                        <td>גישה ומוטיבציה</td>
+                        <td>הערכת התנהלות ומוטיבציה</td>
+                        <td>דירוג + טקסט</td>
+                    </tr>
+                    <tr>
+                        <td>סגנון עבודה</td>
+                        <td>הערכת אופן העבודה וניהול זמן</td>
+                        <td>דירוג + טקסט</td>
+                    </tr>
+                    <tr>
+                        <td>מיומנויות ניהוליות</td>
+                        <td>הערכת יכולות ניהול (למנהלים)</td>
+                        <td>דירוג + טקסט</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h4>2.1.3 סולם דירוג</h4>
+            <div class="table-section">
+                <table>
+                    <tr>
+                        <th>דירוג</th>
+                        <th>תיאור</th>
+                    </tr>
+                    <tr>
+                        <td>4 - מצטיין</td>
+                        <td>ביצועים יוצאי דופן מעל ומעבר לציפיות</td>
+                    </tr>
+                    <tr>
+                        <td>3 - מעל לנדרש</td>
+                        <td>ביצועים טובים מעל הסטנדרט הנדרש</td>
+                    </tr>
+                    <tr>
+                        <td>2 - עבודה ע"פ הנדרש</td>
+                        <td>ביצועים תואמים את דרישות התפקיד</td>
+                    </tr>
+                    <tr>
+                        <td>1 - נדרש שיפור</td>
+                        <td>ביצועים מתחת לסטנדרט הנדרש</td>
+                    </tr>
+                    <tr>
+                        <td>0 - לא רלוונטי</td>
+                        <td>הנושא אינו רלוונטי לתפקיד</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <section id="technical">
+            <h2>3. דרישות טכניות</h2>
+
+            <h3>3.1 טכנולוגיות</h3>
+            <ul>
+                <li>HTML5 + CSS3</li>
+                <li>JavaScript</li>
+                <li>Bootstrap RTL</li>
+                <li>Chart.js לויזואליזציה</li>
+                <li>Azure Logic Apps לצד שרת</li>
+            </ul>
+
+            <h3>3.2 ממשקי API</h3>
+            <div class="highlight">
+                <h4>נקודות קצה:</h4>
+                <ul>
+                    <li>קבלת נתוני משוב: POST /getsurveydata</li>
+                    <li>שליחת משוב: POST /submitform</li>
+                    <li>קבלת נתוני השוואה: POST /summarize</li>
+                    <li>שליחת סיכום מנהל: POST /after-summarize</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="process">
+            <h2>4. תהליך עבודה</h2>
+
+            <h3>4.1 שלבי התהליך</h3>
+            <ol>
+                <li>
+                    <strong>התחלת תהליך</strong>
+                    <ul>
+                        <li>קבלת הודעה למילוי משוב</li>
+                        <li>כניסה למערכת עם מזהה ייחודי</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>מילוי משוב</strong>
+                    <ul>
+                        <li>מילוי טופס על ידי העובד והמנהל</li>
+                        <li>שמירת טיוטה אוטומטית</li>
+                        <li>וידוא שדות חובה</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>השוואה וניתוח</strong>
+                    <ul>
+                        <li>הצגת השוואה בין המשובים</li>
+                        <li>זיהוי פערים משמעותיים</li>
+                        <li>הפקת תובנות</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>סיכום ומסקנות</strong>
+                    <ul>
+                        <li>כתיבת סיכום על ידי המנהל</li>
+                        <li>הגדרת יעדים להמשך</li>
+                        <li>תיעוד החלטות</li>
+                    </ul>
+                </li>
+            </ol>
+        </section>
+
+        <section id="security">
+            <h2>5. אבטחה ופרטיות</h2>
+            
+            <h3>5.1 הרשאות</h3>
+            <ul>
+                <li>גישה מבוססת תפקיד</li>
+                <li>הגבלת צפייה בנתונים</li>
+                <li>תיעוד פעולות</li>
+            </ul>
+
+            <h3>5.2 אבטחת מידע</h3>
+            <ul>
+                <li>הצפנת נתונים</li>
+                <li>HTTPS בלבד</li>
+                <li>וולידציה בצד שרת</li>
+                <li>טיפול בשגיאות</li>
+            </ul>
+        </section>
+    </div>
+</body>
+</html>
