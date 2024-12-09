@@ -30,7 +30,18 @@
             </div>
         </div>
     </header>
-
+    <!-- Login Overlay -->
+    <div id="loginOverlay">
+        <div class="login-container">
+            <img src="https://raw.githubusercontent.com/roeiredlerabra/abra-on-boarding/main/img/_master_logo_%D7%90%D7%91%D7%A8%D7%90%20%D7%91%D7%9C%D7%91%D7%9F.gif" alt="Company Logo">
+            <div class="mb-3">
+                <input type="password" id="passwordInput" class="form-control text-center" placeholder="הזן סיסמה" aria-label="Password">
+            </div>
+            <button id="checkPasswordBtn" class="btn btn-primary">
+                בדוק הרשאה
+            </button>
+        </div>
+    </div>
     <!-- Main Content -->
     <main class="main-container">
         <!-- Employee Info Section -->
@@ -132,7 +143,43 @@
         const API_ENDPOINT = 'https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA';
 
         // Categories configuration (copy your existing categories object)
+        async function checkPassword() {
+    const password = document.getElementById('passwordInput').value;
+    const urlParams = new URLSearchParams(window.location.search);
+    const param = urlParams.get('param');
+    const surveyId = new URLSearchParams(window.location.search).get('param').split('-')[0];
 
+    try {
+        const response = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: "password_check",
+                param: surveyId,
+                password: password
+            })
+        });
+
+        if (response.ok) {
+            // Hide login overlay and show main content
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.querySelector('.main-container').style.display = 'block';
+            document.querySelector('.page-header').style.display = 'block';
+            document.querySelector('.page-footer').style.display = 'block';
+            // Initialize the main page content
+            initializeComparison();
+        } else {
+            alert('אין גישה');
+        }
+    } catch (error) {
+        console.error('Error checking password:', error);
+        alert('אירעה שגיאה בבדיקת ההרשאה');
+    }
+}
+
+           
         const categories = {
             'ידע מקצועי': [
                 {
@@ -800,7 +847,17 @@
         };
 
         // Start everything when DOM is ready
-        document.addEventListener('DOMContentLoaded', initializeComparison);
+        document.addEventListener('DOMContentLoaded', () => {
+    // Password button click handler
+    document.getElementById('checkPasswordBtn').addEventListener('click', checkPassword);
+    
+    // Enter key handler for password input
+    document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            checkPassword();
+        }
+    });
+});
     </script>
 </body>
 
