@@ -757,6 +757,7 @@
                 document.getElementById('employeeHireDate').textContent = new Date(data.Working_x0020_Start_x0020_Date).toLocaleDateString('he-IL');
                 document.getElementById('managerName').textContent = data.Manager?.DisplayName || '';
                 document.getElementById('managerDepartment').textContent = data.Manager?.Department || '';
+                document.getElementById('managerEmail').textContent = data.Manager?.Email || '';
 
                 // Create comparison sections
                 const surveyContent = document.getElementById('surveyContent');
