@@ -925,69 +925,89 @@
         };
         // Add this function to your JavaScript
         const downloadExcel = () => {
-            // Get all form data
-            const form = document.getElementById('evaluationForm');
-            const formData = new FormData(form);
-            const answers = {};
-            formData.forEach((value, key) => {
-                answers[key] = value;
-            });
+    // Get survey parameters and form data
+    const surveyParams = getSurveyParams();
+    const form = document.getElementById('evaluationForm');
+    const formData = new FormData(form);
+    const answers = {};
+    formData.forEach((value, key) => {
+        answers[key] = value;
+    });
 
-            // Create worksheet data
-            const wsData = [];
+    // Create worksheet data
+    const wsData = [];
 
-            // Add header row
-            wsData.push(['קטגוריה', 'שאלה', 'תשובה']);
+    // Add header row
+    wsData.push(['קטגוריה', 'שאלה', 'תשובה']);
 
-            // Add employee info
-            wsData.push(['פרטי עובד', 'שם', document.getElementById('employeeName').textContent]);
-            wsData.push(['פרטי עובד', 'מחלקה', document.getElementById('employeeDepartment').textContent]);
-            wsData.push(['פרטי עובד', 'דואר אלקטרוני', document.getElementById('employeeEmail').textContent]);
-            wsData.push(['פרטי עובד', 'תאריך תחילת עבודה', document.getElementById('employeeHireDate').textContent]);
-            wsData.push([]);  // Empty row for spacing
+    // Add employee info section
+    wsData.push(['פרטי עובד', 'שם', document.getElementById('employeeName').textContent]);
+    wsData.push(['פרטי עובד', 'מחלקה', document.getElementById('employeeDepartment').textContent]);
+    wsData.push(['פרטי עובד', 'דואר אלקטרוני', document.getElementById('employeeEmail').textContent]);
+    wsData.push(['פרטי עובד', 'תאריך תחילת עבודה', document.getElementById('employeeHireDate').textContent]);
+    wsData.push([]);  // Empty row for spacing
 
-            // Add survey answers
-            Object.entries(categories).forEach(([category, questions]) => {
-                questions.forEach(question => {
-                    const answer = answers[question.schema];
-                    let displayAnswer = answer;
+    // Add manager info section
+    wsData.push(['פרטי מנהל', 'שם', document.getElementById('managerName').textContent]);
+    wsData.push(['פרטי מנהל', 'מחלקה', document.getElementById('managerDepartment').textContent]);
+    wsData.push(['פרטי מנהל', 'דואר אלקטרוני', document.getElementById('managerEmail').textContent]);
+    wsData.push([]);  // Empty row for spacing
 
-                    if (question.type === 'rating' && answer) {
-                        displayAnswer = SURVEY_CONFIG.ratingScale[answer];
-                    }
+    // Add evaluation period and submission date
+    wsData.push(['פרטי הערכה', 'תקופת הערכה', document.getElementById('evaluationPeriod').textContent]);
+    wsData.push(['פרטי הערכה', 'תאריך מילוי', document.getElementById('submissionDate').textContent]);
+    wsData.push([]);  // Empty row for spacing
 
-                    wsData.push([
-                        category,
-                        question.question,
-                        displayAnswer || ''
-                    ]);
-                });
-                wsData.push([]); // Empty row between categories
-            });
+    // Add survey answers
+    Object.entries(categories).forEach(([category, questions]) => {
+        questions.forEach(question => {
+            const answer = answers[question.schema];
+            if (answer) { // Only add if there's an answer
+                // Get the correct question text based on position
+                const questionText = surveyParams.position === 'EMPLOYEE' ? 
+                    question.E_question : 
+                    question.M_question;
 
-            // Create workbook
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.aoa_to_sheet(wsData);
+                // Format the answer based on question type
+                let displayAnswer = answer;
+                if (question.type === 'rating' && answer) {
+                    displayAnswer = SURVEY_CONFIG.ratingScale[answer];
+                }
 
-            // Set RTL and column widths
-            ws['!dir'] = 'rtl';
-            ws['!cols'] = [
-                { wch: 20 },  // Category width
-                { wch: 50 },  // Question width
-                { wch: 30 }   // Answer width
-            ];
+                wsData.push([
+                    category,
+                    questionText,
+                    displayAnswer || ''
+                ]);
+            }
+        });
+        wsData.push([]); // Empty row between categories
+    });
 
-            // Add worksheet to workbook
-            XLSX.utils.book_append_sheet(wb, ws, "הערכת עובד");
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-            // Generate filename
-            const employeeName = document.getElementById('employeeName').textContent;
-            const date = new Date().toLocaleDateString('he-IL').replace(/\./g, '-');
-            const filename = `הערכת_עובד_${employeeName}_${date}.xlsx`;
+    // Set RTL and column widths
+    ws['!dir'] = 'rtl';
+    ws['!cols'] = [
+        { wch: 20 },  // Category width
+        { wch: 50 },  // Question width
+        { wch: 30 }   // Answer width
+    ];
 
-            // Download file
-            XLSX.writeFile(wb, filename);
-        };
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "הערכת עובד");
+
+    // Generate filename with position indicator
+    const employeeName = document.getElementById('employeeName').textContent;
+    const date = new Date().toLocaleDateString('he-IL').replace(/\./g, '-');
+    const position = surveyParams.position === 'EMPLOYEE' ? 'עובד' : 'מנהל';
+    const filename = `הערכת_${position}_${employeeName}_${date}.xlsx`;
+
+    // Download file
+    XLSX.writeFile(wb, filename);
+};
 
 
 
