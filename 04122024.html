@@ -467,6 +467,27 @@
                     required: true,
                     ariaLabel: 'הישגים בולטים',
                     description: 'פירוט הישגים משמעותיים בתקופה האחרונה'
+                },
+                
+                {
+                    M_question: 'פוקוס לשנה הבאה- על מה את.ה מתכנן.ת להתמקד בשנה הקרובה בהיבטים מקצועיים ובינאישיים?',
+                    E_question: 'פוקוס לשנה הבאה- על מה את.ה מתכנן.ת להתמקד בשנה הקרובה בהיבטים מקצועיים ובינאישיים?',
+                    type: 'text',
+                    roles: [0, 1],
+                    schema: 'future_goals',
+                    required: false,
+                    ariaLabel: 'יעדים לתקופה הבאה',
+                    description: 'הגדרת יעדים לתקופה הבאה'
+                },
+                {
+                    M_question: 'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?',
+                    E_question:'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?' ,
+                    type: 'text',
+                    roles: [0, 1],
+                    schema: 'additional_comments',
+                    required: false,
+                    ariaLabel: 'הערות נוספות',
+                    description: 'מקום להערות ותובנות נוספות'
                 }
             ],
             'מיומנויות ניהוליות': [
@@ -552,41 +573,9 @@
                     description: 'הערכת יכולת הפקת לקחים ויישומם'
                 }
                 
-            ],
-          
-            'סיכום והערות': [
-            
-                {
-                    M_question: 'תחומים לשיפור – מהם התחומים העיקריים הדורשים שיפור?',
-                    E_question: 'תחומים לשיפור – אילו תחומים את.ה מזהה שבהם תוכל.י להשתפר? מה תעשה.י כדי להגיע לשם? תן דוגמאות.',
-                    type: 'text',
-                    roles: [0, 1],
-                    schema: 'improvement_needed',
-                    required: true,
-                    ariaLabel: 'תחומים לשיפור',
-                    description: 'פירוט תחומים הדורשים שיפור והתפתחות'
-                },
-                {
-                    M_question: 'פוקוס לשנה הבאה- על מה את.ה מתכנן.ת להתמקד בשנה הקרובה בהיבטים מקצועיים ובינאישיים?',
-                    E_question: 'פוקוס לשנה הבאה- על מה את.ה מתכנן.ת להתמקד בשנה הקרובה בהיבטים מקצועיים ובינאישיים?',
-                    type: 'text',
-                    roles: [0, 1],
-                    schema: 'future_goals',
-                    required: false,
-                    ariaLabel: 'יעדים לתקופה הבאה',
-                    description: 'הגדרת יעדים לתקופה הבאה'
-                },
-                {
-                    M_question: 'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?',
-                    E_question:'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?' ,
-                    type: 'text',
-                    roles: [0, 1],
-                    schema: 'additional_comments',
-                    required: false,
-                    ariaLabel: 'הערות נוספות',
-                    description: 'מקום להערות ותובנות נוספות'
-                }
             ]
+          
+            
         };
         const isSurveyAlreadyFilled = (surveyData, surveyParams) => {
             if (!surveyData || !surveyParams) return false;
