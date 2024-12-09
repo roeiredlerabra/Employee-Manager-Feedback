@@ -132,10 +132,12 @@
         const API_ENDPOINT = 'https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA';
 
         // Categories configuration (copy your existing categories object)
+
         const categories = {
             'ידע מקצועי': [
                 {
-                    question: 'בקיאות במוצר – עד כמה העובד מבין לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?',
+                    M_question: 'בקיאות במוצר – עד כמה העובד.ת מבין.ה לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?',
+                    E_question: 'בקיאות במוצר – עד כמה את.ה מבין.ה לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'product_knowledge',
@@ -144,7 +146,8 @@
                     description: 'הערכת רמת ההבנה והידע במוצר ורכיביו'
                 },
                 {
-                    question: 'הכרות עם מתודולוגיות הפרויקט – כיצד העובד מיישם את שיטות העבודה המתודולוגיות בפרויקטים השונים?',
+                    M_question: 'הכרות עם מתודולוגיות הפרויקט – באיזו מידה העובד.ת מיישם.ת את שיטות העבודה המתודולוגיות בפרויקטים השונים?',
+                    E_question: 'הכרות עם מתודולוגיות הפרויקט – באיזו מידה את.ה מיישם.ת את שיטות העבודה המתודולוגיות בפרויקטים השונים?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'methodology_knowledge',
@@ -153,7 +156,8 @@
                     description: 'הערכת יישום שיטות העבודה בפרויקטים'
                 },
                 {
-                    question: 'הכרות מקצועית עם סביבת הלקוחות – עד כמה העובד מבין את הצרכים העסקיים של הלקוחות ומתאים את הפתרונות בהתאם?',
+                    M_question: 'הכרות מקצועית עם סביבת הלקוחות – עד כמה העובד.ת מבין.ה את הצרכים העסקיים של הלקוחות ומתאים את הפתרונות בהתאם?',
+                    E_question: 'הכרות מקצועית עם סביבת הלקוחות – עד כמה את.ה מבין.ה את הצרכים העסקיים של הלקוחות ומתאים.ה את הפתרונות בהתאם?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'client_environment_knowledge',
@@ -162,7 +166,8 @@
                     description: 'הערכת הבנת צרכי הלקוח והתאמת פתרונות'
                 },
                 {
-                    question: 'זיהוי הזדמנויות אצל הלקוח – האם העובד מזהה אפשרויות להרחבת פתרונות ושירותים קיימים?',
+                    M_question: 'זיהוי הזדמנויות אצל הלקוח – עד כמה העובד.ת מזהה אפשרויות להרחבת פתרונות ושירותים קיימים?',
+                    E_question:'זיהוי הזדמנויות אצל הלקוח – עד כמה את.ה מזהה אפשרויות להרחבת פתרונות ושירותים קיימים? ' ,
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'client_opportunities',
@@ -171,7 +176,8 @@
                     description: 'הערכת יכולת זיהוי הזדמנויות עסקיות'
                 },
                 {
-                    question: 'השתתפות בוובינרים / העשרות מקצועיות – כיצד העובד משתתף בלמידה והעשרה מתמשכת?',
+                    M_question: 'השתתפות בוובינרים / העשרות מקצועיות – עד כמה העובד.ת משתתף.ת בלמידה והעשרה מתמשכת? עד כמה יוזם.ת או מגיב.ה להזדמנויות כאלה?',
+                    E_question: 'השתתפות בוובינרים / העשרות מקצועיות – עד כמה את.ה משתתף.ת בלמידה והעשרה מתמשכת? עד כמה יוזם.ת הזדמנויות כאלה?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'professional_development',
@@ -180,7 +186,8 @@
                     description: 'הערכת מעורבות בפעילויות למידה והתפתחות'
                 },
                 {
-                    question: 'הכרות עם מוצרים משלימים – עד כמה העובד מכיר מוצרים רלוונטיים נוספים?',
+                    M_question: 'הכרות עם מוצרים משלימים – עד כמה העובד.ת מכיר.ה מוצרים רלוונטיים נוספים שיכולים להשתלב עם הפרויקטים של מיקרוסופט?',
+                    E_question: 'הכרות עם מוצרים משלימים – עד כמה את.ה מכיר.ה מוצרים רלוונטיים נוספים שיכולים להשתלב עם הפרויקטים של מיקרוסופט?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'complementary_products',
@@ -191,7 +198,8 @@
             ],
             'מיומנויות עבודה': [
                 {
-                    question: 'יכולת ניהול עצמי – האם העובד מצליח לעבוד בצורה עצמאית תוך ייזום פתרונות?',
+                    M_question: 'יכולת ניהול עצמי – עד כמה העובד.ת מצליח.ה לעבוד בצורה עצמאית תוך ייזום פתרונות, או זקוק.ה להכוונה מתמדת?',
+                    E_question: 'יכולת ניהול עצמי – עד כמה את.ה מצליח.ה לעבוד בצורה עצמאית תוך ייזום פתרונות, או זקוק.ה להכוונה מתמדת?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'self_management',
@@ -200,7 +208,8 @@
                     description: 'הערכת יכולת עבודה עצמאית וייזום'
                 },
                 {
-                    question: 'יכולת עבודה תחת לחץ – כיצד העובד מתמודד עם משימות דחופות או תחת עומס?',
+                    M_question: 'יכולת עבודה תחת לחץ –באיזו מידה מצליח.ה העובד.ת להתתמודד עם משימות דחופות או תחת עומס? ',
+                    E_question:'יכולת עבודה תחת לחץ – באיזו מידה את.ה מתמודד.ת עם משימות דחופות או תחת עומס?' ,
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'pressure_handling',
@@ -209,7 +218,8 @@
                     description: 'הערכת התמודדות עם מצבי לחץ ועומס'
                 },
                 {
-                    question: 'אחריות מקצועית – האם העובד לוקח אחריות מלאה על המשימות שלו?',
+                    M_question: 'אחריות מקצועית –עד כמה העובד.ת לוקח.ת אחריות מלאה על המשימות שלו.ה, כולל תיקון טעויות ושיפור?',
+                    E_question: 'אחריות מקצועית – עד כמה את.ה לוקח.ת אחריות מלאה על המשימות שלך, כולל תיקון טעויות ושיפור?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'professional_responsibility',
@@ -218,7 +228,8 @@
                     description: 'הערכת רמת האחריות והמחויבות למשימות'
                 },
                 {
-                    question: 'שיתוף פעולה ועבודת צוות – באיזו מידה העובד משתף פעולה ומכבד דעות שונות בצוות?',
+                    M_question: 'שיתוף פעולה ועבודת צוות – באיזו מידה העובד.ת משתף.ת פעולה ומכבד.ת דעות שונות בצוות?',
+                    E_question: 'שיתוף פעולה ועבודת צוות – באיזו מידה את.ה משתף.ת פעולה ומכבד.ת דעות שונות בצוות?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'team_collaboration',
@@ -227,7 +238,8 @@
                     description: 'הערכת יכולת עבודה בצוות ושיתוף פעולה'
                 },
                 {
-                    question: 'הקפדה על נהלים – באיזו מידה העובד מקפיד על נהלי העבודה?',
+                    M_question: 'הקפדה על נהלים – באיזו מידה העובד.ת מקפיד.ה על נהלי העבודה?',
+                    E_question: 'הקפדה על נהלים – באיזו מידה את.ה מקפיד.ה על נהלי העבודה?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'procedure_adherence',
@@ -236,7 +248,8 @@
                     description: 'הערכת מידת ההקפדה על נהלי העבודה'
                 },
                 {
-                    question: 'תקשורת אפקטיבית – כיצד העובד מנהל תקשורת עם צוותים אחרים?',
+                    M_question: 'תקשורת אפקטיבית – באיזו מידה מצליח.ה העובד.ת לנהל תקשורת אפקטיבית עם ממשקי העבודה?',
+                    E_question: 'תקשורת אפקטיבית – באיזו מידה את.ה מנהל.ת תקשורת אפקטיבית עם ממשקי עבודה?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'effective_communication',
@@ -247,7 +260,8 @@
             ],
             'גישה ומוטיבציה': [
                 {
-                    question: 'מעורבות חברתית – עד כמה העובד תורם לאווירה החברתית והמקצועית בצוות?',
+                    M_question: 'מעורבות חברתית – עד כמה העובד.ת תורם.ת לאווירה החברתית והמקצועית בצוות או בחטיבה?',
+                    E_question: 'מעורבות חברתית – עד כמה את.ה תורם.ת לאווירה החברתית והמקצועית בצוות או בחטיבה?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'social_involvement',
@@ -256,7 +270,8 @@
                     description: 'הערכת תרומה לאווירה החברתית בצוות'
                 },
                 {
-                    question: 'קבלת ביקורת – כיצד העובד מתמודד עם ביקורות ומשובים?',
+                    M_question: 'קבלת ביקורת – כיצד העובד.ת מתמודד עם ביקורות ומשובים? ',
+                    E_question:'קבלת ביקורת – באיזו מידה את.ה מתמודד.ת עם קבלת ביקורת בונה ומשובים?' ,
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'feedback_reception',
@@ -265,7 +280,8 @@
                     description: 'הערכת התמודדות עם משוב וביקורת'
                 },
                 {
-                    question: 'מוטיבציה לייעול ושיפור – באיזו מידה העובד מעלה רעיונות חדשים לייעול תהליכים?',
+                    M_question: 'מוטיבציה לייעול ושיפור – באיזו מידה העובד.ת תורם.ת לשיפור העבודה תוך העלאת רעיונות חדשים או יוזמות?',
+                    E_question: 'מוטיבציה לייעול ושיפור – עד כמה, לתחושתך, את.ה תורם.ת לשיפור העבודה תוך העלאת רעיונות חדשים או יוזמות?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'improvement_motivation',
@@ -274,7 +290,8 @@
                     description: 'הערכת יוזמה לשיפור תהליכים'
                 },
                 {
-                    question: 'למידה עצמאית – האם העובד מראה יוזמה ללמידה מתמשכת ללא צורך בהנחיה?',
+                    M_question: 'למידה עצמאית – עד כמה העובד.ת מראה יוזמה ללמידה מתמשכת ללא צורך בהנחיה?',
+                    E_question: 'למידה עצמאית – עד כמה את.ה מראה יוזמה ללמידה מתמשכת ללא צורך בהנחיה?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'self_learning',
@@ -285,7 +302,8 @@
             ],
             'סגנון עבודה': [
                 {
-                    question: 'סדר וארגון בעבודה – עד כמה העובד שומר על סביבת עבודה מאורגנת ומסודרת?',
+                    M_question: 'סדר וארגון בעבודה – עד כמה העובד.ת שומר.ת על סביבת עבודה מאורגנת ומסודרת, תוך ניהול זמן ומשימות באופן יעיל?',
+                    E_question: 'סדר וארגון בעבודה – עד כמה את.ה שומר.ת על סביבת עבודה מאורגנת ומסודרת, תוך ניהול זמן ומשימות באופן יעיל?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'work_organization',
@@ -294,7 +312,8 @@
                     description: 'הערכת ארגון וסדר בסביבת העבודה'
                 },
                 {
-                    question: 'עמידה בזמנים – באיזו מידה העובד מקפיד על עמידה בלוחות זמנים?',
+                    M_question: 'עמידה בזמנים – באיזו מידה העובד.ת מקפיד.ה על עמידה בלוחות זמנים והגשת משימות בזמן?',
+                    E_question: 'עמידה בזמנים – באיזו מידה את.ה מקפיד.ה על עמידה בלוחות זמנים והגשת משימות בזמן?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'time_management',
@@ -303,7 +322,8 @@
                     description: 'הערכת עמידה בלוחות זמנים'
                 },
                 {
-                    question: 'ניהול פרויקטים – האם העובד מצליח לנהל פרויקטים תוך שמירה על יעדים ברורים?',
+                    M_question: 'ניהול פרויקטים – באיזו מידה העובד.ת מצליח.ה לנהל פרויקטים תוך שמירה על יעדים ברורים ותוצרים איכותיים?',
+                    E_question:'ניהול פרויקטים – באיזו מידה את.ה מצליח.ה לנהל פרויקטים תוך שמירה על יעדים ברורים ותוצרים איכותיים?',
                     type: 'rating',
                     roles: [0, 1],
                     schema: 'project_management',
@@ -312,18 +332,10 @@
                     description: 'הערכת יכולת ניהול פרויקטים ועמידה ביעדים'
                 }
             ],
-            'מדידה עצמית': [
+            'הערכה מסכמת': [
                 {
-                    question: 'רמת שביעות רצון מהביצועים – כיצד את/ה מדרג את שביעות הרצון הכללית שלך?',
-                    type: 'rating',
-                    roles: [0, 1],
-                    schema: 'performance_satisfaction',
-                    required: true,
-                    ariaLabel: 'דירוג שביעות רצון עצמית',
-                    description: 'הערכת שביעות רצון כללית מביצועים'
-                },
-                {
-                    question: 'תחומים לשיפור – אילו תחומים את/ה מזהה שבהם תוכל/י להשתפר?',
+                    M_question: 'תחומים לשיפור – אילו תחומים אצל העובד.ת את.ה מזהה שבהם יוכל.תוכל להשתפר? מה צריך.ה לעשות כדי להגיע לשם? תן דוגמאות.',
+                    E_question: 'תחומים לשיפור – אילו תחומים את.ה מזהה שבהם תוכל.י להשתפר? מה תעשה.י כדי להגיע לשם? תן דוגמאות.',
                     type: 'text',
                     roles: [0, 1],
                     schema: 'improvement_areas',
@@ -332,18 +344,41 @@
                     description: 'פירוט תחומים הדורשים שיפור'
                 },
                 {
-                    question: 'הישגים בולטים – מהם ההישגים המרכזיים שהשגת בתקופה האחרונה?',
+                    M_question: 'הישגים בולטים – מהם ההישגים המרכזיים שהעובד.ת השיג.ה בתקופה האחרונה? תן דוגמאות.',
+                    E_question: 'הישגים בולטים – מהם ההישגים המרכזיים שהשגת בתקופה האחרונה? תן דוגמאות.',
                     type: 'text',
                     roles: [0, 1],
                     schema: 'key_achievements',
                     required: true,
                     ariaLabel: 'הישגים בולטים',
                     description: 'פירוט הישגים משמעותיים בתקופה האחרונה'
+                },
+                
+                {
+                    M_question: 'פוקוס לשנה הבאה- על מה תשמח.י לראות את העובד.ת מתמקד.ת בשנה הקרובה בהיבטים מקצועיים ובינאישיים?',
+                    E_question: 'פוקוס לשנה הבאה- על מה את.ה מתכנן.ת להתמקד בשנה הקרובה בהיבטים מקצועיים ובינאישיים?',
+                    type: 'text',
+                    roles: [0, 1],
+                    schema: 'future_goals',
+                    required: true,
+                    ariaLabel: 'יעדים לתקופה הבאה',
+                    description: 'הגדרת יעדים לתקופה הבאה'
+                },
+                {
+                    M_question: 'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?',
+                    E_question:'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?' ,
+                    type: 'text',
+                    roles: [0, 1],
+                    schema: 'additional_comments',
+                    required: true,
+                    ariaLabel: 'הערות נוספות',
+                    description: 'מקום להערות ותובנות נוספות'
                 }
             ],
             'מיומנויות ניהוליות': [
                 {
-                    question: 'קבלת החלטות – קבלת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב',
+                    M_question: 'קבלת החלטות – כמנהל.ת פרויקטים או צוות, עד כמה העובד.ת מקבל.ת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב? ',
+                    E_question: 'קבלת החלטות – כמנהל.ת פרויקטים או צוות, עד כמה את.ה מקבל.ת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב?   ',
                     type: 'rating',
                     roles: [1],
                     schema: 'decision_making',
@@ -352,7 +387,8 @@
                     description: 'הערכת יכולת קבלת החלטות מהירה ומדויקת'
                 },
                 {
-                    question: 'ניהול זמן וסדר עדיפויות – ניהול זמן/משימות אפקטיבי של הצוות',
+                    M_question: 'באיזו מידה העובד.ת מצליח.ה לדאוג לניהול זמן או משימות אפקטיבי של הצוות, תוך הקפדה עלל סדר עדיפויות ברור? ',
+                    E_question:'ניהול זמן וסדר עדיפויות – באיזו מידה את.ה מצליח.ה לדאוג לניהול זמן או משימות אפקטיבי של הצוות, תוך הקפדה עלל סדר עדיפויות ברור? ' ,
                     type: 'rating',
                     roles: [1],
                     schema: 'time_priority_management',
@@ -361,7 +397,8 @@
                     description: 'הערכת יכולת ניהול זמן ותעדוף משימות'
                 },
                 {
-                    question: 'גמישות והתאמה לשינויים – יכולת הסתגלות והתמודדות עם שינויים בפרויקטים',
+                    M_question: 'גמישות והתאמה לשינויים – באיזו מידה העובד.ת מצליח.ה להסתגל ולהתמודד עם שינויים בפרויקטים או בסדרי העדיפויות, תוך הובלת הצוות בהתאם? ',
+                    E_question: 'גמישות והתאמה לשינויים – באיזו מידה את.ה מצליח.ה להסתגל ולהתמודד עם שינויים בפרויקטים או בסדרי העדיפויות, תוך הובלת הצוות בהתאם? ',
                     type: 'rating',
                     roles: [1],
                     schema: 'change_adaptation',
@@ -370,7 +407,8 @@
                     description: 'הערכת יכולת הסתגלות לשינויים'
                 },
                 {
-                    question: 'הצבת יעדים ברורים – באיזו מידה המנהל מציב לעובדיו יעדים ברורים ומדידים?',
+                    M_question: 'באיזו מידה העובד.ת כמנהל.ת פרויקט או צוות, מציב.ה לעובדיו יעדים ברורים, מדידים וברי השגה?',
+                    E_question:'הצבת יעדים ברורים – באיזו מידה את.ה כמנהל.ת פרויקט או צוות, מציב.ה לעובדיו יעדים ברורים, מדידים וברי השגה? ' ,
                     type: 'rating',
                     roles: [1],
                     schema: 'goal_setting',
@@ -379,7 +417,8 @@
                     description: 'הערכת יכולת הגדרת יעדים ברורים לצוות'
                 },
                 {
-                    question: 'יכולת להניע את העובדים לביצועים מיטביים',
+                    M_question: 'באיזו מידה העובד.ת מצליח.ה לגרום לעובדים.ות לבצע את משימותיהם בצורה הטובה ביותר?',
+                    E_question: 'יכולת הנעה– באיזו מידה את.ה כמנהל.ת מצליח.ה לגרום לעובדים.ות לבצע את משימותיהם בצורה הטובה ביותר? ',
                     type: 'rating',
                     roles: [1],
                     schema: 'team_motivation',
@@ -389,7 +428,8 @@
                     description: 'הערכת יכולת הנעת העובדים להשגת ביצועים מיטביים'
                 },
                 {
-                    question: 'ניצול משאבים – האם המנהל מנצל את המשאבים העומדים לרשותו באופן אפקטיבי?',
+                    M_question: 'ניצול משאבים – עד כמה העובד.ת מצליח.ה לנצל את המשאבים העומדים לרשותו (כגון תקציב ולוחות זמנים) באופן אפקטיבי? ',
+                    E_question: 'ניצול משאבים – עד כמה אתה כמנהל.ת מצליח.ה לנצל את המשאבים העומדים לרשותך (כגון תקציב ולוחות זמנים) באופן אפקטיבי? ',
                     type: 'rating',
                     roles: [1],
                     schema: 'resource_utilization',
@@ -398,7 +438,8 @@
                     description: 'הערכת יכולת ניצול יעיל של משאבי הארגון'
                 },
                 {
-                    question: 'קידום ופיתוח עובדים – באיזו מידה המנהל מצליח לקדם ולפתח את עובדיו?',
+                    M_question: 'קידום ופיתוח עובדים – באיזו מידה העובד.ת כמנהל.ת פרויקט או צוות, מצליח.ה לקדם את עובדיו, לפתח אותם מקצועית ואישית?',
+                    E_question: 'קידום ופיתוח עובדים – באיזו מידה אתה כמנהל.ת פרויקט או צוות, מצליח.ה לקדם את עובדיך, לפתח אותם מקצועית ואישית? ',
                     type: 'rating',
                     roles: [1],
                     schema: 'employee_development',
@@ -407,111 +448,21 @@
                     description: 'הערכת יכולת פיתוח וקידום הצוות'
                 },
                 {
-                    question: 'למידה מלקחים – האם המנהל לומד מהצלחות ואי-הצלחות ומיישם את הלקחים?',
+                    M_question: 'עד כמה העובד.ת מצליח.ה ללמוד מהצלחות ואי-הצלחות, תוך יישום הלקחים לצורך שיפור ביצועים עתידיים? ',
+                    E_question:'הפקת לקחים –  עד כמה את.ה מצליח.ה ללמוד מהצלחות ואי-הצלחות, תוך יישום הלקחים לצורך שיפור ביצועים עתידיים? ' ,
                     type: 'rating',
                     roles: [1],
                     schema: 'lessons_learned',
                     required: true,
                     ariaLabel: 'דירוג למידה מלקחים',
                     description: 'הערכת יכולת הפקת לקחים ויישומם'
-                },
-                {
-                    question: 'ניהול קונפליקטים – כיצד המנהל מתמודד עם מצבי קונפליקט בצוות?',
-                    type: 'rating',
-                    roles: [1],
-                    schema: 'conflict_management',
-                    required: true,
-                    ariaLabel: 'דירוג ניהול קונפליקטים',
-                    description: 'הערכת יכולת פתרון קונפליקטים וניהול מחלוקות'
-                },
-                {
-                    question: 'תכנון אסטרטגי – האם המנהל מפתח ומיישם תכניות אסטרטגיות ארוכות טווח?',
-                    type: 'rating',
-                    roles: [1],
-                    schema: 'strategic_planning',
-                    required: true,
-                    ariaLabel: 'דירוג תכנון אסטרטגי',
-                    description: 'הערכת יכולת תכנון וחשיבה אסטרטגית'
                 }
-            ],
-            'מדדי ביצוע': [
-                {
-                    question: 'עמידה ביעדים – באיזו מידה הושגו היעדים שהוגדרו לתקופה זו?',
-                    type: 'rating',
-                    roles: [0, 1],
-                    schema: 'goals_achievement',
-                    required: true,
-                    ariaLabel: 'דירוג עמידה ביעדים',
-                    description: 'הערכת מידת העמידה ביעדים שהוגדרו'
-                },
-                {
-                    question: 'איכות העבודה – מהי רמת הדיוק והאיכות בתוצרי העבודה?',
-                    type: 'rating',
-                    roles: [0, 1],
-                    schema: 'work_quality',
-                    required: true,
-                    ariaLabel: 'דירוג איכות עבודה',
-                    description: 'הערכת איכות ודיוק בביצוע המשימות'
-                },
-                {
-                    question: 'יעילות בעבודה – האם העבודה מתבצעת באופן יעיל ואפקטיבי?',
-                    type: 'rating',
-                    roles: [0, 1],
-                    schema: 'work_efficiency',
-                    required: true,
-                    ariaLabel: 'דירוג יעילות בעבודה',
-                    description: 'הערכת יעילות ואפקטיביות בביצוע משימות'
-                },
-                {
-                    question: 'תרומה לצוות – מהי מידת התרומה הכוללת לצוות ולארגון?',
-                    type: 'rating',
-                    roles: [0, 1],
-                    schema: 'team_contribution',
-                    required: true,
-                    ariaLabel: 'דירוג תרומה לצוות',
-                    description: 'הערכת התרומה הכוללת לצוות ולארגון'
-                }
-            ],
-            'סיכום והערות': [
-                {
-                    question: 'נקודות חוזק עיקריות – מהן נקודות החוזק המשמעותיות ביותר?',
-                    type: 'text',
-                    roles: [0, 1],
-                    schema: 'main_strengths',
-                    required: true,
-                    ariaLabel: 'נקודות חוזק עיקריות',
-                    description: 'פירוט נקודות החוזק המשמעותיות'
-                },
-                {
-                    question: 'תחומים לשיפור – מהם התחומים העיקריים הדורשים שיפור?',
-                    type: 'text',
-                    roles: [0, 1],
-                    schema: 'improvement_needed',
-                    required: true,
-                    ariaLabel: 'תחומים לשיפור',
-                    description: 'פירוט תחומים הדורשים שיפור והתפתחות'
-                },
-                {
-                    question: 'יעדים לתקופה הבאה – מהם היעדים המרכזיים לתקופת ההערכה הבאה?',
-                    type: 'text',
-                    roles: [0, 1],
-                    schema: 'future_goals',
-                    required: true,
-                    ariaLabel: 'יעדים לתקופה הבאה',
-                    description: 'הגדרת יעדים לתקופה הבאה'
-                },
-                {
-                    question: 'הערות נוספות – האם יש הערות או תובנות נוספות שברצונך לשתף?',
-                    type: 'text',
-                    roles: [0, 1],
-                    schema: 'additional_comments',
-                    required: true,
-                    ariaLabel: 'הערות נוספות',
-                    description: 'מקום להערות ותובנות נוספות'
-                }
+                
             ]
+          
+            
         };
-
+       
 
         // Helper Functions
         const createElement = (tag, attributes = {}) => {
@@ -558,178 +509,186 @@
 
         // Update the createComparisonSection function
         const createComparisonSection = (category, questions, data) => {
-            const { employee, manager } = transformApiData(data);
-            const section = createElement('div', {
-                className: 'category-section'
-            });
+    const { employee, manager } = transformApiData(data);
+    const section = createElement('div', {
+        className: 'category-section'
+    });
 
-            // Add category title
-            section.appendChild(createElement('h2', {
-                className: 'category-title',
-                innerHTML: category
-            }));
+    // Add category title
+    section.appendChild(createElement('h2', {
+        className: 'category-title',
+        innerHTML: category
+    }));
 
-            // Create rating questions section
-            const ratingQuestions = questions.filter(q => q.type === 'rating');
-            if (ratingQuestions.length > 0) {
-                const chartContainer = createElement('div', {
-                    className: 'chart-container',
-                    style: `
-        position: relative; 
-        min-height: 300px;
-        height: 60vh;
-        max-height: 500px;
-        width: 100%;
-        margin: 20px 0;
-    `
-                });
+    // Create rating questions section
+    const ratingQuestions = questions.filter(q => q.type === 'rating');
+    if (ratingQuestions.length > 0) {
+        const chartContainer = createElement('div', {
+            className: 'chart-container',
+            style: `
+                position: relative; 
+                min-height: 300px;
+                height: 60vh;
+                max-height: 500px;
+                width: 100%;
+                margin: 20px 0;
+            `
+        });
 
-                const canvas = createElement('canvas', {
-                    style: `
-        display: block;
-        width: 100% !important;
-        height: 100% !important;
-    `
-                });
-                chartContainer.appendChild(canvas);
-                section.appendChild(chartContainer);
+        const canvas = createElement('canvas', {
+            style: `
+                display: block;
+                width: 100% !important;
+                height: 100% !important;
+            `
+        });
+        chartContainer.appendChild(canvas);
+        section.appendChild(chartContainer);
 
-                const chartData = ratingQuestions.map(q => {
-                    const maxLength = window.innerWidth <= 768 ? 35 : 400;
-                    return {
-                        question: q.question.substring(0, maxLength) + (q.question.length > maxLength ? '...' : ''),
-                        employee: employee[q.schema] || 0,
-                        manager: manager[q.schema] || 0
-                    };
-                });
+        const chartData = ratingQuestions.map(q => {
+            const maxLength = window.innerWidth <= 768 ? 35 : 400;
+            // Always use E_question for the display text
+            const questionText = q.E_question;
+            if (!questionText) {
+                console.warn(`Missing E_question for schema: ${q.schema}`);
+                return null;
+            }
+            return {
+                question: questionText.substring(0, maxLength) + (questionText.length > maxLength ? '...' : ''),
+                employee: employee[q.schema] || 0,
+                manager: manager[q.schema] || 0
+            };
+        }).filter(Boolean); // Remove any null entries
 
-                new Chart(canvas, {
-                    type: 'radar',
-                    data: {
-                        labels: chartData.map(d => d.question),
-                        datasets: [
-                            {
-                                label: 'הערכת עובד',
-                                data: chartData.map(d => d.employee),
-                                borderColor: '#1e40af',
-                                backgroundColor: 'rgba(30, 64, 175, 0.2)',
-                                pointBackgroundColor: '#1e40af',
-                                pointRadius: 4
-                            },
-                            {
-                                label: 'הערכת מנהל',
-                                data: chartData.map(d => d.manager),
-                                borderColor: '#059669',
-                                backgroundColor: 'rgba(5, 150, 105, 0.2)',
-                                pointBackgroundColor: '#059669',
-                                pointRadius: 4
-                            }
-                        ]
+        new Chart(canvas, {
+            type: 'radar',
+            data: {
+                labels: chartData.map(d => d.question),
+                datasets: [
+                    {
+                        label: 'הערכת עובד',
+                        data: chartData.map(d => d.employee),
+                        borderColor: '#1e40af',
+                        backgroundColor: 'rgba(30, 64, 175, 0.2)',
+                        pointBackgroundColor: '#1e40af',
+                        pointRadius: 4
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: {
-                            padding: 20
-                        },
-                        scales: {
-                            r: {
-                                min: 0,
-                                max: 4,
-                                ticks: {
-                                    stepSize: 1,
-                                    font: {
-                                        size: 12
-                                    }
-                                },
-                                pointLabels: {
-                                    font: {
-                                        size: 12
-                                    }
-                                }
+                    {
+                        label: 'הערכת מנהל',
+                        data: chartData.map(d => d.manager),
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.2)',
+                        pointBackgroundColor: '#059669',
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 20
+                },
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 4,
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                size: 12
                             }
                         },
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                                rtl: true,
-                                labels: {
-                                    font: {
-                                        size: 14
-                                    },
-                                    padding: 20
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        const label = context.dataset.label || '';
-                                        const value = context.raw;
-                                        return `${label}: ${getRatingText(value)}`;
-                                    }
-                                }
+                        pointLabels: {
+                            font: {
+                                size: 12
                             }
                         }
                     }
-                });
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        rtl: true,
+                        labels: {
+                            font: {
+                                size: 14
+                            },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.dataset.label || '';
+                                const value = context.raw;
+                                return `${label}: ${getRatingText(value)}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
                 // Add ratings comparison table with text values
                 const ratingsTable = createElement('div', {
-                    className: 'ratings-comparison-table mt-4',
-                    innerHTML: `
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr class="table-secondary">
-                        <th style="width: 40%;">שאלה</th>
-                        <th style="width: 25%;">הערכת עובד</th>
-                        <th style="width: 25%;">הערכת מנהל</th>
-                        <th style="width: 10%;">פער</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${ratingQuestions.map(q => {
-                        const empScore = employee[q.schema] || 0;
-                        const mgrScore = manager[q.schema] || 0;
-                        const gap = Math.abs(empScore - mgrScore);
-                        return `
-                            <tr ${gap >= 2 ? 'class="table-warning"' : ''}>
-                                <td data-label="שאלה">${q.question}</td>
-                                <td data-label="הערכת עובד" class="text-center">
-                                    <div>${getRatingText(empScore)}</div>
-                                    <small class="text-muted">(${empScore})</small>
-                                </td>
-                                <td data-label="הערכת מנהל" class="text-center">
-                                    <div>${getRatingText(mgrScore)}</div>
-                                    <small class="text-muted">(${mgrScore})</small>
-                                </td>
-                                <td data-label="פער" class="text-center ${gap >= 2 ? 'text-danger fw-bold' : ''}">${gap}</td>
+            className: 'ratings-comparison-table mt-4',
+            innerHTML: `
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="table-secondary">
+                                <th style="width: 40%;">שאלה</th>
+                                <th style="width: 25%;">הערכת עובד</th>
+                                <th style="width: 25%;">הערכת מנהל</th>
+                                <th style="width: 10%;">פער</th>
                             </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-3 text-muted small">
-            * שורות מודגשות מציינות פער משמעותי (2 נקודות או יותר) בין הערכת העובד למנהל
-        </div>
-    `
-                });
-                section.appendChild(ratingsTable);
-            }
+                        </thead>
+                        <tbody>
+                            ${ratingQuestions.map(q => {
+                                if (!q.E_question) return '';
+                                const empScore = employee[q.schema] || 0;
+                                const mgrScore = manager[q.schema] || 0;
+                                const gap = Math.abs(empScore - mgrScore);
+                                return `
+                                    <tr ${gap >= 2 ? 'class="table-warning"' : ''}>
+                                        <td data-label="שאלה">${q.E_question}</td>
+                                        <td data-label="הערכת עובד" class="text-center">
+                                            <div>${getRatingText(empScore)}</div>
+                                            <small class="text-muted">(${empScore})</small>
+                                        </td>
+                                        <td data-label="הערכת מנהל" class="text-center">
+                                            <div>${getRatingText(mgrScore)}</div>
+                                            <small class="text-muted">(${mgrScore})</small>
+                                        </td>
+                                        <td data-label="פער" class="text-center ${gap >= 2 ? 'text-danger fw-bold' : ''}">${gap}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3 text-muted small">
+                    * שורות מודגשות מציינות פער משמעותי (2 נקודות או יותר) בין הערכת העובד למנהל
+                </div>
+            `
+        });
+        section.appendChild(ratingsTable);
+    }
 
-            // Add text comparisons
-            const textQuestions = questions.filter(q => q.type === 'text');
-            if (textQuestions.length > 0) {
-                const textSection = createElement('div', {
-                    className: 'text-comparisons-section mt-4'
-                });
+    // Add text comparisons
+    const textQuestions = questions.filter(q => q.type === 'text');
+    if (textQuestions.length > 0) {
+        const textSection = createElement('div', {
+            className: 'text-comparisons-section mt-4'
+        });
 
-                textQuestions.forEach(q => {
-                    const textComparison = createElement('div', {
-                        className: 'text-comparison mb-4',
-                        innerHTML: `
-                    <h6 class="mb-3">${q.question}</h6>
+        textQuestions.forEach(q => {
+            if (!q.E_question) return;
+            const textComparison = createElement('div', {
+                className: 'text-comparison mb-4',
+                innerHTML: `
+                    <h6 class="mb-3">${q.E_question}</h6>
                     <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
                         <div class="comparison-card">
                             <h6 class="text-primary mb-2">תשובת עובד</h6>
@@ -741,15 +700,15 @@
                         </div>
                     </div>
                 `
-                    });
-                    textSection.appendChild(textComparison);
-                });
+            });
+            textSection.appendChild(textComparison);
+        });
 
-                section.appendChild(textSection);
-            }
+        section.appendChild(textSection);
+    }
 
-            return section;
-        };
+    return section;
+};
 
         // Initialize the comparison view
         const initializeComparison = async () => {
