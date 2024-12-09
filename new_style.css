@@ -69,19 +69,36 @@
             gap: 1.5rem;
             margin-top: 2rem;
         }
+
+        .progress-container {
+            position: relative;
+            width: 200px;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 14px;
+            color: #ffffff;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        .progress {
+            
+            background-color: #E5E7EB;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid #D1D5DB;
+            margin: 0 !important;
+        }
+
         .progress-bar {
-            height: 100%;
-            transition: width 0.3s ease-out, background 0.3s ease;
-            background: linear-gradient(to right, var(--primary-color), var(--primary-hover));
-            border-radius: inherit;
+            height: 100% !important;
+            transition: width 0.3s ease, background-color 0.3s ease;
+            border-radius: 999px;
         }
         
-        .progress {
-            height: 0.5rem;
-            background: #e5e7eb;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
+  
         /* Question Cards */
         .question-card {
             display: flex;
@@ -1038,19 +1055,7 @@
             gap: 1.5rem;
             margin-top: 2rem;
         }
-        .progress-bar {
-            height: 100%;
-            transition: width 0.3s ease-out, background 0.3s ease;
-            background: linear-gradient(to right, var(--primary-color), var(--primary-hover));
-            border-radius: inherit;
-        }
-        
-        .progress {
-            height: 0.5rem;
-            background: #e5e7eb;
-            border-radius: 9999px;
-            overflow: hidden;
-        }
+
         /* Question Cards */
         .question-card {
             display: flex;

@@ -61,9 +61,13 @@
             </div>
 
             <!-- Progress Bar -->
-            <div class="progress" style="width: 200px">
-                <div class="progress-bar" role="progressbar"></div>
+            <div class="progress-container" style="width: 200px;">
+                <div class="progress-text" id="progressText"></div>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar"></div>
+                </div>
             </div>
+            
         </div>
     </header>
 
@@ -794,46 +798,62 @@
         };
 
         const updateProgress = () => {
-            const questionCards = document.querySelectorAll('.question-card');
-            let totalQuestions = 0;
-            let answeredQuestions = 0;
+    const questionCards = document.querySelectorAll('.question-card');
+    let totalQuestions = 0;
+    let answeredQuestions = 0;
 
-            questionCards.forEach(card => {
-                const radioGroup = card.querySelector('input[type="radio"]');
-                const textarea = card.querySelector('textarea');
+    questionCards.forEach(card => {
+        const radioGroup = card.querySelector('input[type="radio"]');
+        const textarea = card.querySelector('textarea');
 
-                if (radioGroup || textarea) {
-                    totalQuestions++;
+        if (radioGroup || textarea) {
+            totalQuestions++;
 
-                    if (radioGroup) {
-                        const groupName = radioGroup.getAttribute('name');
-                        const isAnswered = card.querySelector(`input[name="${groupName}"]:checked`);
-                        if (isAnswered) {
-                            answeredQuestions++;
-                        }
-                    } else if (textarea) {
-                        if (textarea.value.trim()) {
-                            answeredQuestions++;
-                        }
-                    }
+            if (radioGroup) {
+                const groupName = radioGroup.getAttribute('name');
+                const isAnswered = card.querySelector(`input[name="${groupName}"]:checked`);
+                if (isAnswered) {
+                    answeredQuestions++;
                 }
-            });
-
-            // Calculate progress
-            const progress = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
-            const progressBar = document.querySelector('.progress-bar');
-
-            if (progressBar) {
-                progressBar.style.width = `${Math.round(progress)}%`;
-
-                // Change color to green when progress is 100%
-                if (progress === 100) {
-                    progressBar.style.background = '#059669'; // Using success-color green
-                } else {
-                    progressBar.style.background = 'linear-gradient(to right, var(--primary-color), var(--primary-hover))'; // Reset to default color
+            } else if (textarea) {
+                if (textarea.value.trim()) {
+                    answeredQuestions++;
                 }
             }
-        };
+        }
+    });
+
+    // Get progress bar elements
+    const progressBar = document.querySelector('.progress-bar');
+    const progressContainer = document.querySelector('.progress');
+
+    if (progressBar) {
+        // Calculate progress percentage
+        const progress = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
+        progressBar.style.width = `${Math.round(progress)}%`;
+
+        // Change color to green when all questions are answered
+        if (answeredQuestions === totalQuestions) {
+            progressBar.style.backgroundColor = '#22C55E'; // Green color
+        } else {
+            progressBar.style.backgroundColor = '#2196F3'; // Default blue color
+        }
+
+        // Update progress text
+        const progressText = document.getElementById('progressText');
+        if (progressText) {
+            progressText.textContent = `נענו ${answeredQuestions} שאלות מתוך ${totalQuestions}`;
+        }
+
+        // Add styles
+
+
+        // Only add the style tag if it hasn't been added before
+        if (!document.head.querySelector('style')) {
+            document.head.appendChild(style);
+        }
+    }
+};
 
         // Form Data Management
         const collectFormData = (form) => {
