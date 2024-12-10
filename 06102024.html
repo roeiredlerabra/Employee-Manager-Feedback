@@ -11,7 +11,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <!-- Chart.js for radar charts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <!-- Your existing CSS -->
     <style>
 
@@ -131,6 +131,9 @@
                 <div class="text-sm opacity-75">תאריך מילוי</div>
                 <div id="submissionDate"></div>
             </div>
+            <button id="downloadExcel" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> הורד לאקסל
+            </button>
             <button type="button" id="submitButton" class="submit-btn">
                 <span class="submit-text">שלח סיכום</span>
                 <span class="loading-spinner hidden"></span>
@@ -157,7 +160,7 @@
             },
             body: JSON.stringify({
                 action: "password_check",
-                param: surveyId,
+                surveyId: surveyId,
                 password: password
             })
         });
@@ -550,7 +553,71 @@
             1: 'נדרש שיפור',
             0: 'לא רלוונטי לתפקיד'
         };
+        const generateExcel = () => {
+    // Create a new workbook
+    const wb = XLSX.utils.book_new();
+    const allData = [];
 
+    // Get survey data from each category section
+    const categories = document.querySelectorAll('.category-section');
+    
+    categories.forEach(category => {
+        const categoryTitle = category.querySelector('.category-title').textContent;
+        
+        // Get rating data from tables
+        const ratingTable = category.querySelector('.ratings-comparison-table table');
+        if (ratingTable) {
+            const rows = ratingTable.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length === 4) {
+                    allData.push({
+                        'קטגוריה': categoryTitle,
+                        'שאלה': cells[0].textContent,
+                        'הערכת עובד': cells[1].textContent.split('(')[0].trim(),
+                        'הערכת מנהל': cells[2].textContent.split('(')[0].trim(),
+                        'פער': cells[3].textContent
+                    });
+                }
+            });
+        }
+
+        // Get text comparison data
+        const textComparisons = category.querySelectorAll('.text-comparison');
+        textComparisons.forEach(comparison => {
+            const question = comparison.querySelector('h6').textContent;
+            const employeeAnswer = comparison.querySelector('.comparison-card:nth-child(1) p').textContent;
+            const managerAnswer = comparison.querySelector('.comparison-card:nth-child(2) p').textContent;
+            
+            allData.push({
+                'קטגוריה': categoryTitle,
+                'שאלה': question,
+                'תשובת עובד': employeeAnswer,
+                'תשובת מנהל': managerAnswer,
+                'סוג': 'שאלה פתוחה'
+            });
+        });
+    });
+
+    // Create worksheet from data
+    const ws = XLSX.utils.json_to_sheet(allData, {origin: 'A1'});
+
+    // Add employee and manager info
+    const employeeInfo = {
+        'שם העובד': document.getElementById('employeeName').textContent,
+        'מחלקת עובד': document.getElementById('employeeDepartment').textContent,
+        'תאריך תחילת עבודה': document.getElementById('employeeHireDate').textContent,
+        'שם המנהל': document.getElementById('managerName').textContent,
+        'מחלקת מנהל': document.getElementById('managerDepartment').textContent
+    };
+
+    // Add the workbook
+    XLSX.utils.book_append_sheet(wb, ws, "סיכום משוב");
+
+    // Generate Excel file
+    const fileName = `סיכום משוב - ${employeeInfo['שם העובד']} - ${new Date().toLocaleDateString('he-IL')}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+};
         // Helper function to get rating text
         const getRatingText = (value) => RATING_SCALE[value] || 'לא צוין';
 
@@ -811,7 +878,7 @@
                 Object.entries(categories).forEach(([category, questions]) => {
                     surveyContent.appendChild(createComparisonSection(category, questions, data));
                 });
-
+                document.getElementById('downloadExcel').addEventListener('click', generateExcel);
                 // Set up submit button handler
                 document.getElementById('submitButton').addEventListener('click', async () => {
                     const summaryNotes = document.getElementById('summaryNotes').value;
