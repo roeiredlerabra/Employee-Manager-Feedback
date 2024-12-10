@@ -136,7 +136,7 @@
             </button>
             <button type="button" id="submitButton" class="submit-btn">
                 <span class="submit-text">שלח סיכום</span>
-                <span class="loading-spinner hidden"></span>
+                <span class="loading-spinner2 hidden"></span>
             </button>
         </div>
     </footer>
@@ -147,6 +147,7 @@
 
         // Categories configuration (copy your existing categories object)
         async function checkPassword() {
+    showLoading();
     const password = document.getElementById('passwordInput').value;
     const urlParams = new URLSearchParams(window.location.search);
     const param = urlParams.get('param');
@@ -166,19 +167,20 @@
         });
 
         if (response.ok) {
-            // Hide login overlay and show main content
+            hideLoading();
             document.getElementById('loginOverlay').style.display = 'none';
             document.querySelector('.main-container').style.display = 'block';
             document.querySelector('.page-header').style.display = 'block';
             document.querySelector('.page-footer').style.display = 'block';
-            // Initialize the main page content
             initializeComparison();
+            showAlert('התחברות בוצעה בהצלחה', 'success');
         } else {
-            alert('אין גישה');
+            hideLoading();
+            showAlert('סיסמה שגויה', 'error');
         }
     } catch (error) {
-        console.error('Error checking password:', error);
-        alert('אירעה שגיאה בבדיקת ההרשאה');
+        hideLoading();
+        showAlert('אירעה שגיאה בבדיקת ההרשאה', 'error');
     }
 }
 
@@ -528,7 +530,44 @@
             });
             return element;
         };
+        const showAlert = (message, type = 'info') => {
+    // Remove any existing alerts
+    const existingAlert = document.querySelector('.custom-alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
 
+    // Create new alert
+    const alert = document.createElement('div');
+    alert.className = `custom-alert ${type}`;
+    alert.innerHTML = `
+        <span>${message}</span>
+        <span class="close-btn" onclick="this.parentElement.remove()">&times;</span>
+    `;
+    document.body.appendChild(alert);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (alert && alert.parentElement) {
+            alert.remove();
+        }
+    }, 5000);
+};
+
+// Loading overlay helper functions
+const showLoading = () => {
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay2';
+    overlay.innerHTML = '<div class="loading-spinner2"></div>';
+    document.body.appendChild(overlay);
+};
+
+const hideLoading = () => {
+    const overlay = document.querySelector('.loading-overlay2');
+    if (overlay) {
+        overlay.remove();
+    }
+};
         const transformApiData = (data) => {
             const employee = {};
             const manager = {};
@@ -882,7 +921,7 @@
                 // Set up submit button handler
                 document.getElementById('submitButton').addEventListener('click', async () => {
                     const summaryNotes = document.getElementById('summaryNotes').value;
-
+                    showLoading();
                     try {
                         const response = await fetch(API_ENDPOINT, {
                             method: 'POST',
@@ -895,16 +934,18 @@
                         });
 
                         if (response.ok) {
-                            alert('הסיכום נשלח בהצלחה!');
-                            document.getElementById('summaryNotes').disabled = true;
-                            document.getElementById('submitButton').disabled = true;
-                            location.reload(); // Reloads the page
-                        }
-
-                    } catch (error) {
-                        console.error('Error submitting summary:', error);
-                        alert('אירעה שגיאה בשליחת הסיכום');
-                    }
+            hideLoading();
+            showAlert('הסיכום נשלח בהצלחה!', 'success');
+            document.getElementById('summaryNotes').disabled = true;
+            document.getElementById('submitButton').disabled = true;
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        }
+    } catch (error) {
+        hideLoading();
+        showAlert('אירעה שגיאה בשליחת הסיכום', 'error');
+    }
                 });
 
             } catch (error) {
