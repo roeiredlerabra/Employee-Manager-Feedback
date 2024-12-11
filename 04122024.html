@@ -1090,24 +1090,68 @@
             submitBtn.parentNode.insertBefore(downloadBtn, submitBtn);
         };
 
+        const fetchWithTimeout = async (url, options) => {
+    const timeoutDuration = 10000; // 10 seconds
+    let timeoutId;
+    let alertShown = false;
+    let popupInstance = null;
 
+    const timeoutPromise = new Promise((_, reject) => {
+        timeoutId = setTimeout(() => {
+            if (!alertShown) {
+                alertShown = true;
+                popupInstance = showCustomPopup({
+                    type: 'warning',
+                    title: 'השרתים עמוסים',
+                    message: 'השרתים נראים עמוסים, אנא המתן בסבלנות או נסה שוב מאוחר יותר',
+                    showConfirm: true,
+                    showCancel: false
+                });
+            }
+        }, timeoutDuration);
+    });
+
+    try {
+        const response = await Promise.race([
+            fetch(url, options),
+            timeoutPromise
+        ]);
+        
+        // Clear timeout and hide popup if it was shown
+        clearTimeout(timeoutId);
+        if (alertShown && popupInstance) {
+            const overlay = popupInstance.closest('.popup-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.remove();
+                }, 300); // Smooth fade out
+            }
+        }
+        
+        return response;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        throw error;
+    }
+};
 
         // Form Submission
         const submitSurvey = async (data) => {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+    const response = await fetchWithTimeout(API_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-            return response.json();
-        };
+    return response.json();
+};
 
         const handleSubmit = async (event) => {
             event.preventDefault();
@@ -1275,77 +1319,70 @@
             });
         };
         const fetchSurveyData = async (params) => {
-            try {
-
-
-                const response = await fetch(`https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        surveyId: params.surveyId,
-                        position: params.position,
-                        action: "getsurveydata"
-                    })
-                });
-
-                if (!response.ok) {
-                    showCustomPopup({
-                        type: 'error',
-                        title: 'שגיאת שרת',
-                        message: `השרת החזיר שגיאה: ${response.status} - ${response.statusText}. אנא נסה שוב מאוחר יותר או פנה לתמיכה.`,
-                        showConfirm: true,
-                        showCancel: false
-                    });
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                // Verify data structure
-                if (!data || typeof data !== 'object') {
-                    showCustomPopup({
-                        type: 'error',
-                        title: 'שגיאת מידע',
-                        message: 'התקבל מידע לא תקין מהשרת. אנא נסה שוב או פנה לתמיכה.',
-                        showConfirm: true,
-                        showCancel: false
-                    });
-                    throw new Error('Invalid data received from server');
-                }
-
-                return {
-                    managment: data.managment || "0",
-                    Manager: data.Manager || null,
-                    Employee: data.Employee || null,
-                    Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || "",
-                    ManagerFilled: data.ManagerFilled || "0",
-                    EmployeeFilled: data.EmployeeFilled || "0"
-                };
-            } catch (error) {
-                // Handle network errors
-                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-                    showCustomPopup({
-                        type: 'error',
-                        title: 'שגיאת תקשורת',
-                        message: 'לא ניתן להתחבר לשרת. אנא בדוק את חיבור האינטרנט שלך ונסה שוב.',
-                        showConfirm: true,
-                        showCancel: false
-                    });
-                } else if (!error.message.includes('HTTP error')) { // Don't show another popup for HTTP errors
-                    showCustomPopup({
-                        type: 'error',
-                        title: 'שגיאה',
-                        message: 'אירעה שגיאה לא צפויה. אנא נסה שוב או פנה לתמיכה.',
-                        showConfirm: true,
-                        showCancel: false
-                    });
-                }
-                console.error('Error in fetchSurveyData:', error);
-                throw error;
+    try {
+        const response = await fetchWithTimeout(
+            'https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    surveyId: params.surveyId,
+                    position: params.position,
+                    action: "getsurveydata"
+                })
             }
+        );
+
+        if (!response.ok) {
+            showCustomPopup({
+                type: 'error',
+                title: 'שגיאת שרת',
+                message: `השרת החזיר שגיאה: ${response.status} - ${response.statusText}. אנא נסה שוב מאוחר יותר או פנה לתמיכה.`,
+                showConfirm: true,
+                showCancel: false
+            });
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Verify data structure
+        if (!data || typeof data !== 'object') {
+            showCustomPopup({
+                type: 'error',
+                title: 'שגיאת מידע',
+                message: 'התקבל מידע לא תקין מהשרת. אנא נסה שוב או פנה לתמיכה.',
+                showConfirm: true,
+                showCancel: false
+            });
+            throw new Error('Invalid data received from server');
+        }
+
+        return {
+            managment: data.managment || "0",
+            Manager: data.Manager || null,
+            Employee: data.Employee || null,
+            Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || "",
+            ManagerFilled: data.ManagerFilled || "0",
+            EmployeeFilled: data.EmployeeFilled || "0"
         };
+    } catch (error) {
+        // Handle network errors
+        if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+            showCustomPopup({
+                type: 'error',
+                title: 'שגיאת תקשורת',
+                message: 'לא ניתן להתחבר לשרת. אנא בדוק את חיבור האינטרנט שלך ונסה שוב.',
+                showConfirm: true,
+                showCancel: false
+            });
+        }
+        console.error('Error in fetchSurveyData:', error);
+        throw error;
+    }
+};
         // Fix 2: Add form validation
         const validateForm = (form) => {
             const requiredFields = form.querySelectorAll('[required]');
