@@ -67,7 +67,7 @@
                     <div class="progress-bar" role="progressbar"></div>
                 </div>
             </div>
-            
+
         </div>
     </header>
 
@@ -253,377 +253,377 @@
         };
 
         const categories = {
-  "ידע מקצועי": [
-    {
-      "M_question": "עד כמה העובד.ת מבין.ה לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?",
-      "E_question": "עד כמה את.ה מבין.ה לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "product_knowledge",
-      "required": true,
-      "ariaLabel": "דירוג בקיאות במוצר",
-      "description": "הערכת רמת ההבנה והידע במוצר ורכיביו"
-    },
-    {
-      "M_question": "באיזו מידה העובד.ת מיישם.ת את שיטות העבודה המתודולוגיות בפרויקטים השונים?",
-      "E_question": "באיזו מידה את.ה מיישם.ת את שיטות העבודה המתודולוגיות בפרויקטים השונים?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "methodology_knowledge",
-      "required": true,
-      "ariaLabel": "דירוג הכרות עם מתודולוגיות",
-      "description": "הערכת יישום שיטות העבודה בפרויקטים"
-    },
-    {
-      "M_question": "עד כמה העובד.ת מבין.ה את הצרכים העסקיים של הלקוחות ומתאים את הפתרונות בהתאם?",
-      "E_question": "עד כמה את.ה מבין.ה את הצרכים העסקיים של הלקוחות ומתאים.ה את הפתרונות בהתאם?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "client_environment_knowledge",
-      "required": true,
-      "ariaLabel": "דירוג הכרות עם סביבת לקוחות",
-      "description": "הערכת הבנת צרכי הלקוח והתאמת פתרונות"
-    },
-    {
-      "M_question": "עד כמה העובד.ת מזהה אפשרויות להרחבת פתרונות ושירותים קיימים?",
-      "E_question": "עד כמה את.ה מזהה אפשרויות להרחבת פתרונות ושירותים קיימים?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "client_opportunities",
-      "required": true,
-      "ariaLabel": "דירוג זיהוי הזדמנויות",
-      "description": "הערכת יכולת זיהוי הזדמנויות עסקיות"
-    },
-    {
-      "M_question": "עד כמה העובד.ת מכיר.ה מוצרים רלוונטיים נוספים שיכולים להשתלב עם הפרויקטים של מיקרוסופט?",
-      "E_question": "עד כמה את.ה מכיר.ה מוצרים רלוונטיים נוספים שיכולים להשתלב עם הפרויקטים של מיקרוסופט?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "complementary_products",
-      "required": true,
-      "ariaLabel": "דירוג הכרות עם מוצרים משלימים",
-      "description": "הערכת ידע במוצרים משלימים ורלוונטיים"
-    }
-  ],
-  "מיומנויות עבודה": [
-    {
-      "M_question": "עד כמה העובד.ת מצליח.ה לעבוד בצורה עצמאית תוך ייזום פתרונות, או זקוק.ה להכוונה מתמדת?",
-      "E_question": "עד כמה את.ה מצליח.ה לעבוד בצורה עצמאית תוך ייזום פתרונות, או זקוק.ה להכוונה מתמדת?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "self_management",
-      "required": true,
-      "ariaLabel": "דירוג יכולת ניהול עצמי",
-      "description": "הערכת יכולת עבודה עצמאית וייזום"
-    },
-    {
-      "M_question": "באיזו מידה מצליח.ה העובד.ת להתתמודד עם משימות דחופות או תחת עומס?",
-      "E_question": "באיזו מידה את.ה מתמודד.ת עם משימות דחופות או תחת עומס?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "pressure_handling",
-      "required": true,
-      "ariaLabel": "דירוג עבודה תחת לחץ",
-      "description": "הערכת התמודדות עם מצבי לחץ ועומס"
-    },
-    {
-      "M_question": "עד כמה העובד.ת לוקח.ת אחריות מלאה על המשימות שלו.ה, כולל תיקון טעויות ושיפור?",
-      "E_question": "עד כמה את.ה לוקח.ת אחריות מלאה על המשימות שלך, כולל תיקון טעויות ושיפור?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "professional_responsibility",
-      "required": true,
-      "ariaLabel": "דירוג אחריות מקצועית",
-      "description": "הערכת רמת האחריות והמחויבות למשימות"
-    },
-    {
-      "M_question": "באיזו מידה העובד.ת משתף.ת פעולה ומכבד.ת דעות שונות בצוות?",
-      "E_question": "באיזו מידה את.ה משתף.ת פעולה ומכבד.ת דעות שונות בצוות?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "team_collaboration",
-      "required": true,
-      "ariaLabel": "דירוג שיתוף פעולה",
-      "description": "הערכת יכולת עבודה בצוות ושיתוף פעולה"
-    },
-    {
-      "M_question": "באיזו מידה מצליח.ה העובד.ת לנהל תקשורת אפקטיבית עם ממשקי העבודה?",
-      "E_question": "באיזו מידה את.ה מנהל.ת תקשורת אפקטיבית עם ממשקי עבודה?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "effective_communication",
-      "required": true,
-      "ariaLabel": "דירוג תקשורת אפקטיבית",
-      "description": "הערכת יכולת תקשורת עם צוותים שונים"
-    }
-  ],
-  "גישה ומוטיבציה": [
-    {
-      "M_question": "עד כמה העובד.ת תורם.ת לאווירה החברתית והמקצועית בצוות או בחטיבה?",
-      "E_question": "עד כמה את.ה תורם.ת לאווירה החברתית והמקצועית בצוות או בחטיבה?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "social_involvement",
-      "required": true,
-      "ariaLabel": "דירוג מעורבות חברתית",
-      "description": "הערכת תרומה לאווירה החברתית בצוות"
-    },
-    {
-      "M_question": "כיצד העובד.ת מתמודד עם ביקורות ומשובים?",
-      "E_question": "באיזו מידה את.ה מתמודד.ת עם קבלת ביקורת בונה ומשובים?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "feedback_reception",
-      "required": true,
-      "ariaLabel": "דירוג קבלת ביקורת",
-      "description": "הערכת התמודדות עם משוב וביקורת"
-    },
-    {
-      "M_question": "באיזו מידה לתחושתך העובד.ת מעלה רעיונות חדשים או יוזמות?",
-      "E_question": "עד כמה לתחושתך את.ה מעלה רעיונות חדשים או יוזמות ?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "improvement_motivation",
-      "required": true,
-      "ariaLabel": "דירוג מוטיבציה לשיפור",
-      "description": "הערכת יוזמה לשיפור תהליכים"
-    },
-    {
-      "M_question": "עד כמה העובד.ת לומד.ת לבד ומשכלל את הידע המקצועי שלו?",
-      "E_question": "עד כמה את.ה לומד.ת לבד ומשכלל את הידע המקצועי שלך?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "self_learning",
-      "required": true,
-      "ariaLabel": "דירוג למידה עצמאית",
-      "description": "הערכת יוזמה ללמידה והתפתחות עצמאית"
-    }
-  ],
-  "סגנון עבודה": [
-    {
-      "M_question": "עד כמה העובד.ת שומר.ת על סביבת עבודה מאורגנת ומסודרת, תוך ניהול זמן ומשימות באופן יעיל?",
-      "E_question": "עד כמה את.ה שומר.ת על סביבת עבודה מאורגנת ומסודרת, תוך ניהול זמן ומשימות באופן יעיל?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "work_organization",
-      "required": true,
-      "ariaLabel": "דירוג סדר וארגון",
-      "description": "הערכת ארגון וסדר בסביבת העבודה"
-    },
-    {
-      "M_question": " באיזו מידה העובד.ת מקפיד.ה על ניהול זמן וביצוע משימות באופן יעיל?",
-      "E_question": " באיזו מידה את.ה מקפיד.ה על ניהול זמן וביצוע משימות באופן יעיל?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "time_management",
-      "required": true,
-      "ariaLabel": "דירוג עמידה בזמנים",
-      "description": "הערכת עמידה בלוחות זמנים"
-    },
-    {
-      "M_question": "באיזו מידה העובד.ת מצליח.ה לנהל פרויקטים תוך שמירה על יעדים ברורים ותוצרים איכותיים?",
-      "E_question": "באיזו מידה את.ה מצליח.ה לנהל פרויקטים תוך שמירה על יעדים ברורים ותוצרים איכותיים?",
-      "type": "rating",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "project_management",
-      "required": true,
-      "ariaLabel": "דירוג ניהול פרויקטים",
-      "description": "הערכת יכולת ניהול פרויקטים ועמידה ביעדים"
-    }
-  ],
-  "הערכה מסכמת": [
-  {
-      "M_question": "מהם ההישגים המרכזיים שהעובד.ת השיג.ה בתקופה האחרונה? תן דוגמאות.",
-      "E_question": "מהם ההישגים המרכזיים שהשגת בתקופה האחרונה? תן דוגמאות.",
-      "type": "text",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "key_achievements",
-      "required": true,
-      "ariaLabel": "הישגים בולטים",
-      "description": "פירוט הישגים משמעותיים בתקופה האחרונה"
-    },
-    {
-      "M_question": "אילו תחומים אצל העובד.ת את.ה מזהה שבהם יוכל.תוכל להשתפר? מה צריך.ה לעשות כדי להגיע לשם? תן דוגמאות.",
-      "E_question": "אילו תחומים את.ה מזהה שבהם תוכל.י להשתפר? מה תעשה.י כדי להגיע לשם? תן דוגמאות.",
-      "type": "text",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "improvement_areas",
-      "required": true,
-      "ariaLabel": "תחומים לשיפור",
-      "description": "פירוט תחומים הדורשים שיפור"
-    },
+            "ידע מקצועי": [
+                {
+                    "M_question": "עד כמה העובד.ת מבין.ה לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?",
+                    "E_question": "עד כמה את.ה מבין.ה לעומק את המוצר, כולל רכיבים טכניים ותפעוליים?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "product_knowledge",
+                    "required": true,
+                    "ariaLabel": "דירוג בקיאות במוצר",
+                    "description": "הערכת רמת ההבנה והידע במוצר ורכיביו"
+                },
+                {
+                    "M_question": "באיזו מידה העובד.ת מיישם.ת את שיטות העבודה המתודולוגיות בפרויקטים השונים?",
+                    "E_question": "באיזו מידה את.ה מיישם.ת את שיטות העבודה המתודולוגיות בפרויקטים השונים?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "methodology_knowledge",
+                    "required": true,
+                    "ariaLabel": "דירוג הכרות עם מתודולוגיות",
+                    "description": "הערכת יישום שיטות העבודה בפרויקטים"
+                },
+                {
+                    "M_question": "עד כמה העובד.ת מבין.ה את הצרכים העסקיים של הלקוחות ומתאים את הפתרונות בהתאם?",
+                    "E_question": "עד כמה את.ה מבין.ה את הצרכים העסקיים של הלקוחות ומתאים.ה את הפתרונות בהתאם?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "client_environment_knowledge",
+                    "required": true,
+                    "ariaLabel": "דירוג הכרות עם סביבת לקוחות",
+                    "description": "הערכת הבנת צרכי הלקוח והתאמת פתרונות"
+                },
+                {
+                    "M_question": "עד כמה העובד.ת מזהה אפשרויות להרחבת פתרונות ושירותים קיימים?",
+                    "E_question": "עד כמה את.ה מזהה אפשרויות להרחבת פתרונות ושירותים קיימים?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "client_opportunities",
+                    "required": true,
+                    "ariaLabel": "דירוג זיהוי הזדמנויות",
+                    "description": "הערכת יכולת זיהוי הזדמנויות עסקיות"
+                },
+                {
+                    "M_question": "עד כמה העובד.ת מכיר.ה מוצרים רלוונטיים נוספים שיכולים להשתלב עם הפרויקטים של מיקרוסופט?",
+                    "E_question": "עד כמה את.ה מכיר.ה מוצרים רלוונטיים נוספים שיכולים להשתלב עם הפרויקטים של מיקרוסופט?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "complementary_products",
+                    "required": true,
+                    "ariaLabel": "דירוג הכרות עם מוצרים משלימים",
+                    "description": "הערכת ידע במוצרים משלימים ורלוונטיים"
+                }
+            ],
+            "מיומנויות עבודה": [
+                {
+                    "M_question": "עד כמה העובד.ת מצליח.ה לעבוד בצורה עצמאית תוך ייזום פתרונות, או זקוק.ה להכוונה מתמדת?",
+                    "E_question": "עד כמה את.ה מצליח.ה לעבוד בצורה עצמאית תוך ייזום פתרונות, או זקוק.ה להכוונה מתמדת?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "self_management",
+                    "required": true,
+                    "ariaLabel": "דירוג יכולת ניהול עצמי",
+                    "description": "הערכת יכולת עבודה עצמאית וייזום"
+                },
+                {
+                    "M_question": "באיזו מידה מצליח.ה העובד.ת להתתמודד עם משימות דחופות או תחת עומס?",
+                    "E_question": "באיזו מידה את.ה מתמודד.ת עם משימות דחופות או תחת עומס?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "pressure_handling",
+                    "required": true,
+                    "ariaLabel": "דירוג עבודה תחת לחץ",
+                    "description": "הערכת התמודדות עם מצבי לחץ ועומס"
+                },
+                {
+                    "M_question": "עד כמה העובד.ת לוקח.ת אחריות מלאה על המשימות שלו.ה, כולל תיקון טעויות ושיפור?",
+                    "E_question": "עד כמה את.ה לוקח.ת אחריות מלאה על המשימות שלך, כולל תיקון טעויות ושיפור?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "professional_responsibility",
+                    "required": true,
+                    "ariaLabel": "דירוג אחריות מקצועית",
+                    "description": "הערכת רמת האחריות והמחויבות למשימות"
+                },
+                {
+                    "M_question": "באיזו מידה העובד.ת משתף.ת פעולה ומכבד.ת דעות שונות בצוות?",
+                    "E_question": "באיזו מידה את.ה משתף.ת פעולה ומכבד.ת דעות שונות בצוות?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "team_collaboration",
+                    "required": true,
+                    "ariaLabel": "דירוג שיתוף פעולה",
+                    "description": "הערכת יכולת עבודה בצוות ושיתוף פעולה"
+                },
+                {
+                    "M_question": "באיזו מידה מצליח.ה העובד.ת לנהל תקשורת אפקטיבית עם ממשקי העבודה?",
+                    "E_question": "באיזו מידה את.ה מנהל.ת תקשורת אפקטיבית עם ממשקי עבודה?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "effective_communication",
+                    "required": true,
+                    "ariaLabel": "דירוג תקשורת אפקטיבית",
+                    "description": "הערכת יכולת תקשורת עם צוותים שונים"
+                }
+            ],
+            "גישה ומוטיבציה": [
+                {
+                    "M_question": "עד כמה העובד.ת תורם.ת לאווירה החברתית והמקצועית בצוות או בחטיבה?",
+                    "E_question": "עד כמה את.ה תורם.ת לאווירה החברתית והמקצועית בצוות או בחטיבה?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "social_involvement",
+                    "required": true,
+                    "ariaLabel": "דירוג מעורבות חברתית",
+                    "description": "הערכת תרומה לאווירה החברתית בצוות"
+                },
+                {
+                    "M_question": "כיצד העובד.ת מתמודד עם ביקורות ומשובים?",
+                    "E_question": "באיזו מידה את.ה מתמודד.ת עם קבלת ביקורת בונה ומשובים?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "feedback_reception",
+                    "required": true,
+                    "ariaLabel": "דירוג קבלת ביקורת",
+                    "description": "הערכת התמודדות עם משוב וביקורת"
+                },
+                {
+                    "M_question": "באיזו מידה לתחושתך העובד.ת מעלה רעיונות חדשים או יוזמות?",
+                    "E_question": "עד כמה לתחושתך את.ה מעלה רעיונות חדשים או יוזמות ?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "improvement_motivation",
+                    "required": true,
+                    "ariaLabel": "דירוג מוטיבציה לשיפור",
+                    "description": "הערכת יוזמה לשיפור תהליכים"
+                },
+                {
+                    "M_question": "עד כמה העובד.ת לומד.ת לבד ומשכלל את הידע המקצועי שלו?",
+                    "E_question": "עד כמה את.ה לומד.ת לבד ומשכלל את הידע המקצועי שלך?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "self_learning",
+                    "required": true,
+                    "ariaLabel": "דירוג למידה עצמאית",
+                    "description": "הערכת יוזמה ללמידה והתפתחות עצמאית"
+                }
+            ],
+            "סגנון עבודה": [
+                {
+                    "M_question": "עד כמה העובד.ת שומר.ת על סביבת עבודה מאורגנת ומסודרת, תוך ניהול זמן ומשימות באופן יעיל?",
+                    "E_question": "עד כמה את.ה שומר.ת על סביבת עבודה מאורגנת ומסודרת, תוך ניהול זמן ומשימות באופן יעיל?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "work_organization",
+                    "required": true,
+                    "ariaLabel": "דירוג סדר וארגון",
+                    "description": "הערכת ארגון וסדר בסביבת העבודה"
+                },
+                {
+                    "M_question": " באיזו מידה העובד.ת מקפיד.ה על ניהול זמן וביצוע משימות באופן יעיל?",
+                    "E_question": " באיזו מידה את.ה מקפיד.ה על ניהול זמן וביצוע משימות באופן יעיל?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "time_management",
+                    "required": true,
+                    "ariaLabel": "דירוג עמידה בזמנים",
+                    "description": "הערכת עמידה בלוחות זמנים"
+                },
+                {
+                    "M_question": "באיזו מידה העובד.ת מצליח.ה לנהל פרויקטים תוך שמירה על יעדים ברורים ותוצרים איכותיים?",
+                    "E_question": "באיזו מידה את.ה מצליח.ה לנהל פרויקטים תוך שמירה על יעדים ברורים ותוצרים איכותיים?",
+                    "type": "rating",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "project_management",
+                    "required": true,
+                    "ariaLabel": "דירוג ניהול פרויקטים",
+                    "description": "הערכת יכולת ניהול פרויקטים ועמידה ביעדים"
+                }
+            ],
+            "הערכה מסכמת": [
+                {
+                    "M_question": "מהם ההישגים המרכזיים שהעובד.ת השיג.ה בתקופה האחרונה? תן דוגמאות.",
+                    "E_question": "מהם ההישגים המרכזיים שהשגת בתקופה האחרונה? תן דוגמאות.",
+                    "type": "text",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "key_achievements",
+                    "required": true,
+                    "ariaLabel": "הישגים בולטים",
+                    "description": "פירוט הישגים משמעותיים בתקופה האחרונה"
+                },
+                {
+                    "M_question": "אילו תחומים אצל העובד.ת את.ה מזהה שבהם יוכל.תוכל להשתפר? מה צריך.ה לעשות כדי להגיע לשם? תן דוגמאות.",
+                    "E_question": "אילו תחומים את.ה מזהה שבהם תוכל.י להשתפר? מה תעשה.י כדי להגיע לשם? תן דוגמאות.",
+                    "type": "text",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "improvement_areas",
+                    "required": true,
+                    "ariaLabel": "תחומים לשיפור",
+                    "description": "פירוט תחומים הדורשים שיפור"
+                },
 
-    {
-      "M_question": "פוקוס לשנה הבאה- על מה תשמח.י לראות את העובד.ת מתמקד.ת בשנה הקרובה בהיבטים מקצועיים ובינאישיים?",
-      "E_question": "פוקוס לשנה הבאה- על מה את.ה מתכנן.ת להתמקד בשנה הקרובה בהיבטים מקצועיים ובינאישיים?",
-      "type": "text",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "future_goals",
-      "required": true,
-      "ariaLabel": "יעדים לתקופה הבאה",
-      "description": "הגדרת יעדים לתקופה הבאה"
-    },
-    {
-      "M_question": "האם יש הערות או תובנות נוספות שברצונך לשתף?",
-      "E_question": "האם יש הערות או תובנות נוספות שברצונך לשתף?",
-      "type": "text",
-      "roles": [
-        0,
-        1
-      ],
-      "schema": "additional_comments",
-      "required": false,
-      "ariaLabel": "הערות נוספות",
-      "description": "מקום להערות ותובנות נוספות"
-    }
-  ],
-  "מיומנויות ניהוליות": [
-    {
-      "M_question": "כמנהל.ת פרויקטים או צוות, עד כמה העובד.ת מקבל.ת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב?",
-      "E_question": "כמנהל.ת פרויקטים או צוות, עד כמה את.ה מקבל.ת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב?",
-      "type": "rating",
-      "roles": [
-        1
-      ],
-      "schema": "decision_making",
-      "required": true,
-      "ariaLabel": "דירוג קבלת החלטות",
-      "description": "הערכת יכולת קבלת החלטות מהירה ומדויקת"
-    },
-    {
-      "M_question": "באיזו מידה העובד.ת מצליח.ה לדאוג לניהול זמן או משימות אפקטיבי של הצוות, תוך הקפדה עלל סדר עדיפויות ברור? ",
-      "E_question": "באיזו מידה את.ה מצליח.ה לדאוג לניהול זמן או משימות אפקטיבי של הצוות, תוך הקפדה עלל סדר עדיפויות ברור?",
-      "type": "rating",
-      "roles": [
-        1
-      ],
-      "schema": "time_priority_management",
-      "required": true,
-      "ariaLabel": "דירוג ניהול זמן וסדרי עדיפויות",
-      "description": "הערכת יכולת ניהול זמן ותעדוף משימות"
-    },
-    {
-      "M_question": "באיזו מידה העובד.ת מצליח.ה להסתגל ולהתמודד עם שינויים בפרויקטים או בסדרי העדיפויות, תוך הובלת הצוות בהתאם?",
-      "E_question": "באיזו מידה את.ה מצליח.ה להסתגל ולהתמודד עם שינויים בפרויקטים או בסדרי העדיפויות, תוך הובלת הצוות בהתאם?",
-      "type": "rating",
-      "roles": [
-        1
-      ],
-      "schema": "change_adaptation",
-      "required": true,
-      "ariaLabel": "דירוג גמישות והסתגלות",
-      "description": "הערכת יכולת הסתגלות לשינויים"
-    },
-    {
-      "M_question": "באיזו מידה העובד.ת כמנהל.ת פרויקט או צוות, מציב.ה לעובדיו יעדים ברורים, מדידים וברי השגה?",
-      "E_question": "באיזו מידה את.ה כמנהל.ת פרויקט או צוות, מציב.ה לעובדיו יעדים ברורים, מדידים וברי השגה?",
-      "type": "rating",
-      "roles": [
-        1
-      ],
-      "schema": "goal_setting",
-      "required": true,
-      "ariaLabel": "דירוג הצבת יעדים",
-      "description": "הערכת יכולת הגדרת יעדים ברורים לצוות"
-    },
-    {
-      "M_question": "באיזו מידה העובד.ת מצליח.ה לגרום לעובדים.ות לבצע את משימותיהם בצורה הטובה ביותר?",
-      "E_question": "באיזו מידה את.ה כמנהל.ת מצליח.ה לגרום לעובדים.ות לבצע את משימותיהם בצורה הטובה ביותר?",
-      "type": "rating",
-      "roles": [
-        1
-      ],
-      "schema": "team_motivation",
-      "required": true,
-      "ariaLabel": "דירוג הנעת עובדים",
-      "description": "הערכת יכולת הנעת העובדים להשגת ביצועים מיטביים"
-    },
-    {
-      "M_question": "באיזו מידה העובד.ת כמנהל.ת פרויקט או צוות, מצליח.ה לקדם את עובדיו, לפתח אותם מקצועית ואישית?",
-      "E_question": "באיזו מידה אתה כמנהל.ת פרויקט או צוות, מצליח.ה לקדם את עובדיך, לפתח אותם מקצועית ואישית?",
-      "type": "rating",
-      "roles": [
-        1
-      ],
-      "schema": "employee_development",
-      "required": true,
-      "ariaLabel": "דירוג פיתוח עובדים",
-      "description": "הערכת יכולת פיתוח וקידום הצוות"
-    },
-    {
-      "M_question": "עד כמה העובד.ת מצליח.ה ללמוד מהצלחות ואי-הצלחות, תוך יישום הלקחים לצורך שיפור ביצועים עתידיים? ",
-      "E_question": "עד כמה את.ה מצליח.ה ללמוד מהצלחות ואי-הצלחות, תוך יישום הלקחים לצורך שיפור ביצועים עתידיים?",
-      "type": "rating",
-      "roles": [
-        1
-      ],
-      "schema": "lessons_learned",
-      "required": true,
-      "ariaLabel": "דירוג למידה מלקחים",
-      "description": "הערכת יכולת הפקת לקחים ויישומם"
-    }
-  ]
-};
+                {
+                    "M_question": "פוקוס לשנה הבאה- על מה תשמח.י לראות את העובד.ת מתמקד.ת בשנה הקרובה בהיבטים מקצועיים ובינאישיים?",
+                    "E_question": "פוקוס לשנה הבאה- על מה את.ה מתכנן.ת להתמקד בשנה הקרובה בהיבטים מקצועיים ובינאישיים?",
+                    "type": "text",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "future_goals",
+                    "required": true,
+                    "ariaLabel": "יעדים לתקופה הבאה",
+                    "description": "הגדרת יעדים לתקופה הבאה"
+                },
+                {
+                    "M_question": "האם יש הערות או תובנות נוספות שברצונך לשתף?",
+                    "E_question": "האם יש הערות או תובנות נוספות שברצונך לשתף?",
+                    "type": "text",
+                    "roles": [
+                        0,
+                        1
+                    ],
+                    "schema": "additional_comments",
+                    "required": false,
+                    "ariaLabel": "הערות נוספות",
+                    "description": "מקום להערות ותובנות נוספות"
+                }
+            ],
+            "מיומנויות ניהוליות": [
+                {
+                    "M_question": "כמנהל.ת פרויקטים או צוות, עד כמה העובד.ת מקבל.ת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב?",
+                    "E_question": "כמנהל.ת פרויקטים או צוות, עד כמה את.ה מקבל.ת החלטות במהירות ובביטחון, תוך הערכה נכונה של המצב?",
+                    "type": "rating",
+                    "roles": [
+                        1
+                    ],
+                    "schema": "decision_making",
+                    "required": true,
+                    "ariaLabel": "דירוג קבלת החלטות",
+                    "description": "הערכת יכולת קבלת החלטות מהירה ומדויקת"
+                },
+                {
+                    "M_question": "באיזו מידה העובד.ת מצליח.ה לדאוג לניהול זמן או משימות אפקטיבי של הצוות, תוך הקפדה עלל סדר עדיפויות ברור? ",
+                    "E_question": "באיזו מידה את.ה מצליח.ה לדאוג לניהול זמן או משימות אפקטיבי של הצוות, תוך הקפדה עלל סדר עדיפויות ברור?",
+                    "type": "rating",
+                    "roles": [
+                        1
+                    ],
+                    "schema": "time_priority_management",
+                    "required": true,
+                    "ariaLabel": "דירוג ניהול זמן וסדרי עדיפויות",
+                    "description": "הערכת יכולת ניהול זמן ותעדוף משימות"
+                },
+                {
+                    "M_question": "באיזו מידה העובד.ת מצליח.ה להסתגל ולהתמודד עם שינויים בפרויקטים או בסדרי העדיפויות, תוך הובלת הצוות בהתאם?",
+                    "E_question": "באיזו מידה את.ה מצליח.ה להסתגל ולהתמודד עם שינויים בפרויקטים או בסדרי העדיפויות, תוך הובלת הצוות בהתאם?",
+                    "type": "rating",
+                    "roles": [
+                        1
+                    ],
+                    "schema": "change_adaptation",
+                    "required": true,
+                    "ariaLabel": "דירוג גמישות והסתגלות",
+                    "description": "הערכת יכולת הסתגלות לשינויים"
+                },
+                {
+                    "M_question": "באיזו מידה העובד.ת כמנהל.ת פרויקט או צוות, מציב.ה לעובדיו יעדים ברורים, מדידים וברי השגה?",
+                    "E_question": "באיזו מידה את.ה כמנהל.ת פרויקט או צוות, מציב.ה לעובדיו יעדים ברורים, מדידים וברי השגה?",
+                    "type": "rating",
+                    "roles": [
+                        1
+                    ],
+                    "schema": "goal_setting",
+                    "required": true,
+                    "ariaLabel": "דירוג הצבת יעדים",
+                    "description": "הערכת יכולת הגדרת יעדים ברורים לצוות"
+                },
+                {
+                    "M_question": "באיזו מידה העובד.ת מצליח.ה לגרום לעובדים.ות לבצע את משימותיהם בצורה הטובה ביותר?",
+                    "E_question": "באיזו מידה את.ה כמנהל.ת מצליח.ה לגרום לעובדים.ות לבצע את משימותיהם בצורה הטובה ביותר?",
+                    "type": "rating",
+                    "roles": [
+                        1
+                    ],
+                    "schema": "team_motivation",
+                    "required": true,
+                    "ariaLabel": "דירוג הנעת עובדים",
+                    "description": "הערכת יכולת הנעת העובדים להשגת ביצועים מיטביים"
+                },
+                {
+                    "M_question": "באיזו מידה העובד.ת כמנהל.ת פרויקט או צוות, מצליח.ה לקדם את עובדיו, לפתח אותם מקצועית ואישית?",
+                    "E_question": "באיזו מידה אתה כמנהל.ת פרויקט או צוות, מצליח.ה לקדם את עובדיך, לפתח אותם מקצועית ואישית?",
+                    "type": "rating",
+                    "roles": [
+                        1
+                    ],
+                    "schema": "employee_development",
+                    "required": true,
+                    "ariaLabel": "דירוג פיתוח עובדים",
+                    "description": "הערכת יכולת פיתוח וקידום הצוות"
+                },
+                {
+                    "M_question": "עד כמה העובד.ת מצליח.ה ללמוד מהצלחות ואי-הצלחות, תוך יישום הלקחים לצורך שיפור ביצועים עתידיים? ",
+                    "E_question": "עד כמה את.ה מצליח.ה ללמוד מהצלחות ואי-הצלחות, תוך יישום הלקחים לצורך שיפור ביצועים עתידיים?",
+                    "type": "rating",
+                    "roles": [
+                        1
+                    ],
+                    "schema": "lessons_learned",
+                    "required": true,
+                    "ariaLabel": "דירוג למידה מלקחים",
+                    "description": "הערכת יכולת הפקת לקחים ויישומם"
+                }
+            ]
+        };
         const isSurveyAlreadyFilled = (surveyData, surveyParams) => {
             if (!surveyData || !surveyParams) return false;
 
@@ -841,62 +841,62 @@
         };
 
         const updateProgress = () => {
-    const questionCards = document.querySelectorAll('.question-card');
-    let totalQuestions = 0;
-    let answeredQuestions = 0;
+            const questionCards = document.querySelectorAll('.question-card');
+            let totalQuestions = 0;
+            let answeredQuestions = 0;
 
-    questionCards.forEach(card => {
-        const radioGroup = card.querySelector('input[type="radio"]');
-        const textarea = card.querySelector('textarea');
+            questionCards.forEach(card => {
+                const radioGroup = card.querySelector('input[type="radio"]');
+                const textarea = card.querySelector('textarea');
 
-        if (radioGroup || textarea) {
-            totalQuestions++;
+                if (radioGroup || textarea) {
+                    totalQuestions++;
 
-            if (radioGroup) {
-                const groupName = radioGroup.getAttribute('name');
-                const isAnswered = card.querySelector(`input[name="${groupName}"]:checked`);
-                if (isAnswered) {
-                    answeredQuestions++;
+                    if (radioGroup) {
+                        const groupName = radioGroup.getAttribute('name');
+                        const isAnswered = card.querySelector(`input[name="${groupName}"]:checked`);
+                        if (isAnswered) {
+                            answeredQuestions++;
+                        }
+                    } else if (textarea) {
+                        if (textarea.value.trim()) {
+                            answeredQuestions++;
+                        }
+                    }
                 }
-            } else if (textarea) {
-                if (textarea.value.trim()) {
-                    answeredQuestions++;
+            });
+
+            // Get progress bar elements
+            const progressBar = document.querySelector('.progress-bar');
+            const progressContainer = document.querySelector('.progress');
+
+            if (progressBar) {
+                // Calculate progress percentage
+                const progress = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
+                progressBar.style.width = `${Math.round(progress)}%`;
+
+                // Change color to green when all questions are answered
+                if (answeredQuestions === totalQuestions) {
+                    progressBar.style.backgroundColor = '#22C55E'; // Green color
+                } else {
+                    progressBar.style.backgroundColor = '#2196F3'; // Default blue color
+                }
+
+                // Update progress text
+                const progressText = document.getElementById('progressText');
+                if (progressText) {
+                    progressText.textContent = `נענו ${answeredQuestions} שאלות מתוך ${totalQuestions}`;
+                }
+
+                // Add styles
+
+
+                // Only add the style tag if it hasn't been added before
+                if (!document.head.querySelector('style')) {
+                    document.head.appendChild(style);
                 }
             }
-        }
-    });
-
-    // Get progress bar elements
-    const progressBar = document.querySelector('.progress-bar');
-    const progressContainer = document.querySelector('.progress');
-
-    if (progressBar) {
-        // Calculate progress percentage
-        const progress = totalQuestions > 0 ? (answeredQuestions / totalQuestions) * 100 : 0;
-        progressBar.style.width = `${Math.round(progress)}%`;
-
-        // Change color to green when all questions are answered
-        if (answeredQuestions === totalQuestions) {
-            progressBar.style.backgroundColor = '#22C55E'; // Green color
-        } else {
-            progressBar.style.backgroundColor = '#2196F3'; // Default blue color
-        }
-
-        // Update progress text
-        const progressText = document.getElementById('progressText');
-        if (progressText) {
-            progressText.textContent = `נענו ${answeredQuestions} שאלות מתוך ${totalQuestions}`;
-        }
-
-        // Add styles
-
-
-        // Only add the style tag if it hasn't been added before
-        if (!document.head.querySelector('style')) {
-            document.head.appendChild(style);
-        }
-    }
-};
+        };
 
         // Form Data Management
         const collectFormData = (form) => {
@@ -988,89 +988,89 @@
         };
         // Add this function to your JavaScript
         const downloadExcel = () => {
-    // Get survey parameters and form data
-    const surveyParams = getSurveyParams();
-    const form = document.getElementById('evaluationForm');
-    const formData = new FormData(form);
-    const answers = {};
-    formData.forEach((value, key) => {
-        answers[key] = value;
-    });
+            // Get survey parameters and form data
+            const surveyParams = getSurveyParams();
+            const form = document.getElementById('evaluationForm');
+            const formData = new FormData(form);
+            const answers = {};
+            formData.forEach((value, key) => {
+                answers[key] = value;
+            });
 
-    // Create worksheet data
-    const wsData = [];
+            // Create worksheet data
+            const wsData = [];
 
-    // Add header row
-    wsData.push(['קטגוריה', 'שאלה', 'תשובה']);
+            // Add header row
+            wsData.push(['קטגוריה', 'שאלה', 'תשובה']);
 
-    // Add employee info section
-    wsData.push(['פרטי עובד', 'שם', document.getElementById('employeeName').textContent]);
-    wsData.push(['פרטי עובד', 'מחלקה', document.getElementById('employeeDepartment').textContent]);
-    wsData.push(['פרטי עובד', 'דואר אלקטרוני', document.getElementById('employeeEmail').textContent]);
-    wsData.push(['פרטי עובד', 'תאריך תחילת עבודה', document.getElementById('employeeHireDate').textContent]);
-    wsData.push([]);  // Empty row for spacing
+            // Add employee info section
+            wsData.push(['פרטי עובד', 'שם', document.getElementById('employeeName').textContent]);
+            wsData.push(['פרטי עובד', 'מחלקה', document.getElementById('employeeDepartment').textContent]);
+            wsData.push(['פרטי עובד', 'דואר אלקטרוני', document.getElementById('employeeEmail').textContent]);
+            wsData.push(['פרטי עובד', 'תאריך תחילת עבודה', document.getElementById('employeeHireDate').textContent]);
+            wsData.push([]);  // Empty row for spacing
 
-    // Add manager info section
-    wsData.push(['פרטי מנהל', 'שם', document.getElementById('managerName').textContent]);
-    wsData.push(['פרטי מנהל', 'מחלקה', document.getElementById('managerDepartment').textContent]);
-    wsData.push(['פרטי מנהל', 'דואר אלקטרוני', document.getElementById('managerEmail').textContent]);
-    wsData.push([]);  // Empty row for spacing
+            // Add manager info section
+            wsData.push(['פרטי מנהל', 'שם', document.getElementById('managerName').textContent]);
+            wsData.push(['פרטי מנהל', 'מחלקה', document.getElementById('managerDepartment').textContent]);
+            wsData.push(['פרטי מנהל', 'דואר אלקטרוני', document.getElementById('managerEmail').textContent]);
+            wsData.push([]);  // Empty row for spacing
 
-    // Add evaluation period and submission date
-    wsData.push(['פרטי הערכה', 'תקופת הערכה', document.getElementById('evaluationPeriod').textContent]);
-    wsData.push(['פרטי הערכה', 'תאריך מילוי', document.getElementById('submissionDate').textContent]);
-    wsData.push([]);  // Empty row for spacing
+            // Add evaluation period and submission date
+            wsData.push(['פרטי הערכה', 'תקופת הערכה', document.getElementById('evaluationPeriod').textContent]);
+            wsData.push(['פרטי הערכה', 'תאריך מילוי', document.getElementById('submissionDate').textContent]);
+            wsData.push([]);  // Empty row for spacing
 
-    // Add survey answers
-    Object.entries(categories).forEach(([category, questions]) => {
-        questions.forEach(question => {
-            const answer = answers[question.schema];
-            if (answer) { // Only add if there's an answer
-                // Get the correct question text based on position
-                const questionText = surveyParams.position === 'EMPLOYEE' ? 
-                    question.E_question : 
-                    question.M_question;
+            // Add survey answers
+            Object.entries(categories).forEach(([category, questions]) => {
+                questions.forEach(question => {
+                    const answer = answers[question.schema];
+                    if (answer) { // Only add if there's an answer
+                        // Get the correct question text based on position
+                        const questionText = surveyParams.position === 'EMPLOYEE' ?
+                            question.E_question :
+                            question.M_question;
 
-                // Format the answer based on question type
-                let displayAnswer = answer;
-                if (question.type === 'rating' && answer) {
-                    displayAnswer = SURVEY_CONFIG.ratingScale[answer];
-                }
+                        // Format the answer based on question type
+                        let displayAnswer = answer;
+                        if (question.type === 'rating' && answer) {
+                            displayAnswer = SURVEY_CONFIG.ratingScale[answer];
+                        }
 
-                wsData.push([
-                    category,
-                    questionText,
-                    displayAnswer || ''
-                ]);
-            }
-        });
-        wsData.push([]); // Empty row between categories
-    });
+                        wsData.push([
+                            category,
+                            questionText,
+                            displayAnswer || ''
+                        ]);
+                    }
+                });
+                wsData.push([]); // Empty row between categories
+            });
 
-    // Create workbook
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+            // Create workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-    // Set RTL and column widths
-    ws['!dir'] = 'rtl';
-    ws['!cols'] = [
-        { wch: 20 },  // Category width
-        { wch: 50 },  // Question width
-        { wch: 30 }   // Answer width
-    ];
+            // Set RTL and column widths
+            ws['!dir'] = 'rtl';
+            ws['!cols'] = [
+                { wch: 20 },  // Category width
+                { wch: 50 },  // Question width
+                { wch: 30 }   // Answer width
+            ];
 
-    // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(wb, ws, "הערכת עובד");
+            // Add worksheet to workbook
+            XLSX.utils.book_append_sheet(wb, ws, "הערכת עובד");
 
-    // Generate filename with position indicator
-    const employeeName = document.getElementById('employeeName').textContent;
-    const date = new Date().toLocaleDateString('he-IL').replace(/\./g, '-');
-    const position = surveyParams.position === 'EMPLOYEE' ? 'עובד' : 'מנהל';
-    const filename = `הערכת_${position}_${employeeName}_${date}.xlsx`;
+            // Generate filename with position indicator
+            const employeeName = document.getElementById('employeeName').textContent;
+            const date = new Date().toLocaleDateString('he-IL').replace(/\./g, '-');
+            const position = surveyParams.position === 'EMPLOYEE' ? 'עובד' : 'מנהל';
+            const filename = `הערכת_${position}_${employeeName}_${date}.xlsx`;
 
-    // Download file
-    XLSX.writeFile(wb, filename);
-};
+            // Download file
+            XLSX.writeFile(wb, filename);
+        };
 
 
 
@@ -1091,67 +1091,67 @@
         };
 
         const fetchWithTimeout = async (url, options) => {
-    const timeoutDuration = 10000; // 10 seconds
-    let timeoutId;
-    let alertShown = false;
-    let popupInstance = null;
+            const timeoutDuration = 10000; // 10 seconds
+            let timeoutId;
+            let alertShown = false;
+            let popupInstance = null;
 
-    const timeoutPromise = new Promise((_, reject) => {
-        timeoutId = setTimeout(() => {
-            if (!alertShown) {
-                alertShown = true;
-                popupInstance = showCustomPopup({
-                    type: 'warning',
-                    title: 'השרתים עמוסים',
-                    message: 'השרתים נראים עמוסים, אנא המתן בסבלנות או נסה שוב מאוחר יותר',
-                    showConfirm: true,
-                    showCancel: false
-                });
-            }
-        }, timeoutDuration);
-    });
+            const timeoutPromise = new Promise((_, reject) => {
+                timeoutId = setTimeout(() => {
+                    if (!alertShown) {
+                        alertShown = true;
+                        popupInstance = showCustomPopup({
+                            type: 'warning',
+                            title: 'השרתים עמוסים',
+                            message: 'השרתים נראים עמוסים, אנא המתן בסבלנות או נסה שוב מאוחר יותר',
+                            showConfirm: true,
+                            showCancel: false
+                        });
+                    }
+                }, timeoutDuration);
+            });
 
-    try {
-        const response = await Promise.race([
-            fetch(url, options),
-            timeoutPromise
-        ]);
-        
-        // Clear timeout and hide popup if it was shown
-        clearTimeout(timeoutId);
-        if (alertShown && popupInstance) {
-            const overlay = popupInstance.closest('.popup-overlay');
-            if (overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.remove();
-                }, 300); // Smooth fade out
+            try {
+                const response = await Promise.race([
+                    fetch(url, options),
+                    timeoutPromise
+                ]);
+
+                // Clear timeout and hide popup if it was shown
+                clearTimeout(timeoutId);
+                if (alertShown && popupInstance) {
+                    const overlay = popupInstance.closest('.popup-overlay');
+                    if (overlay) {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => {
+                            overlay.remove();
+                        }, 300); // Smooth fade out
+                    }
+                }
+
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
             }
-        }
-        
-        return response;
-    } catch (error) {
-        clearTimeout(timeoutId);
-        throw error;
-    }
-};
+        };
 
         // Form Submission
         const submitSurvey = async (data) => {
-    const response = await fetchWithTimeout(API_ENDPOINT, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    });
+            const response = await fetchWithTimeout(API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
 
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-    return response.json();
-};
+            return response.json();
+        };
 
         const handleSubmit = async (event) => {
             event.preventDefault();
@@ -1319,70 +1319,70 @@
             });
         };
         const fetchSurveyData = async (params) => {
-    try {
-        const response = await fetchWithTimeout(
-            'https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    surveyId: params.surveyId,
-                    position: params.position,
-                    action: "getsurveydata"
-                })
+            try {
+                const response = await fetchWithTimeout(
+                    'https://prod-39.westeurope.logic.azure.com:443/workflows/37fef182446d4610b731450f081f43fc/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2zKGo49JL0waedwDDLfiCsk5S1p4-KMDvehVNazN_DA',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            surveyId: params.surveyId,
+                            position: params.position,
+                            action: "getsurveydata"
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    showCustomPopup({
+                        type: 'error',
+                        title: 'שגיאת שרת',
+                        message: `השרת החזיר שגיאה: ${response.status} - ${response.statusText}. אנא נסה שוב מאוחר יותר או פנה לתמיכה.`,
+                        showConfirm: true,
+                        showCancel: false
+                    });
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Verify data structure
+                if (!data || typeof data !== 'object') {
+                    showCustomPopup({
+                        type: 'error',
+                        title: 'שגיאת מידע',
+                        message: 'התקבל מידע לא תקין מהשרת. אנא נסה שוב או פנה לתמיכה.',
+                        showConfirm: true,
+                        showCancel: false
+                    });
+                    throw new Error('Invalid data received from server');
+                }
+
+                return {
+                    managment: data.managment || "0",
+                    Manager: data.Manager || null,
+                    Employee: data.Employee || null,
+                    Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || "",
+                    ManagerFilled: data.ManagerFilled || "0",
+                    EmployeeFilled: data.EmployeeFilled || "0"
+                };
+            } catch (error) {
+                // Handle network errors
+                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                    showCustomPopup({
+                        type: 'error',
+                        title: 'שגיאת תקשורת',
+                        message: 'לא ניתן להתחבר לשרת. אנא בדוק את חיבור האינטרנט שלך ונסה שוב.',
+                        showConfirm: true,
+                        showCancel: false
+                    });
+                }
+                console.error('Error in fetchSurveyData:', error);
+                throw error;
             }
-        );
-
-        if (!response.ok) {
-            showCustomPopup({
-                type: 'error',
-                title: 'שגיאת שרת',
-                message: `השרת החזיר שגיאה: ${response.status} - ${response.statusText}. אנא נסה שוב מאוחר יותר או פנה לתמיכה.`,
-                showConfirm: true,
-                showCancel: false
-            });
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // Verify data structure
-        if (!data || typeof data !== 'object') {
-            showCustomPopup({
-                type: 'error',
-                title: 'שגיאת מידע',
-                message: 'התקבל מידע לא תקין מהשרת. אנא נסה שוב או פנה לתמיכה.',
-                showConfirm: true,
-                showCancel: false
-            });
-            throw new Error('Invalid data received from server');
-        }
-
-        return {
-            managment: data.managment || "0",
-            Manager: data.Manager || null,
-            Employee: data.Employee || null,
-            Working_x0020_Start_x0020_Date: data.Working_x0020_Start_x0020_Date || "",
-            ManagerFilled: data.ManagerFilled || "0",
-            EmployeeFilled: data.EmployeeFilled || "0"
         };
-    } catch (error) {
-        // Handle network errors
-        if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-            showCustomPopup({
-                type: 'error',
-                title: 'שגיאת תקשורת',
-                message: 'לא ניתן להתחבר לשרת. אנא בדוק את חיבור האינטרנט שלך ונסה שוב.',
-                showConfirm: true,
-                showCancel: false
-            });
-        }
-        console.error('Error in fetchSurveyData:', error);
-        throw error;
-    }
-};
         // Fix 2: Add form validation
         const validateForm = (form) => {
             const requiredFields = form.querySelectorAll('[required]');
@@ -1662,10 +1662,10 @@
         });
     </script>
     <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
         })(window, document, "clarity", "script", "pc0bsaj6zq");
     </script>
     <div id="guidancePopup" class="guidance-popup">
