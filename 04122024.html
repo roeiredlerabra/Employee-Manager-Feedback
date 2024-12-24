@@ -931,7 +931,10 @@
             }
 
             const [id, position] = param.split('-');
-
+            if (position !== 'EMPLOYEE' && position !== 'MANAGER') {
+        showErrorAlert('Invalid position.');
+        return;
+    }
             return {
                 surveyId: id,
                 position
