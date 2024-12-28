@@ -26,6 +26,15 @@
     <!-- Header Section -->
     <header class="page-header">
         <div class="header-content">
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="themeCheckbox">
+                    <input type="checkbox" id="themeCheckbox" />
+                    <div class="slider round">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </div>
+                </label>
+            </div>
             <!-- Skeleton Logo -->
             <div class="skeleton-content">
                 <div class="placeholder-glow">
@@ -990,6 +999,24 @@
 
             updateProgress();
         };
+
+        const themeSwitch = document.getElementById('themeCheckbox');
+        
+        // Check for saved theme preference or default to light
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeSwitch.checked = savedTheme === 'dark';
+
+        // Handle theme switch
+        themeSwitch.addEventListener('change', function(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
         // Add this function to your JavaScript
         const downloadExcel = () => {
             // Get survey parameters and form data
