@@ -1104,7 +1104,110 @@
         };
 
 
+        const submitExcelFile = async (form) => {
+    try {
+        const surveyParams = getSurveyParams();
+        
+        // Generate Excel data
+        const wsData = [];
+        const formData = new FormData(form);
+        const answers = {};
+        formData.forEach((value, key) => {
+            answers[key] = value;
+        });
 
+        // Add header row
+        wsData.push(['קטגוריה', 'שאלה', 'תשובה']);
+
+        // Add employee info section
+        wsData.push(['פרטי עובד', 'שם', document.getElementById('employeeName').textContent]);
+        wsData.push(['פרטי עובד', 'מחלקה', document.getElementById('employeeDepartment').textContent]);
+        wsData.push(['פרטי עובד', 'דואר אלקטרוני', document.getElementById('employeeEmail').textContent]);
+        wsData.push(['פרטי עובד', 'תאריך תחילת עבודה', document.getElementById('employeeHireDate').textContent]);
+        wsData.push([]);  // Empty row for spacing
+
+        // Add manager info section
+        wsData.push(['פרטי מנהל', 'שם', document.getElementById('managerName').textContent]);
+        wsData.push(['פרטי מנהל', 'מחלקה', document.getElementById('managerDepartment').textContent]);
+        wsData.push(['פרטי מנהל', 'דואר אלקטרוני', document.getElementById('managerEmail').textContent]);
+        wsData.push([]);  // Empty row for spacing
+
+        // Add evaluation period and submission date
+        wsData.push(['פרטי הערכה', 'תקופת הערכה', document.getElementById('evaluationPeriod').textContent]);
+        wsData.push(['פרטי הערכה', 'תאריך מילוי', document.getElementById('submissionDate').textContent]);
+        wsData.push([]);  // Empty row for spacing
+
+        // Add survey answers
+        Object.entries(categories).forEach(([category, questions]) => {
+            questions.forEach(question => {
+                const answer = answers[question.schema];
+                if (answer) {
+                    const questionText = surveyParams.position === 'EMPLOYEE' ?
+                        question.E_question :
+                        question.M_question;
+
+                    let displayAnswer = answer;
+                    if (question.type === 'rating' && answer) {
+                        displayAnswer = SURVEY_CONFIG.ratingScale[answer];
+                    }
+
+                    wsData.push([
+                        category,
+                        questionText,
+                        displayAnswer || ''
+                    ]);
+                }
+            });
+            wsData.push([]); // Empty row between categories
+        });
+
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+        // Set RTL and column widths
+        ws['!dir'] = 'rtl';
+        ws['!cols'] = [
+            { wch: 20 },  // Category width
+            { wch: 50 },  // Question width
+            { wch: 30 }   // Answer width
+        ];
+
+        // Add worksheet to workbook
+        XLSX.utils.book_append_sheet(wb, ws, "הערכת עובד");
+
+        // Convert workbook to binary string
+        const excelBinary = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+        
+        // Convert binary string to base64
+        const base64Excel = btoa(
+            excelBinary.split('').map(char => String.fromCharCode(char.charCodeAt(0) & 0xFF)).join('')
+        );
+
+        // Send Excel file to API
+        const response = await fetchWithTimeout(API_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                surveyId: surveyParams.surveyId,
+                position: surveyParams.position,
+                action: "file-submit",
+                excelFile: base64Excel
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error('Error submitting Excel file:', error);
+        throw error;
+    }
+};
 
         // Add this to your HTML before the submit button in the footer
         const addDownloadButton = () => {
@@ -1310,6 +1413,7 @@
 
                         const results = collectFormData(form);
                         const response = await submitSurvey(results);
+                        await submitExcelFile(form);
 
                         submitBtn.style.display = 'none';
                         if (downloadBtn) downloadBtn.style.display = 'block';
