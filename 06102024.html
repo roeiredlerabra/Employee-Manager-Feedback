@@ -950,6 +950,7 @@ const hideLoading = () => {
                 // Populate employee info
                 document.getElementById('employeeName').textContent = data.Employee?.DisplayName || '';
                 document.getElementById('employeeDepartment').textContent = data.Employee?.Department || '';
+                document.getElementById('employeeEmail').textContent = data.Employee?.Email || '';
                 document.getElementById('employeeHireDate').textContent = new Date(data.Working_x0020_Start_x0020_Date).toLocaleDateString('he-IL');
                 document.getElementById('managerName').textContent = data.Manager?.DisplayName || '';
                 document.getElementById('managerDepartment').textContent = data.Manager?.Department || '';
